@@ -1,0 +1,110 @@
+html
+  font-size 100%
+  -ms-text-size-adjust 100%
+  -webkit-text-size-adjust 100%
+
+html, body
+  height 100%
+  box-sizing border-box
+
+article,
+aside,
+details, // 1
+figcaption,
+figure,
+footer,
+header,
+main, // 2
+menu,
+nav,
+section,
+summary // 1
+  display block
+
+audio:not([controls])
+  display none
+  height 0
+
+progress
+  vertical-align baseline
+
+
+template, // 1
+[hidden]
+  display none
+
+a
+  -webkit-text-decoration-skip objects
+
+a
+  &:active,
+  &:hover
+    outline-width 0
+
+abbr[title]
+  border-bottom none // 1
+  text-decoration underline // 2
+  text-decoration underline dotted // 2
+
+b,
+strong
+  font-weight inherit
+
+b,
+strong
+  font-weight bolder
+
+dfn
+  font-style italic
+
+small
+  font-size 80%
+
+sub,
+sup
+  font-size 75%
+  line-height 0
+  position relative
+  vertical-align baseline
+
+sub
+  bottom -0.25em
+
+sup
+  top -0.5em
+
+code,
+kbd,
+pre,
+samp
+  font-family Consolas, 'Liberation Mono', Menlo, Courier, monospace, monospace // 1
+
+img
+  border-style none
+
+svg:not(:root)
+  overflow hidden
+
+hr
+  box-sizing content-box // 1
+  height 0 // 1
+  overflow visible // 2
+
+small, .small
+  font-size 0.8em
+
+button
+  -webkit-appearance none
+  outline none
+
+
+input[type="search"]
+  -webkit-appearance none
+
+input
+  margin 0 0 0 0
+
+@-ms-viewport
+  width device-width
+
+

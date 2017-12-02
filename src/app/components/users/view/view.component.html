@@ -1,0 +1,35 @@
+<div class="flex-column " style="width: 100%;">
+  <div id="topic" style="position: relative">
+    <div itemscope itemtype="http://schema.org/Person" class="user-info flex-center"
+    *ngIf="user$ | async as userInfo">
+      <h1>
+        <span class="online" *ngIf="userInfo.online" i18n-title="Online">
+          <i class="fa fa-circle"></i></span>
+        <span itemprop="name">{{userInfo?.name}}</span>
+      </h1>
+      <div>
+        <img [src]="userInfo.picture" itemprop="image" alt="{{userInfo?.slug}}" class="img-responsive">
+      </div>
+      <div><small itemprop="alternateName">@{{userInfo?.slug}}</small></div>
+      <div>
+        <div>
+          <span i18n>Rating</span>:
+          <lr-rank user="userInfo"></lr-rank>
+        </div>
+      </div>
+      <div><p itemprop="description">{{userInfo?.about}}</p></div>
+      <div *ngIf="userInfo?.total_topics > 0"><p><span i18>Total topics</span>: {{userInfo?.total_topics}}</p></div>
+      <div *ngIf="userInfo?.total_comments > 0"><p><span i18>Total comments</span>: {{userInfo?.total_comments}}</p></div>
+      <div *ngIf="user && userInfo._id !== user._id">
+        <p>
+          <a class="button" routerLink="/ask?user={{userInfo?.slug}}" i18n>Ask privately</a>
+        </p>
+      </div>
+      <div *ngIf="user && userInfo._id === user._id">
+        <p>
+          <a class="button" routerLink="/settings" i18n>Settings</a></p>
+      </div>
+    </div>
+
+  </div>
+</div>

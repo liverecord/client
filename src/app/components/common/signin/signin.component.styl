@@ -1,0 +1,56 @@
+:host
+  font-size inherit
+  font-family inherit
+  display block
+  padding 1vh 2vw
+  label
+    display inline-block
+    min-width 5em
+    width 5vw
+  input, textarea
+    font-family inherit
+    font-size inherit
+  .message
+    padding 0.5em
+    color $orange
+    background-color white
+
+  input+span
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size inherit
+    margin-left -1.75em
+  input+span::after
+    transition all 100ms
+    opacity 0
+    color white
+    content " "
+  .ng-touched.ng-invalid+span::after
+    content "\f057"
+    color red
+    opacity 1
+  .ng-valid+span::after
+    content "\f00c"
+    color green
+    opacity 1
+
+  .alert-danger
+    color firebrick
+
+  input[type="email"],
+  input[type="password"]
+    border-style solid
+    border-width 1px
+    background-color transparent
+    border-color #EEEEEE
+    color black
+
+  input[type="submit"], button
+    font-family inherit
+    background-color #1b8bf9
+    color white
+    border solid 1px #1b8bf9
+    border-radius 2px
+    margin-top 1vh
+
+  input[type="submit"][disabled], button[disabled]
+    background-color #669BCC

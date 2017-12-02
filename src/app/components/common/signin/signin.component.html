@@ -1,0 +1,77 @@
+<div *ngIf="! user?.id">
+  <h3 i18n>Join</h3>
+  <div class="sso">
+    <span i18n>Sign in with</span>
+    <a href="/api/oauth/facebook/" class="text-facebook" target="_top"><i class="fa fa-fw fa-facebook-official"></i></a>
+    <a href="/api/oauth/twitter/" class="text-twitter" target="_top"><i class="fa fa-fw fa-twitter"></i></a>
+    <a href="/api/oauth/windowslive/" class="text-windows" target="_top"><i class="fa fa-fw fa-windows"></i></a>
+    <a href="/api/oauth/vkontakte/" class="text-vk" target="_top"><i class="fa fa-fw fa-vk"></i></a>
+    <a href="/api/oauth/github/" class="text-github" target="_top"><i class="fa fa-fw fa-github"></i></a>
+    <a href="/api/oauth/google/" class="text-google" target="_top"><i class="fa fa-fw fa-google-plus-square"></i></a>
+  </div>
+  <hr size="1">
+  <p i18n>Signin or signup</p>
+  <p>{{message}}</p>
+  <form (submit)="onSubmit()" #authDataForm="ngForm">
+    <div class="form-group">
+      <label for="email" i18n>Email</label>
+      <input
+        type="email"
+        email="true"
+        [disabled]="submitted"
+        [(ngModel)]="authData.email"
+        #email="ngModel"
+        i18n-placeholder
+        id="email"
+        name="email"
+        required
+        placeholder="Email" />
+      <span></span>
+    </div>
+    <div class="form-group">
+      <label for="password" i18n>Password</label>
+      <input
+        type="password"
+        [(ngModel)]="authData.password"
+        #password="ngModel"
+        i18n-placeholder
+        [disabled]="submitted"
+        id="password"
+        name="password"
+        required
+        minlength="2"
+        placeholder="Password"
+      />
+      <span></span>
+
+    </div>
+    <div class="form-group">
+      <label>
+        <a href="/users/password/restore" class="small" i18n>Restore</a>
+      </label>
+      <label for="rememberMe" i18n>My Comp</label>
+      <input type="checkbox"
+             [(ngModel)]="authData.rememberMe"
+             [disabled]="submitted"
+             name="remember"
+             id="rememberMe"
+      />
+    </div>
+    <div></div>
+    <div class="form-group">
+      <label></label>
+      <input type="submit" i18n value="Join" [disabled]="disabled || submitted || authDataForm.invalid">
+    </div>
+  </form>
+</div>
+<div *ngIf="user?.id">
+  <button (click)="signOut()">Sign Out</button>
+</div>
+User
+<pre>
+{{user | json}}
+</pre>
+Auth data
+<pre>
+{{authData | json}}
+</pre>

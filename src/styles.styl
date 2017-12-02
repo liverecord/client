@@ -1,1 +1,121 @@
 /* You can add global styles to this file, and also import other style files */
+
+:root
+  --main-theme-color: #303E4D
+
+$brandTwitter = #1DA1F2
+$brandFacebook = #133783
+$brandVK = #5E81A8
+$brandMicrosoft = #006CC2
+$brandGoogle = #DB4437
+$brandGithub = #24292E
+
+
+@import "styles/*"
+@import "styles/themes/*"
+
+vertical-gradient(topColor, bottomColor)
+  background topColor
+  background -webkit-linear-gradient(topColor, bottomColor)
+  background -o-linear-gradient(topColor, bottomColor)
+  background -moz-linear-gradient(topColor, bottomColor)
+  background linear-gradient(topColor, bottomColor)
+
+
+body
+  font-family -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol"
+  box-sizing border-box
+  margin 0
+  padding 0
+
+button,input,textarea
+  font-family inherit
+  font-size inherit
+  box-sizing border-box
+  margin-right 0
+
+button,input[type=submit],input[type=reset]
+  padding 0.25em 1em
+  text-align center
+  text-decoration none
+  overflow hidden
+  text-overflow ellipsis
+  margin 0.1em
+  white-space nowrap
+
+input[type=text],
+input[type=password],
+input[type=email],
+input[type=tel],
+input[type=number],
+textarea
+  padding 0.3em 0.5em
+  margin 0.1em
+
+.flex
+  display flex
+
+.flex-column
+  display flex
+  flex-direction column
+
+.flex-row
+  display flex
+  flex-direction row
+
+.container
+  height 100vh
+
+.flex-column
+  display flex
+  flex-direction column
+
+.flex-row
+  display flex
+  flex-direction row
+
+.flex-center
+  justify-content center
+
+lr-root > div
+  box-sizing border-box
+  margin 0
+  padding 0
+
+pre,
+code,
+.mono,
+kbd
+  tab-size: 4;
+  -moz-tab-size: 4;
+  -webkit-tab-size: 4;
+  -o-tab-size: 4;
+
+pre,
+code,
+.mono
+  white-space: pre-wrap
+  -webkit-font-smoothing auto
+  font-size .9em
+
+.text-center
+  text-align center
+
+.text-left
+  text-align left
+
+.text-right
+  text-align right
+
+.text-facebook
+  color $brandFacebook
+.text-twitter
+  color $brandTwitter
+.text-vk
+  color $brandVK
+.text-windows
+  color $brandMicrosoft
+.text-google
+  color $brandGoogle
+.text-github
+  color $brandGithub
