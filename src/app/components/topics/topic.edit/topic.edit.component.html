@@ -1,3 +1,114 @@
-<p>
-  topic.edit works!
-</p>
+<div class="flex-column ask-form">
+  <div (click)="docClick()">
+    <h1>
+      <span [hidden]="!editing" i18n>Create new topic</span>
+      <span [hidden]="editing"><span i18n>Edit topic</span> <q>{{topic?.title}}</q></span>
+    </h1>
+    <form (submit)="onSubmit()" #topicEditForm="ngForm">
+      <div class="flex-row">
+        <select id="questionCategory"
+                name="questionCategory"
+                #qc="ngModel"
+                required
+                [(ngModel)]="topic.category"
+                i18n-placeholder="Category"
+                i18n>
+          <option [ngValue]="null" i18n>Please select</option>
+          <option
+            *ngFor="let category of categoriesObservable | async as categories"
+            [ngValue]="category.id">{{category.name}}
+          </option>
+        </select>
+        <span></span>
+        <i class="fa fa-fw fa-times" [hidden]="! qc.invalid"></i>
+        <i class="fa fa-fw fa-check" [hidden]="! qc.valid"></i>
+      </div>
+      <div class="flex-row">
+        <input
+          id="questionTitle"
+          name="questionTitle"
+          type="text"
+          [(ngModel)]="topic.title"
+          #qt="ngModel"
+          i18n-placeholder="Topic title"
+          required>
+        <span></span>
+        <i class="fa fa-fw fa-times" [hidden]="! qt.invalid"></i>
+        <i class="fa fa-fw fa-check" [hidden]="! qt.valid"></i>
+      </div>
+      <div class="flex-row">
+        <div class="acl-list-box">
+          <div class="flex-row item" *ngFor="let friend of topic.acl">
+            <img [src]="friend?.picture" alt="">
+            <span class="name">{{friend.name}}</span>
+            <span><i class="fa fa-fw fa-times" (click)="removeFromAcl(friend)"></i></span>
+          </div>
+          <label for="lookupUserForAcl" class="flex-row tip"><i i18n>Add people</i></label>
+          <div class="flex-row search-box">
+            <input id="lookupUserForAcl"
+                   name="lookupEmail"
+                   type="text"
+                   [(ngModel)]="lookupEmail"
+                   #qul="ngModel"
+                   i18n-placeholder="Email or @nickname"
+                   i18n-title="Type email for lookup"
+                   autocomplete="off"
+                   (focus)="runSearch()"
+                   (paste)="runSearch()"
+                   (change)="runSearch()"
+                   i18n>
+            <button class="button"
+                    (click)="runSearch()"
+                    i18n-title="Add"
+                    [disabled]="!sendButtonActive || qul.invalid"
+            ><i class="fa fa-fw fa-search"></i></button>
+            <div class="search-box-dropdown" [hidden]="! showSearchResults">
+              <div class="search-box-scroll-wrapper">
+                <div class="flex-row search-box-item" *ngFor="let item of searchResults | async as users; index as i;"
+                     (click)="addToAcl(item, $event)">
+                  <img [src]="item?.picture" alt="item.slug">
+                  <span class="name">{{item?.name}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <i class="fa fa-fw fa-lock" [hidden]="! topic.private"></i>
+        <i class="fa fa-fw fa-unlock" [hidden]="topic.private"></i>
+
+      </div>
+      <div class="flex-row">
+        <lr-editor [(html)]="topic.body"></lr-editor>
+      </div>
+
+      <!--
+      <div class="flex-row">
+        <hr>
+        cool:
+
+      </div>
+      -->
+
+      <div class="flex-row">
+        <button [disabled]="!sendButtonActive || topicEditForm.invalid"><span [hidden]="editing">Create</span>
+          <span [hidden]="! editing" i18n>Save</span></button>
+      </div>
+
+      <!--
+      <pre>
+        {{topic | json}}
+      </pre>
+
+      <pre>
+
+      </pre>
+    <div [innerHtml]="topic.body" ></div>
+      -->
+    </form>
+    <textarea [ngModel]="topic.body" ></textarea>
+
+  </div>
+</div>
+
+

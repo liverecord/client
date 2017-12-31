@@ -14,10 +14,177 @@ $lightColor = #F7FAFC
 
 $red = #B2150A
 
+@import "../func.styl"
 
   :root
     --main-theme-color: #303E4D
     --body-color: #F7FAFC
 
+    --category-list-bg-color-top darken(#303E4D, 5)
+    --category-list-bg-color-bottom darken(#303E4D, 1)
+
+    --topic-list-bg-color-top darken(#303E4D, 3)
+    --topic-list-bg-color-bottom lighten(#303E4D, 1)
+
+
+    --topic-details-bg-color-top darken(#303E4D, 3)
+    --topic-details-bg-color-bottom lighten(#303E4D, 1)
     a
       color $blueRegular
+
+    body
+      background-color var(--body-color, white)
+
+
+    button,
+    .button,
+    input[type="submit"],
+    input[type="reset"]
+      background-color $blueRegular
+      border solid 1px $blueRegular
+      color white
+      box-shadow 1px 1px 1px -1px rgba(255,255,255,0.2) inset
+
+    button\:active,
+    input[type=submit]:active,
+    input[type=reset]:active
+      box-shadow 1px 1px 1px -1px rgba(0,0,0,0.2) inset
+
+    button[disabled],input[type=submit][disabled],input[type=reset][disabled]
+      background-color desaturate($blueRegular, 20)
+
+    select,
+    input[type=text],
+    input[type=password],
+    input[type=email],
+    input[type=tel],
+    input[type=number],
+    textarea
+      border solid 1px $blueRegular
+
+    .main
+      .category-list
+        vertical-gradient(
+          var(--category-list-bg-color-top, $blueDark),
+          var(--category-list-bg-color-bottom, $blueDark)
+        )
+
+        ul.menu
+          li
+            a
+              color lighten($blueDark, 40)
+              border-left solid 0.0vw transparent
+              &:hover
+                color lighten($blueRegular, 20)
+          li.active
+            a
+              color lighten($blueDark, 51)
+              border-left solid 0.5vw $blueRegular
+              padding-left 1.5vw
+              background-color rgba(0,0,0,0.1)
+        > .settings
+          border-top solid 1px rgba(255, 255, 255, 0.024)
+          color $darkGrey
+          &.ng-hide
+            opacity 0
+          a
+            color $darkGrey
+
+      .topic-list
+        vertical-gradient(
+          var(--topic-list-bg-color-top, $blueDark),
+          var(--topic-list-bg-color-bottom, $blueDark)
+        )
+
+      .topic-details
+        background-color var(--body-color, gray)
+
+    lr-editor
+      border solid 1px $normalGrey
+      background-color white
+
+      div.toolbar
+        border-bottom solid 1px $normalGrey
+        background-color rgba(0,0,0,0.025)
+        button.format
+          background-color transparent
+          border-color transparent
+          &.active
+            box-shadow 1px 1px 2px -1px $normalGrey inset;
+            color white
+        .fa
+          color $blueDark
+      div.editor
+        color $blueDark
+
+    .ask-form
+      select,textarea,input[type="text"],button
+        box-sizing border-box
+        -webkit-appearance none
+        -moz-appearance none
+        font-family inherit
+      select,input[type="text"],textarea
+        border solid 1px $normalGrey
+        color $blueDark
+        background-color lighten($lightColor, 10)
+
+      button
+        background-color $baseThemeColor
+        color $lightColor
+        border solid 1px $baseThemeColor
+
+      button[disabled]
+        background-color desaturate($baseThemeColor, 10%)
+
+
+      .private
+        background rgba(0,0,0,0.1)
+      .acl-list-box
+        border solid 1px $normalGrey
+        background-color lighten($lightColor, 10)
+
+        $aclItemHeight = calc(1em + 1vh)
+        $aclItemHalfHeight = calc(0.75em + 1vh)
+        .tip
+          color $darkGrey
+
+        .item
+          background-color lighten($normalGrey, 20)
+          color $darkGrey
+          border solid 1px lighten($normalGrey, 15)
+
+          .name
+            color $darkGrey
+
+          img
+            background-color $normalGrey
+
+        $searchBoxWidth = 15em
+        .search-box
+          background-color lighten($normalGrey, 20)
+          border solid 1px lighten($normalGrey, 10)
+
+          input[type=text]
+            background-color transparent
+            border solid 1px transparent
+          .search-box-dropdown
+            background-color lighten($normalGrey, 20)
+            border solid 1px lighten($normalGrey, 10)
+            border-top-color transparent
+            .search-box-item
+              color $darkGrey
+              &:hover
+                background-color $blueDark
+                .name
+                  color white
+              .name
+                color $darkGrey
+              img
+                background-color $normalGrey
+
+
+      form
+        i.fa-times
+          color red
+        i.fa-check
+          color $greenDark

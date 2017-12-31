@@ -22,7 +22,7 @@
         "styles.styl",
         "../node_modules/font-awesome/css/font-awesome.css"
       ],
-      "scripts": [],
+      "scripts": ["../node_modules/dompurify/dist/purify.js"],
       "environmentSource": "environments/environment.ts",
       "environments": {
         "dev": "environments/environment.ts",
@@ -56,6 +56,10 @@
   },
   "defaults": {
     "styleExt": "styl",
-    "component": {}
+    "component": {},
+    "serve": {
+      "port": 8914,
+      "host": "0.0.0.0"
+    }
   }
 }

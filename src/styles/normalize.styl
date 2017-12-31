@@ -30,7 +30,9 @@ progress
 
 
 template, // 1
-[hidden]
+[hidden],
+[hidden]::before,
+[hidden].fa
   display none
 
 a
@@ -107,4 +109,7 @@ input
 @-ms-viewport
   width device-width
 
+@-moz-document url-prefix()
+  select
+    text-indent -2px
 

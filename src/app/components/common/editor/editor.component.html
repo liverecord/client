@@ -1,0 +1,27 @@
+<div><div class="toolbar">
+  <button *ngFor="let btn of toolbar"
+     [class.active]="btn.active"
+     title="{{mapKey(btn.hotKey)}}"
+     class="format"
+     (mousedown)="format(btn.command, $event)">
+    <i class="fa fa-fw fa-{{btn.fa}}"></i>
+  </button>
+  <span id="uploadEditorButton"
+        class="format uploadEditorButton">
+    <i class="fa fa-fw fa-paperclip"></i>
+    <input type="file" id="uploadEditorFileInput" style="position: absolute;left: 0;top: 0;opacity: 0.001;width: 2em;">
+  </span>
+  <span>
+  </span>
+</div>
+<div contenteditable="true"
+     [(ngModel)]="html"
+     (input)="update()"
+     (change)="update()"
+     (dragend)="update()"
+     (keydown)="update()"
+     (click)="update()"
+     (blur)="update()"
+     (update)="update()"
+     class="editor"
+></div></div>

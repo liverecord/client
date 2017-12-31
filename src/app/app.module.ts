@@ -24,6 +24,9 @@ import { UserLoginComponent } from './components/users/login/login.component';
 import { SettingsComponent } from './components/users/settings/settings.component';
 import { ListComponent } from './components/users/list/list.component';
 import { RankComponent } from './components/common/rank/rank.component';
+import {CategoryService} from './services/category.service';
+import { EditorComponent } from './components/common/editor/editor.component';
+import { ContenteditableDirective } from './components/common/editor/contenteditable.directive';
 
 registerLocaleData(localeRu, localeRuExtra);
 
@@ -42,14 +45,16 @@ registerLocaleData(localeRu, localeRuExtra);
     UserLoginComponent,
     SettingsComponent,
     ListComponent,
-    RankComponent
+    RankComponent,
+    EditorComponent,
+    ContenteditableDirective
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule
   ],
-  providers: [ StorageService, UserService, WebSocketService],
+  providers: [ StorageService, UserService, WebSocketService, CategoryService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

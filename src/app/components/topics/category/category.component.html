@@ -1,3 +1,13 @@
-<p>
-  category works!
-</p>
+<ul class="menu">
+  <li
+    *ngFor="let category of categoriesObservable | async as categories; index as i;"
+    [ngClass]="{'active': category.active}"
+  ><a
+    [ngClass]="{'active': category.active}"
+    [routerLink]="['/topics/']"
+    [queryParams]="{category: category.slug}">
+    {{category.name}}
+  </a>
+  </li>
+</ul>
+

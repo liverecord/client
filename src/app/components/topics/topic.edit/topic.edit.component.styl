@@ -1,0 +1,224 @@
+:host
+  width 100%
+  h1
+    margin 1vmin
+    white-space nowrap
+    text-overflow ellipsis
+    overflow hidden
+  .label
+    display block
+    width 10vw
+    margin 1vmin
+    padding 2px 3px
+
+  select,textarea,input[type="text"],button
+    box-sizing border-box
+    -webkit-appearance none
+    -moz-appearance none
+    font-size 1em
+    margin-bottom  1vh
+    padding 1vh 1vw
+    font-family inherit
+    border-radius 3px
+  select,input[type="text"],textarea
+    width 99%
+    padding 1vh 1vw
+    margin 0.5vh 0.5vw
+
+  button
+    margin 0.5vh 0.5vw
+
+
+  .editor
+    height calc(81.5vh - 14em)
+  .private
+    padding 1vh 1vw
+    width 90%
+    margin 0
+    .acl-list
+      flex-grow 1
+    input[type="email"], button, .button
+      padding 0.1vh 0.1vw
+      margin 0
+  .acl-list-box
+    width 99%
+    margin 0.5vh 0.5vw
+    border-radius 3px
+    display flex
+    flex-wrap wrap
+    padding 0.25vh 1vw
+
+    $aclItemHeight = calc(1em + 1vh)
+    $aclItemHalfHeight = calc(0.75em + 1vh)
+    .tip
+      display inline-block
+      margin-left 0vw
+      margin-right 0.5vw
+      margin-top 0.3vh
+      margin-bottom 0.3vh
+      // color $darkGrey
+      height $aclItemHeight
+      line-height $aclItemHeight
+      white-space nowrap
+      padding 3px
+
+    .item
+      display inline-block
+      max-width calc(9vw + 3em)
+      margin-right 0.5vw
+      height $aclItemHeight
+      line-height $aclItemHeight
+      white-space nowrap
+      border-radius $aclItemHalfHeight
+      padding 2px
+      margin-top 0.3vh
+      margin-bottom 0.5vh
+
+      .name
+        max-width 9vw
+        font-size 0.7em
+        line-height $aclItemHeight
+        height calc(1.2em + 1vh)
+      span
+        overflow hidden
+        text-overflow ellipsis
+        line-height $aclItemHeight
+        display inline-block
+
+      img
+        height $aclItemHeight
+        width $aclItemHeight
+        border-radius $aclItemHalfHeight
+        display inline-block
+    // background-color $normalGrey
+
+    $searchBoxWidth = 15em
+    .search-box
+      display inline-block
+      margin-right 0.1vw
+      margin-top 0.3vh
+      margin-bottom 0.5vh
+      position relative
+      white-space nowrap
+      // background-color lighten($normalGrey, 20)
+      height calc(1.25em + 1vh)
+      line-height calc(1.25em + 1vh)
+      width $searchBoxWidth
+      padding 0px
+      // border solid 1px lighten($normalGrey, 10)
+      border-radius $aclItemHalfHeight
+
+      input[type=text]
+        position absolute
+        top 0
+        left 0
+        background-color transparent
+        padding 2px
+        margin 0
+        margin-left 0.5em
+        height inherit
+        line-height inherit
+        width ($searchBoxWidth - 3em)
+        // border solid 1px transparent
+        border-bottom-left-radius $aclItemHalfHeight
+        border-top-left-radius $aclItemHalfHeight
+        z-index 2
+        outline none
+      .button
+        position absolute
+        top 0
+        right -1px
+        padding 0
+        width 2.5em
+        text-align center
+        height: $aclItemHeight
+        margin-bottom: 0;
+        margin-top: -1px;
+        padding-bottom: 3px;
+        padding-top: 3px;
+        padding-right 4px
+        line-height $aclItemHeight
+        display inline-block
+        border-bottom-right-radius $aclItemHalfHeight
+        border-top-right-radius $aclItemHalfHeight
+        z-index 2
+      .search-box-dropdown
+        position absolute
+        top calc(0.6120em + 0.5vh);
+        width $searchBoxWidth
+        border-top-color transparent
+        border-bottom-left-radius $aclItemHalfHeight
+        border-bottom-right-radius $aclItemHalfHeight
+        z-index 1
+        padding-top 1em
+        padding-bottom 1em
+        padding-left 0
+        margin-left: -1px
+        transition all 100ms
+        .search-box-scroll-wrapper
+          max-height 10em
+          overflow-y auto
+
+        .search-box-item
+          display block
+          max-width $searchBoxWidth
+          margin-right 0
+          margin-top 0
+          margin-bottom 0
+          color $darkGrey
+          height $aclItemHeight
+          line-height $aclItemHeight
+          white-space nowrap
+          padding 2px
+          padding-left 0.5em
+
+          &:hover
+            background-color $blueDark
+            .name
+              color white
+
+          .name
+            max-width $searchBoxWidth - 3em
+            font-size 0.7em
+            line-height $aclItemHeight
+            height calc(1em + 1vh)
+            color $darkGrey
+            overflow hidden
+            text-overflow ellipsis
+            display inline-block
+
+
+          img
+            display inline-block
+            height $aclItemHeight
+            width $aclItemHeight
+            line-height $aclItemHeight
+            border-radius $aclItemHalfHeight
+            overflow hidden
+            text-overflow ellipsis
+            font-size 0.5em
+            background-color $normalGrey
+
+
+  form
+    input + i.fa,
+    input + i + i.fa,
+    select + i.fa,
+    select + i + i.fa,
+    textarea + i.fa,
+    textarea + i + i.fa
+    .acl-list-box + i.fa
+    .acl-list-box + i + i.fa
+      line-height: calc(1.5em + 2.5vh);
+      position absolute
+      margin-left 0
+      opacity 0.25
+      right 1vw
+
+    .ng-touched + .fa
+      opacity 1
+
+    i.fa-times
+      color red
+    i.fa-check
+      color $greenDark

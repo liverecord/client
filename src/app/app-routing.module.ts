@@ -10,7 +10,8 @@ import {TopicEditComponent} from './components/topics/topic.edit/topic.edit.comp
 
 const routes: Routes = [
   { path: '', component: MainComponent },
-  { path: 'topics/', component: MainComponent },
+  { path: 'topics', component: MainComponent },
+  { path: 'topics/new', component: TopicEditComponent },
   { path: 'topics/:slug', component: MainComponent },
   { path: 'topics/:slug/edit', component: TopicEditComponent },
   { path: 'users', component: ListComponent },

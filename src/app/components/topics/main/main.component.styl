@@ -1,0 +1,35 @@
+$PHI = 1.618
+
+$ONE = (100vw / (1+$PHI))
+$topicPanelWidth = $ONE * $PHI
+
+$topicsPanelWidth = ($ONE / ($PHI))
+$categoryPanelWidth = $ONE / (1+$PHI)
+
+:host
+  display flex
+  align-self stretch
+  align-content center
+  flex-grow 1
+  width 100%
+
+  .main
+    display flex
+    width 100%
+
+    .category-list
+      order 1
+      flex-grow 1000
+      width $categoryPanelWidth
+      overflow hidden
+      text-overflow ellipsis
+
+    .topic-list
+      order 2
+      flex-grow 1618
+      width $topicsPanelWidth
+
+    .topic-details
+      order 3
+      flex-grow 4236
+      width $topicPanelWidth

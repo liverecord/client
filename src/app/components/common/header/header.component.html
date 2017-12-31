@@ -1,34 +1,20 @@
 <div class="flex-row">
-
-
   <div class="logo">
-
-
-    <a routerLink="/">app</a>
-
-
+    <a routerLink="/">Application name</a>
   </div>
   <div class="slogan">
     slogan
   </div>
   <div class="user">
-
-    <div *ngIf="user">
+    <div *ngIf="user?.id">
       {{user?.id}} |  <a routerLink="/users/{{user?.slug}}">{{user?.name}}</a>
       <a routerLink="/settings"><i class="fa fa-cog"></i></a>
       {{user?.email}} |
-      <img [src]="user?.picture" alt="{{user?.name}}" style="max-height: 24px">
+      <img [src]="user?.picture"  alt="{{user?.name}}" style="max-height: 24px">
     </div>
     <div *ngIf="!user?.id">
-      <a routerLink="/users/login">Sign In</a>
+      <a routerLink="/users/login" class="button">Sign In</a>
     </div>
-
-
-
-
     <div *ngIf="isOpen">Connected!</div>
   </div>
-
-
 </div>
-

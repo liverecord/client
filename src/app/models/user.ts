@@ -1,12 +1,10 @@
-export class User {
-  id: number;
+import {Model} from './model';
+
+export class User extends Model {
   name: string;
   online: boolean;
   email?: string;
   picture?: string;
   slug?: string;
-  createdAt?: Date;
-  updatedAt?: Date;
-  deletedAt?: Date;
   rank?: number;
 }

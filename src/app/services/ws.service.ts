@@ -83,18 +83,22 @@ export class WebSocketService  {
 }
 
 export enum FrameType {
-  Ping = 0,
-  Auth,
-  AuthError,
-  JWTFrame,
-  UserList,
-  UserInfo,
-  UserUpdate,
-  UserDelete,
-  Category,
-  Topic,
-  Comment,
-  User,
+  Ping = 'Ping',
+  Auth = 'Auth',
+  AuthError = 'AuthError',
+  JWT = 'JWT',
+  UserList = 'UserList',
+  UserInfo = 'UserInfo',
+  UserUpdate = 'UserUpdate',
+  UserDelete = 'UserDelete',
+  Category = 'Category',
+  CategoryList = 'CategoryList',
+  CategoryUpdate = 'CategoryUpdate',
+  CategoryDelete = 'CategoryDelete',
+  CategoryError = 'CategoryError',
+  Topic = 'Topic',
+  Comment = 'Comment',
+  User = 'User'
 }
 
 export interface Frame {

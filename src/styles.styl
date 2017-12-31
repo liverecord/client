@@ -2,6 +2,7 @@
 
 :root
   --main-theme-color: #303E4D
+  height 100vh;
 
 $brandTwitter = #1DA1F2
 $brandFacebook = #133783
@@ -11,19 +12,14 @@ $brandGoogle = #DB4437
 $brandGithub = #24292E
 
 
-@import "styles/*"
+@import "styles/normalize.styl"
 @import "styles/themes/*"
 
-vertical-gradient(topColor, bottomColor)
-  background topColor
-  background -webkit-linear-gradient(topColor, bottomColor)
-  background -o-linear-gradient(topColor, bottomColor)
-  background -moz-linear-gradient(topColor, bottomColor)
-  background linear-gradient(topColor, bottomColor)
-
+mainfont()
+  font-family -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol"
 
 body
-  font-family -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol"
+  mainfont()
   box-sizing border-box
   margin 0
   padding 0
@@ -34,6 +30,7 @@ button,input,textarea
   box-sizing border-box
   margin-right 0
 
+.button,
 button,input[type=submit],input[type=reset]
   padding 0.25em 1em
   text-align center
@@ -42,6 +39,26 @@ button,input[type=submit],input[type=reset]
   text-overflow ellipsis
   margin 0.1em
   white-space nowrap
+  mainfont()
+
+.button,
+input[type="submit"],
+input[type="reset"]
+// background-color $blueRegular
+// color white
+  padding 1vh 1vw
+  text-align center
+  text-decoration none
+
+.button,
+.topic-info,
+.show-old-comments,
+input[type="submit"],
+input[type="reset"]
+  -webkit-user-select: none;  /* Chrome all / Safari all */
+  -moz-user-select: none;     /* Firefox all */
+  -ms-user-select: none;      /* IE 10+ */
+  user-select none
 
 input[type=text],
 input[type=password],
@@ -51,6 +68,7 @@ input[type=number],
 textarea
   padding 0.3em 0.5em
   margin 0.1em
+  mainfont()
 
 .flex
   display flex
@@ -119,3 +137,7 @@ code,
   color $brandGoogle
 .text-github
   color $brandGithub
+
+[contenteditable]
+  min-height 1em
+  min-width 1em

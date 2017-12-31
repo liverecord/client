@@ -9,6 +9,8 @@ import {FrameType, WebSocketService} from './services/ws.service';
 export class AppComponent {
   connected = false;
   appClass = {
+    'root': true,
+    'flex-column': true,
     'default': true,
     connected: false
   };
