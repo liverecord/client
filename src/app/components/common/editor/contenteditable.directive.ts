@@ -19,6 +19,7 @@ export class ContenteditableDirective implements ControlValueAccessor {
   exOnChange: any;
   exOnTouched: any;
 
+
   constructor(private el: ElementRef, private sanitizer: DomSanitizer) {
     el.nativeElement.focus();
   }
@@ -76,15 +77,20 @@ export class ContenteditableDirective implements ControlValueAccessor {
     this.updateModel();
   }
 
+
   @HostListener('mousedown')
   @HostListener('mouseup')
-  @HostListener('drop')
   @HostListener('click')
   @HostListener('compositionend')
   @HostListener('dragend')
   @HostListener('change')
   onDragEnd() {
     this.updateModel();
+  }
+
+  @HostListener('drop', ['$event'])
+  onDrop($event) {
+    console.log($event);
   }
 
   @HostListener('keyup')

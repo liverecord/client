@@ -11,6 +11,8 @@ $lightGrey = #D5D8DE
 $normalGrey = #BCC9CE
 $darkGrey = #8E949F
 $lightColor = #F7FAFC
+$fastAnimationDuration = 100ms
+$slowAnimationDuration = 300ms
 
 $red = #B2150A
 
@@ -96,6 +98,37 @@ $red = #B2150A
           var(--topic-list-bg-color-bottom, $blueDark)
         )
 
+        .topic
+          border-bottom solid 1px rgba(255,255,255,0.025)
+          border-left solid 1px rgba(255,255,255,0)
+          &.active
+            background-color lighten($blueDark, 25)
+            border-left solid 1px rgba(255,255,255,0.25)
+            position relative
+            a
+              color white
+              small
+                color darken($blueDark, 10)
+                &.tag
+                  color lighten($blueDark, 50)
+          a
+            color lighten($blueDark, 50)
+          small
+            color darken($blueDark, 10)
+            &.tag
+              color lighten($blueDark, 50)
+
+          &.ng-animate
+            transition:all
+            animation-iteration-count 1
+            animation-duration $slowAnimationDuration
+          &.ng-enter
+            animation-name fadeInQuick
+            animation-timing-function ease-out
+          &.ng-leave
+            animation-name fadeOutQuick
+            animation-timing-function ease-in
+
       .topic-details
         background-color var(--body-color, gray)
 
@@ -109,16 +142,21 @@ $red = #B2150A
         button.format
           background-color transparent
           border-color transparent
+          border-width 0
+          margin 0
           &.active
-            box-shadow 1px 1px 2px -1px $normalGrey inset;
-            color white
+            box-shadow 1px 1px 2px -1px rgba(0,0,0,0.25) inset;
+            background-color rgba(0,0,0,0.025)
+            text-shadow 1px 1px 0px rgba(255,255,255,0.5)
         .fa
           color $blueDark
       div.editor
         color $blueDark
+      div.editor:focus
+        outline alpha($blueRegular, 50%) solid 1px
 
     .ask-form
-      select,textarea,input[type="text"],button
+      select,textarea,input[type="text"],input[type="email"],input[type="password"],button
         box-sizing border-box
         -webkit-appearance none
         -moz-appearance none
@@ -134,7 +172,7 @@ $red = #B2150A
         border solid 1px $baseThemeColor
 
       button[disabled]
-        background-color desaturate($baseThemeColor, 10%)
+        background-color desaturate($baseThemeColor, 50%)
 
 
       .private

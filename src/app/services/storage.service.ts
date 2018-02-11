@@ -10,16 +10,22 @@ export class StorageService {
 
   storageArea = Storages.Local;
   constructor() { }
+  prefix = 'lr_';
+
+  private n(key: string): string {
+    return this.prefix + key;
+  }
 
   set(key: string, value: any) {
-    const svalue = JSON.stringify(value);
+    key = this.n(key);
+    const data = JSON.stringify(value);
     switch (this.storageArea) {
       case Storages.Local:
-        localStorage.setItem(key, svalue);
+        localStorage.setItem(key, data);
         break;
 
       case Storages.Session:
-        sessionStorage.setItem(key, svalue);
+        sessionStorage.setItem(key, data);
         break;
     }
     return this;
@@ -27,6 +33,7 @@ export class StorageService {
 
   get(key: string): any {
     let v;
+    key = this.n(key);
     switch (this.storageArea) {
       case Storages.Local:
         v = localStorage.getItem(key);
@@ -44,6 +51,7 @@ export class StorageService {
   }
 
   remove(key: string) {
+    key = this.n(key);
     switch (this.storageArea) {
       case Storages.Local:
         localStorage.removeItem(key);
@@ -55,6 +63,7 @@ export class StorageService {
   }
 
   first(key: string): any {
+    key = this.n(key);
     let v = localStorage.getItem(key);
     if (v === null) {
       v = sessionStorage.getItem(key);

@@ -63,7 +63,27 @@ export class UserService {
     return Observable.create((observer) => {
       this.webSocketService.subscribe(frame => {
         if (frame.type === FrameType.UserInfo) {
-          observer.next(Object.assign(new User(), frame.data));
+          observer.next(User.fromObject(frame.data));
+        }
+      });
+    });
+  }
+
+  getUsers(options?: any): Observable<User[]> {
+    if (options !== null) {
+      this.webSocketService.next({
+        type: FrameType.UserList,
+        data: options
+      });
+      // return;
+    }
+    return Observable.create((observer) => {
+      this.webSocketService.subscribe(frame => {
+        if (frame.type === FrameType.UserList) {
+          frame.data.map((item) => {
+            return User.fromObject(item);
+          });
+          observer.next(frame.data);
         }
       });
     });

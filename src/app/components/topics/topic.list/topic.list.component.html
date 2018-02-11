@@ -4,6 +4,28 @@
   <p>
     topic.list works!
   </p>
+  1. Icon
+  2. Text
+
+  <div class="topic flex-row"
+       *ngFor="let topic of topics | async as topicsArray; trackBy: trackById"
+       [class.active]="topic.active"
+        id="topic_list_id_{{topic.id}}">
+    <div class="topic-status">
+      <div class="counter" [hidden]="topic.updates">{{topic.updates}}</div>
+    </div>
+    <a class="topic-info"
+       [routerLink]="['/topics/' + topic.slug]"
+       [queryParams]="{category: category}"
+
+    [title]="topic.title"
+       (click)="selectTopic(topic)"
+    >
+      <i class="fa fa-lock" [hidden]="topic.private"></i>
+      <span>{{topic.title}}</span><span [hidden]="topic.title.length < 100">&hellip;</span>
+    </a>
+  </div>
+
 
 </div>
 <div class="switch"></div>

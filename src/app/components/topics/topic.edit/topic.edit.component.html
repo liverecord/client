@@ -4,19 +4,20 @@
       <span [hidden]="!editing" i18n>Create new topic</span>
       <span [hidden]="editing"><span i18n>Edit topic</span> <q>{{topic?.title}}</q></span>
     </h1>
-    <form (submit)="onSubmit()" #topicEditForm="ngForm">
+    <form (submit)="onSubmit()" #topicEditForm="ngForm" (change)="formUpdate(topicEditForm)">
       <div class="flex-row">
         <select id="questionCategory"
                 name="questionCategory"
                 #qc="ngModel"
                 required
                 [(ngModel)]="topic.category"
+                (change)="saveDraft()"
                 i18n-placeholder="Category"
                 i18n>
           <option [ngValue]="null" i18n>Please select</option>
           <option
-            *ngFor="let category of categoriesObservable | async as categories"
-            [ngValue]="category.id">{{category.name}}
+            *ngFor="let category of categoriesObservable | async as categories; trackBy: trackById"
+            [ngValue]="category">{{category.name}}
           </option>
         </select>
         <span></span>
@@ -31,6 +32,7 @@
           [(ngModel)]="topic.title"
           #qt="ngModel"
           i18n-placeholder="Topic title"
+          (change)="saveDraft()"
           required>
         <span></span>
         <i class="fa fa-fw fa-times" [hidden]="! qt.invalid"></i>
@@ -38,34 +40,36 @@
       </div>
       <div class="flex-row">
         <div class="acl-list-box">
-          <div class="flex-row item" *ngFor="let friend of topic.acl">
+          <div class="flex-row item" *ngFor="let friend of topic.acl; trackBy: trackById">
             <img [src]="friend?.picture" alt="">
             <span class="name">{{friend.name}}</span>
             <span><i class="fa fa-fw fa-times" (click)="removeFromAcl(friend)"></i></span>
           </div>
-          <label for="lookupUserForAcl" class="flex-row tip"><i i18n>Add people</i></label>
+          <label for="lookupUserForAcl" class="flex-row tip"
+                 [hidden]="(topic.acl.length > 0)"><i i18n>Add people</i></label>
           <div class="flex-row search-box">
             <input id="lookupUserForAcl"
-                   name="lookupEmail"
+                   class="form-control"
+                   name="userSearchTermField2"
                    type="text"
-                   [(ngModel)]="lookupEmail"
-                   #qul="ngModel"
                    i18n-placeholder="Email or @nickname"
                    i18n-title="Type email for lookup"
                    autocomplete="off"
-                   (focus)="runSearch()"
-                   (paste)="runSearch()"
-                   (change)="runSearch()"
-                   i18n>
+                   [formControl]="userSearchTermField"
+                   (focus)="showSearch();"
+                   (blur)="hideSearch()"
+                   (keydown)="userSearchKeyDown($event)"
+
+                   i18n />
             <button class="button"
                     (click)="runSearch()"
                     i18n-title="Add"
-                    [disabled]="!sendButtonActive || qul.invalid"
+                    [disabled]="!sendButtonActive "
             ><i class="fa fa-fw fa-search"></i></button>
             <div class="search-box-dropdown" [hidden]="! showSearchResults">
               <div class="search-box-scroll-wrapper">
-                <div class="flex-row search-box-item" *ngFor="let item of searchResults | async as users; index as i;"
-                     (click)="addToAcl(item, $event)">
+                <div class="flex-row search-box-item" *ngFor="let item of searchResults; trackBy: trackById"
+                     (click)="addToAcl(item)">
                   <img [src]="item?.picture" alt="item.slug">
                   <span class="name">{{item?.name}}</span>
                 </div>
@@ -79,7 +83,7 @@
 
       </div>
       <div class="flex-row">
-        <lr-editor [(html)]="topic.body"></lr-editor>
+        <lr-editor [(html)]="topic.body" (change)="saveDraft()"></lr-editor>
       </div>
 
       <!--
@@ -91,8 +95,10 @@
       -->
 
       <div class="flex-row">
-        <button [disabled]="!sendButtonActive || topicEditForm.invalid"><span [hidden]="editing">Create</span>
-          <span [hidden]="! editing" i18n>Save</span></button>
+        <button type="submit" [disabled]="topicEditForm.invalid">
+          <span [hidden]="editing" i18n>Create</span>
+          <span [hidden]="! editing" i18n>Save</span>
+        </button>
       </div>
 
       <!--

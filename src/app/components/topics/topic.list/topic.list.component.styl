@@ -1,0 +1,41 @@
+:host
+  padding-top 0vh
+  overflow hidden
+
+  .list
+    height calc(96vh - 7.2em)
+    overflow-y auto
+    margin-right 3px
+    position relative
+
+    .topic
+      margin 0
+      padding 0
+      font-size 1em
+
+      a
+        display block
+        padding 1vh 1vw
+        padding-left 0
+        min-height 1em
+        word-break keep-all
+        hyphens auto
+        line-break auto
+        overflow hidden
+        text-decoration none
+        text-overflow ellipsis
+
+      &.active
+        position relative
+
+
+      &.ng-animate
+        transition:all
+        animation-iteration-count 1
+        animation-duration $slowAnimationDuration
+      &.ng-enter
+        animation-name fadeInQuick
+        animation-timing-function ease-out
+      &.ng-leave
+        animation-name fadeOutQuick
+        animation-timing-function ease-in

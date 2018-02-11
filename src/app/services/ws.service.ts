@@ -30,10 +30,12 @@ export class WebSocketService  {
       this.subject = webSocket(this.getWsUrl());
       this.subject.subscribe(
         (frameFromServer) => {
+          console.log('ws svc raw ffs', frameFromServer);
+
           if (frameFromServer.data) {
             frameFromServer.data = JSON.parse(frameFromServer.data);
           }
-          console.log('ws svc FFS', frameFromServer);
+          console.log('ws decoded ffs', frameFromServer);
           return frameFromServer;
         },
         (err) => {
@@ -97,7 +99,10 @@ export enum FrameType {
   CategoryDelete = 'CategoryDelete',
   CategoryError = 'CategoryError',
   Topic = 'Topic',
+  TopicUpdate = 'TopicSave',
+  TopicList = 'TopicList',
   Comment = 'Comment',
+  CommentList = 'CommentList',
   User = 'User'
 }
 

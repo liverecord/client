@@ -13,6 +13,8 @@ import {ContenteditableDirective} from './contenteditable.directive';
 export class EditorComponent implements OnInit, AfterViewInit {
   @Input('html') html: string;
   @Output() htmlChange = new EventEmitter<string>();
+  @Output('change') change = new EventEmitter<string>();
+
   @ViewChild(ContenteditableDirective)
   private contentEditable: ContenteditableDirective;
 
@@ -99,6 +101,7 @@ export class EditorComponent implements OnInit, AfterViewInit {
   update() {
     if (this.previousHtml !== this.html) {
       this.htmlChange.emit(this.html);
+      this.change.emit(this.html);
       this.previousHtml = this.html;
     }
     this.refreshState();

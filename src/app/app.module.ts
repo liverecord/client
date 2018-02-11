@@ -1,6 +1,6 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
@@ -27,6 +27,7 @@ import { RankComponent } from './components/common/rank/rank.component';
 import {CategoryService} from './services/category.service';
 import { EditorComponent } from './components/common/editor/editor.component';
 import { ContenteditableDirective } from './components/common/editor/contenteditable.directive';
+import {TopicService} from './services/topic.service';
 
 registerLocaleData(localeRu, localeRuExtra);
 
@@ -52,9 +53,16 @@ registerLocaleData(localeRu, localeRuExtra);
   imports: [
     BrowserModule,
     AppRoutingModule,
+    ReactiveFormsModule,
     FormsModule
   ],
-  providers: [ StorageService, UserService, WebSocketService, CategoryService],
+  providers: [
+    StorageService,
+    WebSocketService,
+    UserService,
+    CategoryService,
+    TopicService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {
