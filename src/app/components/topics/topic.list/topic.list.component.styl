@@ -2,6 +2,19 @@
   padding-top 0vh
   overflow hidden
 
+  .search-box
+    height 1.2em
+    padding 1vh 0.5vw
+    overflow hidden
+    border-bottom solid 1px rgba(255,255,255,0.025)
+    box-shadow: 0 3px 5px -5px #000000;
+    margin-top -1px
+    input.search
+      width  calc(100% - 2em)
+      background-color transparent
+      border none
+
+
   .list
     height calc(96vh - 7.2em)
     overflow-y auto
@@ -24,6 +37,7 @@
         overflow hidden
         text-decoration none
         text-overflow ellipsis
+        width 100%
 
       &.active
         position relative
@@ -39,3 +53,22 @@
       &.ng-leave
         animation-name fadeOutQuick
         animation-timing-function ease-in
+  .switch
+    height calc(3em + 1vh)
+    line-height calc(3em + 1vh)
+    vertical-align middle
+    text-align center
+    transition all $slowAnimationDuration
+    opacity 1
+    &.ng-hide
+      line-height 0
+      opacity 0
+
+    a
+      padding 0 1vw
+      // color $darkGrey
+      height calc(3em + 1vh - 2px)
+      display inline-block
+    a.active
+      &::before
+        content ''

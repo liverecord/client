@@ -1,31 +1,60 @@
-<div class="search"></div>
+<div class="search-box">
+  <a (click)="search()"><i class="fa fa-search"></i></a>
+  <input type="search" name="q" class="search"
+         i18n
+         placeholder="Search"
+         i18n-placeholder="Search"
+         [formControl]="topicsSearchTermField"
+
+
+  >
+</div>
 <div class="list">
-
-  <p>
-    topic.list works!
-  </p>
-  1. Icon
-  2. Text
-
   <div class="topic flex-row"
        *ngFor="let topic of topics | async as topicsArray; trackBy: trackById"
-       [class.active]="topic.active"
+       [class.active]="isTopicActive(topic)"
         id="topic_list_id_{{topic.id}}">
-    <div class="topic-status">
-      <div class="counter" [hidden]="topic.updates">{{topic.updates}}</div>
-    </div>
     <a class="topic-info"
        [routerLink]="['/topics/' + topic.slug]"
-       [queryParams]="{category: category}"
+       [queryParams]="filters"
+       [title]="topic.title"
 
-    [title]="topic.title"
-       (click)="selectTopic(topic)"
     >
+      <span class="topic-status">
+        <span class="counter" [hidden]="topic.updates">{{topic.updates}}</span>
+      </span>
       <i class="fa fa-lock" [hidden]="topic.private"></i>
-      <span>{{topic.title}}</span><span [hidden]="topic.title.length < 100">&hellip;</span>
+      <span class="title">{{topic.title}}<span [hidden]="topic.title.length < 100">&hellip;</span></span>
     </a>
   </div>
 
 
 </div>
-<div class="switch"></div>
+<div class="switch">
+  <a
+    [routerLink]="['/topics/' + activeTopicSlug]"
+    [queryParams]="prepareFilters('newTopics')"
+    [class.active]="isSection('newTopics')"
+  ><i class="fa fa-newspaper-o" aria-hidden="true" i18n i18n-title="New questions"></i></a>
+  <a
+    [routerLink]="['/topics/' + activeTopicSlug]"
+    [queryParams]="prepareFilters('recentlyViewed')"
+    [class.active]="isSection('recentlyViewed')"
+    i18n
+    i18n-title="Recently viewed"
+  ><i class="fa fa-history" aria-hidden="true" i18n i18n-title="Recently viewed"></i></a>
+  <a href=""
+     [routerLink]="['/topics/' + activeTopicSlug]"
+     [queryParams]="prepareFilters('participated')"
+     [class.active]="isSection('participated')"
+     i18n
+     i18n-title="Participated topics"
+  ><i class="fa fa-comments" aria-hidden="true" i18n i18n-title="Participated topics"></i></a>
+  <a
+    [routerLink]="['/topics/' + activeTopicSlug]"
+    [queryParams]="prepareFilters('bookmarks')"
+    [class.active]="isSection('bookmarks')"
+    i18n
+    i18n-title="Bookmarks"
+  ><i class="fa fa-bookmark" aria-hidden="true" i18n i18n-title="Bookmarks"></i></a>
+</div>

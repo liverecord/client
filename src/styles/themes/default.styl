@@ -129,6 +129,21 @@ $red = #B2150A
             animation-name fadeOutQuick
             animation-timing-function ease-in
 
+
+
+        .switch
+          background-color lighten($blueDark, 5)
+          border-left solid 1px rgba(255,255,255,0.025)
+          color $darkGrey
+          box-shadow 0 0 5px -2px #000000
+          a
+            color $darkGrey
+          a.active
+            color white
+            border-bottom solid 2px $blueLight
+            &::before
+              box-shadow 1px 1px 1px #fff
+
       .topic-details
         background-color var(--body-color, gray)
 
