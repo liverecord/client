@@ -28,6 +28,21 @@ export class TopicService {
     });
   }
 
+  getTopic(slug: string): Observable<Topic> {
+    this.webSocketService.next({
+      type: FrameType.Topic,
+      data: {slug: slug},
+    });
+    return Observable.create((observer) => {
+      this.webSocketService.subscribe(frame => {
+        if (frame.type === FrameType.Topic) {
+          observer.next(Topic.fromObject(frame.data));
+        }
+      });
+    });
+  }
+
+
   saveTopic(topic: Topic): Observable<EditableTopic> {
     this.webSocketService.next({
       type: FrameType.TopicUpdate,
