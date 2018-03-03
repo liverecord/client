@@ -4,15 +4,23 @@ import {Subject} from 'rxjs/Subject';
 import {Observer} from 'rxjs/Observer';
 import { webSocket} from 'rxjs/observable/dom/webSocket';
 import {StorageService} from './storage.service';
+import { interval } from 'rxjs/observable/interval';
 
 @Injectable()
 export class WebSocketService  {
   public subject: Subject<any>;
+  public status: Subject<any>;
+  public live: boolean;
 
   readonly url = 'ws://localhost:8000/ws';
 
   constructor(private store: StorageService) {
+    this.live = false;
+    this.status = new Subject<any>();
     this.create();
+    interval(10000).subscribe(() => {
+      this.isOpen();
+    });
   }
 
   getWsUrl(): string {
@@ -30,6 +38,8 @@ export class WebSocketService  {
       this.subject = webSocket(this.getWsUrl());
       this.subject.subscribe(
         (frameFromServer) => {
+          this.live = true;
+          this.status.next(this.live);
           console.log('ws svc raw ffs', frameFromServer);
 
           if (frameFromServer.data) {
@@ -42,17 +52,27 @@ export class WebSocketService  {
           console.log('ws error', err);
           if (['error', 'close'].indexOf(err.type) > -1) {
             this.subject = null;
+            this.live = false;
+            this.status.next(this.live);
             this.create();
           }
         },
-        () => {console.log('ws complete'); },
+        () => {
+          console.log('ws complete');
+          this.live = false;
+          this.status.next(this.live);
+        },
       );
     }
     return this.subject;
   }
 
   isOpen(): boolean {
-    return !this.subject.isStopped;
+    if (! this.subject) {
+      this.live = false;
+    }
+    this.status.next(this.live);
+    return this.live;
   }
 
   /**

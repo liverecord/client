@@ -1,2 +1,2 @@
-<h1>{{topic.title}}</h1>
-<div class="content">{{topic.body}}</div>
+<h1>{{topic?.title}}</h1>
+<div class="content" [innerHTML]="topic?.body"></div>

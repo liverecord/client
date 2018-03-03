@@ -22,7 +22,7 @@ export class TopicListComponent implements OnInit {
   topicsSearchTermField: FormControl;
 
   filters = {
-    page: 1,
+    page: '1',
     term: '',
     section: 'newTopics',
     category: ''
@@ -77,6 +77,8 @@ export class TopicListComponent implements OnInit {
     this.route.queryParamMap.subscribe(next => {
       this.filters.category = next.get('category') || '';
       this.filters.section = next.get('section') || 'newTopics';
+      this.filters.page = next.get('page') || '1';
+      this.filters.term = next.get('term') || '';
       this.topicService.getTopics(this.filters);
     });
 

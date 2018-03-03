@@ -69,6 +69,8 @@
             <div class="search-box-dropdown" [hidden]="! showSearchResults">
               <div class="search-box-scroll-wrapper">
                 <div class="flex-row search-box-item" *ngFor="let item of searchResults; trackBy: trackById"
+                     [class.focus]="isFocused(item)"
+                     (mouseover)="setAclFocus(item)"
                      (click)="addToAcl(item)">
                   <img [src]="item?.picture" alt="item.slug">
                   <span class="name">{{item?.name}}</span>

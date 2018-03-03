@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import {FrameType, WebSocketService} from './services/ws.service';
+import {of} from 'rxjs/observable/of';
+import { interval } from 'rxjs/observable/interval';
 
 @Component({
   selector: 'lr-root',
@@ -14,11 +16,19 @@ export class AppComponent {
     'default': true,
     connected: false
   };
-  constructor (private webSocketService: WebSocketService) {
-    // this.appClass.connected = this.webSocketService.isOpen();
-  }
-
   title = 'lr';
   theme = 'default';
+
+  constructor (private webSocketService: WebSocketService) {
+
+    webSocketService.status.subscribe((v) => {
+      console.log('status', v);
+      this.appClass.connected = v;
+    });
+  }
+
+  setWsStatus() {
+    console.log('connected', this.appClass.connected);
+  }
 
 }

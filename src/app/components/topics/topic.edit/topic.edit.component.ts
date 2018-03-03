@@ -37,6 +37,7 @@ export class TopicEditComponent implements OnInit {
   sendButtonActive = false;
   userSearchActive = false;
   showSearchResults = false;
+  focusedAclUser?: User;
 
   categoriesObservable: Observable<Category[]>;
   searchResults: User[];
@@ -55,6 +56,7 @@ export class TopicEditComponent implements OnInit {
 
   ngOnInit() {
     this.cachedSearchResults = [];
+    this.focusedAclUser = null;
     this.categoriesObservable = this.categoryService.load();
     this.userService.getUsers(null).subscribe((users) => {
       this.cachedSearchResults = users;
@@ -91,6 +93,9 @@ export class TopicEditComponent implements OnInit {
       return !this.inArray(user, this.topic.acl);
     });
     this.showSearchResults = this.searchResults.length > 0 && this.userSearchActive;
+    if (!this.focusedAclUser && this.searchResults.length > 0) {
+      this.focusedAclUser = this.searchResults[0];
+    }
   }
 
   showSearch() {
@@ -105,9 +110,47 @@ export class TopicEditComponent implements OnInit {
 
   userSearchKeyDown($event) {
     console.log($event);
-    if ($event.keyCode === 8 && this.userSearchTermField.value === '') {
-      this.topic.acl.pop();
-
+    let index = this.searchResults.indexOf(this.focusedAclUser);
+    switch ($event.keyCode) {
+      case 38: // up
+        index--;
+        if (index < 0) {
+          index = this.searchResults.length - 1;
+        }
+        $event.preventDefault();
+        break;
+      case 40: // down
+        index++;
+        if (index > this.searchResults.length - 1) {
+          index = 0;
+        }
+        $event.preventDefault();
+        break;
+      case 13: // Enter
+        this.addToAcl(this.focusedAclUser);
+        $event.preventDefault();
+        break;
+      case 27: // Escape
+        this.hideSearch();
+        break;
+      case 8: // Backspace
+        if (this.userSearchTermField.value === '') {
+          this.topic.acl.pop();
+        }
+        break;
+    }
+    if (index !== -1 &&  this.searchResults[index]) {
+      this.focusedAclUser = this.searchResults[index];
+    } else {
+      this.runSearch();
+    }
+    try {
+      setTimeout(() => {
+        const el = document.querySelector('.acl-list-box .focus img');
+        el && el.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'center'});
+      }, 100);
+    } catch (e) {
+      //
     }
   }
 
@@ -155,6 +198,14 @@ export class TopicEditComponent implements OnInit {
     };
     this.userService
       .getUsers(options);
+  }
+
+  setAclFocus(item: User) {
+    this.focusedAclUser = item;
+  }
+
+  isFocused(item: User): boolean {
+    return this.focusedAclUser.id === item.id;
   }
 
   addToAcl(user: User) {

@@ -28,7 +28,9 @@ import {CategoryService} from './services/category.service';
 import { EditorComponent } from './components/common/editor/editor.component';
 import { ContenteditableDirective } from './components/common/editor/contenteditable.directive';
 import {TopicService} from './services/topic.service';
-
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
+import {ServiceWorkerService} from './services/service-worker.service';
 registerLocaleData(localeRu, localeRuExtra);
 
 @NgModule({
@@ -54,14 +56,16 @@ registerLocaleData(localeRu, localeRuExtra);
     BrowserModule,
     AppRoutingModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    ServiceWorkerModule.register('/ngsw-worker.js', {enabled: environment.production})
   ],
   providers: [
     StorageService,
     WebSocketService,
     UserService,
     CategoryService,
-    TopicService
+    TopicService,
+    ServiceWorkerService
   ],
   bootstrap: [AppComponent]
 })
