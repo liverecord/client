@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import {FrameType, WebSocketService} from './services/ws.service';
 import {of} from 'rxjs/observable/of';
 import { interval } from 'rxjs/observable/interval';
+import {UserService} from './services/user.service';
 
 @Component({
   selector: 'lr-root',
@@ -19,7 +20,7 @@ export class AppComponent {
   title = 'lr';
   theme = 'default';
 
-  constructor (private webSocketService: WebSocketService) {
+  constructor (private webSocketService: WebSocketService, protected userService: UserService) {
 
     webSocketService.status.subscribe((v) => {
       console.log('status', v);

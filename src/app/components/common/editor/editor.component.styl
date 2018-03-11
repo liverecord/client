@@ -38,12 +38,12 @@ $normalGrey = #BCC9CE
       min-height 30vh
 
 .compose
-  lr-editor
+  :host
     border-radius 3px
     display block
     margin 0
     width 99%
-
+    border-width 0
     div.toolbar
       margin 0
       padding 0
@@ -82,8 +82,9 @@ $normalGrey = #BCC9CE
 
 
 .compose.open
-  lr-editor
+  :host
     div.toolbar
+      background-color transparent
       height  calc(3em - 0.5vh)
       border-bottom solid 1px alpha($normalGrey, 50%)
     div.editor

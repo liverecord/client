@@ -5,6 +5,7 @@ import { of } from 'rxjs/observable/of';
 import { AuthData} from '../models/authData';
 import {FrameType, WebSocketService} from './ws.service';
 import { Storages, StorageService } from './storage.service';
+import {Subject} from 'rxjs/Subject';
 
 @Injectable()
 export class UserService {
@@ -20,6 +21,7 @@ export class UserService {
   });
 
   user?: User = { ...this.emptyUser};
+  userSubject?: Subject<User>;
 
   authorizationResponse = {
     message: '',
@@ -34,7 +36,7 @@ export class UserService {
         this.user[k] = user[k];
       }
     }
-    console.log('setUser', this.user);
+    this.userSubject.next(this.user);
   }
 
   authorize(authData: AuthData) {
@@ -51,8 +53,8 @@ export class UserService {
     return of(this.authorizationResponse);
   }
 
-  getUser(): Observable<User> {
-   return of(this.user);
+  getUser(): Subject<User> {
+   return this.userSubject;
   }
 
   getUserInfo(slug: string): Observable<User> {
@@ -104,7 +106,7 @@ export class UserService {
   }
 
   init() {
-    //
+    this.userSubject = new Subject<User>();
     this.webSocketService.subscribe(
       frame => {
         console.log('data', frame);

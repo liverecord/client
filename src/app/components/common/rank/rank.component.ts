@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
+import {User} from '../../../models/user';
 
 @Component({
   selector: 'lr-rank',
@@ -6,6 +7,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./rank.component.styl']
 })
 export class RankComponent implements OnInit {
+  @Input('user') user: User;
 
   constructor() { }
 

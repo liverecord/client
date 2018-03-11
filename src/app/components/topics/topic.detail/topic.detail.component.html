@@ -1,2 +1,87 @@
-<h1>{{topic?.title}}</h1>
-<div class="content" [innerHTML]="topic?.body"></div>
+<div class="topic-container" [class.authorized]="user?.id > 0" [class.advancedCompose]="advancedCompose">
+  <div class="topic-details">
+    <h1>{{topic?.title}}</h1>
+    <div class="date">
+      <span class="date"
+        [hidden]="topic?.createdAt === topic?.updatedAt"
+        [title]="topic?.createdAt">
+        {{topic?.createdAt | date: "short"}}
+      </span>
+      <span class="date"
+            [hidden]="topic?.createdAt !== topic?.updatedAt"
+            title="{{topic?.createdAt}}, {{topic?.updatedAt}}">
+                <i class="fa fa-pencil"></i>
+                <span>{{topic?.updatedAt | date: "short"}}</span>
+      </span>
+    </div>
+
+    <div class="content topic-body" [innerHTML]="topic?.body"></div>
+
+    <div class="flex-row topic-authoring">
+      <div class="col" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <div class="flex-row">
+          <div><a [routerLink]="['/users/' + topic?.user.slug]"><img [src]="topic?.user.picture" class="img-responsive" alt=""></a></div>
+        </div>
+      </div>
+      <div class="col author">
+        <a itemprop="name" [routerLink]="['/users/' + topic?.user.slug]">{{topic?.user.name}}</a>
+        <span class="online" [hidden]="!topic?.user.online" title="Online"><i class="fa fa-circle"></i></span>
+        <br><lr-rank user="topic?.user" style="float: left"></lr-rank>
+      </div>
+      <div class="col" style="flex-grow: 1">
+
+      </div>
+      <div class="col private" [hidden]="topic?.private">
+        <div class="padlock"><i class="fa fa-fw fa-lock" i18n i18n-title="Access limited to"></i></div>
+        <a *ngFor="let aclu of topic?.acl" [title]="aclu?.name" [routerLink]="['/users/' + aclu?.slug]">
+          <img [src]="aclu.picture" class="img-responsive" [alt]="aclu.name">
+        </a>
+      </div>
+      <div class="col">
+      </div>
+      <div class="col">
+        <!-- lr-bookmark topic="topic"  ></lr-bookmark -->
+      </div>
+      <div class="col">
+        <!-- lr-rtc ng-show="user" topic="topic"></lr-rtc -->
+      </div>
+      <div class="col">
+        <a [routerLink]="['/topics/' + topic?.slug + '/edit/']"><i class="fa fa-fw fa-2x fa-edit"></i></a>
+      </div>
+      <div class="col">
+        <a [routerLink]="['https://www.addtoany.com/share?linkurl=', topic?.slug]"
+           target="_blank"
+        ><i class="fa fa-fw fa-2x fa-share-square-o"></i></a>
+      </div>
+    </div>
+
+    <div class="comments">
+      <h1>comments!!</h1>
+      <h1>comments!!</h1>
+      <h1>comments!!</h1>
+      <h1>comments!!</h1>
+    </div>
+  </div>
+
+  <div class="compose flex-row" [class.sending]="sending" [class.open]="advancedCompose">
+    <div class="controls">
+      <button class="control" (click)="switchAdvancedCompose()" [disabled]="sending">
+        <i class="fa " [class.fa-plus]="!advancedCompose" [class.fa-minus]="advancedCompose"></i>
+      </button>
+    </div>
+    <div class="text">
+      <lr-editor [(html)]="comment.body" (change)="saveDraft()"></lr-editor>
+    </div>
+    <div class="send control">
+      <button (click)="sendComment()"
+              [disabled]="!sendButtonActive"
+              [class.sending]="sending"
+      ><i class="fa fa-paper-plane"></i></button>
+    </div>
+  </div>
+
+
+</div>
+
+
+

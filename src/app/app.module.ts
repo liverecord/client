@@ -31,6 +31,8 @@ import {TopicService} from './services/topic.service';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import {ServiceWorkerService} from './services/service-worker.service';
+import { BookmarkComponent } from './components/common/bookmark/bookmark.component';
+
 registerLocaleData(localeRu, localeRuExtra);
 
 @NgModule({
@@ -50,7 +52,8 @@ registerLocaleData(localeRu, localeRuExtra);
     ListComponent,
     RankComponent,
     EditorComponent,
-    ContenteditableDirective
+    ContenteditableDirective,
+    BookmarkComponent
   ],
   imports: [
     BrowserModule,

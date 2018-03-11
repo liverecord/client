@@ -1,0 +1,296 @@
+:host
+  width 100%
+
+  $topicPanelWidth = 100%;
+  .topic-container
+    height: calc(98vh - 3em);
+
+    .topic-details
+      display block
+      padding-top 1px
+      padding-bottom 1px
+      padding-left 1vw
+      padding-right 1vw
+      overflow-y auto
+      height: calc(98vh - 6em);
+
+      .topic-body
+        line-height 1.618
+        text-rendering optimizeLegibility
+        -webkit-font-smoothing antialiased
+        img, video
+          max-width 50vw
+          max-height 90vh
+
+      .topic-authoring
+        margin-top 1em
+        margin-bottom 1em
+        padding: 0.5vh
+        padding-left: 0
+        padding-top: 1em
+        line-height 3vh
+        font-size: 1em;
+        img
+          height 3vh
+          margin-left 0
+          vertical-align middle
+          border none
+
+        .col
+          margin-right 0.5vh
+          line-height 3vh
+          a
+            text-decoration none
+            font-weight 600
+          .date
+            i.fa-pencil
+              color gray
+          &.author
+            margin-right 0
+            line-height 1.5vh
+
+          img
+            float left
+        .col.private
+          height 2.5vh
+          // color $greenLight
+          padding 0.2vh 0.5vh
+          // border-radius 2vh
+          line-height 2vh
+          font-size 1vh
+          img
+            height 2vh
+            width 2vh
+            // border-radius 1vh
+            margin-left -1vh
+          // border solid 0.1vh $lightColor
+          .padlock + a > img
+            margin-left -0.5vh
+          div.padlock
+            text-align center
+            height 2vh
+            width 2vh
+            border-radius 1vh
+            // border solid 0.1vh  $lightColor
+            display inline-block
+
+      pre
+        overflow auto
+      h1
+        margin-bottom 1vh
+        word-break break-word
+      div.date
+        // color $normalGrey
+        margin-bottom 2vh
+
+      .comments
+
+        .pagination
+          margin-top 1vh
+          text-align center
+          .show-old-comments
+            border-radius 3px
+            font-size 0.8em
+            padding 0.5vh 1vw
+            text-align center
+            margin-left auto
+            margin-right auto
+            white-space nowrap
+            overflow hidden
+            text-overflow ellipsis
+            display inline-block
+            max-width 40vw
+            cursor pointer
+
+        .comment
+          margin-bottom 0
+          margin-top 1vh
+          padding 1vh 1vh 1vh 0
+          .text
+            transition all $slowAnimationDuration
+            overflow-wrap break-word
+          .date
+            font-weight 100
+            overflow hidden
+            .time
+              font-size 0.6em
+              text-decoration none
+              transition color ease $fastAnimationDuration
+
+          .avatar
+            width 4vh
+            padding 0
+
+            img
+              height 3vh
+              max-width 4vh
+
+          .comment-details
+            position relative
+            width calc(100% - 4vh)
+            .author
+              font-size 0.8em
+              margin-bottom 1vh
+              a
+                text-decoration none
+                font-weight 600
+            .text
+              line-height 1.618
+              text-rendering optimizeLegibility
+              -webkit-font-smoothing antialiased
+              img, video
+                max-width 50vw
+                max-height 80vh
+                // box-shadow 0 0 1vw -0.5vw $blueDark
+                display block
+                margin 0.1vh auto
+                &.alpha
+                  box-shadow none
+            .text-feedback
+              display flex
+              opacity 0
+              position absolute
+              right 0
+              top -1vh
+              font-size 0.8em
+              line-height 0.8em
+              a
+                display inline-block
+                padding 2px 3px
+                line-height inherit
+                cursor pointer
+              span
+                line-height inherit
+                padding 2px 3px
+
+              .fa
+                line-height inherit
+                opacity 0.5
+              .fa-flag
+                float right
+            .text-moderation
+              display none
+              .button
+                padding 2px
+                font-size 0.8em
+            .attachments
+              display flex
+              flex-direction row
+              flex-wrap wrap
+              align-items flex-start
+              justify-content space-around
+              align-content space-between
+              .attachment
+                display inline-block
+                flex auto
+                margin-bottom 1vh
+                margin-top 1vh
+                width 24%
+                align-self flex-start
+                font-size 0.8em
+                iframe, img
+                  max-width  20vw
+                  max-height 20vh
+                  height auto
+                  background-color rgba(0,0,0,0.1)
+                a.link
+                  font-size 0.8em
+
+          &:hover
+            .text-feedback
+              opacity 1
+          &.me
+            .text
+              color rgba(0,0,0,0.1)
+          &.spam
+            .text
+              opacity 0.1
+          &.lp
+            margin-top 0
+            margin-bottom 0
+            padding-top 0.5vh
+            padding-bottom 0.5vh
+          &.up + .comment.lp
+            margin-top -1vh
+          &.solution
+            .content::before
+              content ""
+              font-family FontAwesome
+              font-size 1.2em
+              margin-left -1.25em
+              margin-right 0.4em
+              padding 0
+              border-radius 0.6em
+              position absolute
+            .content
+              padding 1em
+
+
+
+
+
+    .compose
+      min-height calc(3em + 1vh)
+      max-height calc(60vh)
+      line-height calc(3em + 1vh)
+      // background-color white
+      box-shadow 0 0 5px -2px #000000
+      overflow hidden
+      transition height ease 300ms
+
+      button.control
+        -webkit-appearance none
+        cursor pointer
+        width $topicPanelWidth * 0.065
+        height calc(3em + 1vh)
+        text-align center
+      .controls
+        width calc(4vh + 1vw)
+        text-align center
+        min-width 1.5em
+        button
+          // color $lightGrey
+          // border solid 2px $lightGrey
+          border-radius 1em
+          width 1.5em
+          height 1.5em
+          text-align center
+          padding 0
+      .send
+        width 3vw
+        min-width 1em
+        text-align center
+        // border-left solid 0 $lightGrey
+        button
+          width 100%
+          padding 0.25em 0
+          // color $blueRegular
+          font-size 1em
+          text-align center
+          transition:all
+          animation-iteration-count 1
+          animation-duration 200ms
+          transform translate(0, 0) scale(1)
+          margin 0
+        button.sending
+          animation-name flyTopRightAndDisappear
+          animation-timing-function ease-out
+
+
+
+      .text
+        width calc(100% - 5vh - 5vw)
+        lr-editor
+          div.toolbar
+            button.format
+              margin 0
+
+      &.advancedcompose
+        > .topic
+          height calc(40vh - 3em)
+        > .compose
+          max-height calc(3em + 60vh)
+          .text
+            textarea
+              height calc(-0.5em + 29vh)
+              margin-top 0
