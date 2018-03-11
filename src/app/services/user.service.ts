@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { User } from '../models/user';
-import { Observable } from 'rxjs/observable';
+import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
 import { AuthData} from '../models/authData';
 import {FrameType, WebSocketService} from './ws.service';
