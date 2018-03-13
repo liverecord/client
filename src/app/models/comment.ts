@@ -6,4 +6,9 @@ export class Comment extends Model {
   user: User;
   topic: Topic;
   body: string;
+  rank: number;
+  solution: boolean;
+  moderated: boolean;
+  hide: boolean;
+  spam: boolean;
 }

@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {FrameType, WebSocketService} from './ws.service';
 import {EditableTopic, Topic} from '../models/topic';
 import {User} from '../models/user';
+import {Comment} from '../models/comment';
 import {Observable} from 'rxjs/Observable';
 
 @Injectable()
@@ -57,4 +58,11 @@ export class TopicService {
     });
   }
 
+  saveComment(comment: Comment, requestId: string) {
+    this.webSocketService.next({
+      type: FrameType.CommentSave,
+      data: comment,
+      requestId: requestId
+    });
+  }
 }

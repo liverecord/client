@@ -1,7 +1,7 @@
 <div class="topic-container" [class.authorized]="user?.id > 0" [class.advancedCompose]="advancedCompose">
   <div class="topic-details">
     <h1>{{topic?.title}}</h1>
-    <!-- div class="date">
+    <div class="date">
       <span class="date"
         [hidden]="topic?.createdAt === topic?.updatedAt"
         [title]="topic?.createdAt">
@@ -13,7 +13,7 @@
                 <i class="fa fa-pencil"></i>
                 <span>{{topic?.updatedAt | date: "short"}}</span>
       </span>
-    </div -->
+    </div>
 
     <div class="content topic-body" [innerHTML]="topic?.body"></div>
 
@@ -46,21 +46,101 @@
       <div class="col">
       </div>
       <div class="col">
+        <a itemprop="name" [routerLink]="['/topics/' + topic?.slug + '/edit/']"><i class="fa fa-edit"></i></a>
       </div>
       <div class="col">
 
         <a [href]="'https://www.addtoany.com/share?linkurl=' + (topicAbsoluteUrl)"
            target="_blank"
-        ><i class="fa fa-fw fa-2x fa-share-square-o"></i></a>
+        ><i class="fa fa-fw fa-share-square-o"></i></a>
       </div>
     </div>
 
     <div class="comments">
-      <h1>comments!!</h1>
-      <h1>comments!!</h1>
-      <h1>comments!!</h1>
-      <h1>comments!!</h1>
-    </div>
+
+        <div class="pagination">
+          <a class="show-old-comments" (click)="loadOlderComments()" [hidden]="pagination.page >= pagination.pages">
+           <span i18n>Show earlier comments</span> ({{pagination.total - pagination.page * pagination.limit}})
+          </a>
+        </div>
+        <div class="comments-list" id="commentsList">
+          <div class="comment flex-row"
+               *ngFor="let comment of comments; index as $index; first as isFirst"
+               [id]="'comment_' + comment.id"
+               [class.me]="comment.user.id === user.id"
+               [class.lp]="!isFirst && comments[$index-1] && comments[$index-1].user.id === comment.user.id"
+               [class.up]="!isFirst && comments[$index-1] && comments[$index-1].user.id !== comment.user.id"
+               [class.spam]="comment.spam"
+               [class.moderated]="comment.moderated"
+               [class.solution]="comment.solution"
+               itemscope
+               itemtype="http://schema.org/Comment">
+            <div class="avatar">
+              <div [hidden]="comment.hide">
+                <a
+                  [href]="'/users/' + comment.user.slug"><img
+                  [src]="comment.user.picture" class="img-responsive" alt="">
+                </a>
+                <lr-rank user="comment.user"></lr-rank>
+              </div>
+
+            </div>
+            <div class="flex-column comment-details">
+              <div itemprop="author" itemscope itemtype="http://schema.org/Person" class="author"
+                   [hidden]="comments[$index-1] && comments[$index-1].user.id == comment.user.id">
+                <a itemprop="name" [href]="'/users/' + comment.user.slug">{{comment.user.name}}</a>
+                <span class="online" [hidden]="!comment.user.online" i18n-title="Online"><i class="fa fa-circle"></i></span>
+                <span class="date">
+                <a class="time hidden-xs"
+                   [name]="'comment_' + comment.id"
+                   [href]="'comment_' + comment.id" target="_self"
+                   [title]="comment.createdAt | date: 'medium'">{{comment.createdAt | date:'shortTime'}}</a>
+              </span>
+              </div>
+              <div class="content">
+                <div class="text" itemprop="text" [innerHTML]="comment.body"></div>
+                <div class="attachments">
+                  <!-- attachment attachment="att" ng-repeat="att in comment.attachments"></attachment -->
+                </div>
+              </div>
+              <div class="text-feedback" [hidden]="!user">
+                <a
+                  [hidden]="user?.id !== topic?.user.id"
+                  (click)="vote(comment, 'solution')"><i
+                  class="fa fa-fw "
+                  [class.fa-check-circle-o]="!comment.solution"
+                  [class.fa-check-circle]="comment.solution"></i></a>
+                <a (click)="vote(comment, 'up')"><i class="fa fa-fw fa-caret-up"></i></a>
+                <span>{{comment.rank}}</span>
+                <a (click)="vote(comment, 'down')"><i class="fa fa-fw fa-caret-down"></i></a>
+                <a (click)="vote(comment, 'report')"><i class="fa fa-fw fa-flag"></i></a>
+              </div>
+              <div class="text-moderation" >
+                ***
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex-center flex-row">
+          <div class="typists">
+            <div class="list" [hidden]="!typists.length">
+              <div class="starter"><i class="fa fa-pencil"></i></div>
+              <div class="typist" *ngFor="let typist of typists || []"><img
+                [src]="typist.picture"
+                [alt]="typist.name"
+                [title]="typist.name" class="img-responsive"></div>
+            </div>
+          </div>
+        </div>
+        <div class="join flex-center" ng-hide="user">
+          <div class="welcoming" ng-bind="'Intrigued? Wanna say something?'|translate"></div>
+          <div class="flex-row flex-center">
+          </div>
+        </div>
+        <div id="topicAnchor"><span></span></div>
+      </div>
+
   </div>
 
   <div class="compose flex-row" [class.sending]="sending" [class.open]="advancedCompose">

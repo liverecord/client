@@ -122,6 +122,7 @@ export enum FrameType {
   TopicUpdate = 'TopicSave',
   TopicList = 'TopicList',
   Comment = 'Comment',
+  CommentSave = 'CommentSave',
   CommentList = 'CommentList',
   User = 'User'
 }

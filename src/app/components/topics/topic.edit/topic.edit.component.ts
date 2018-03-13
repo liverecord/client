@@ -24,6 +24,7 @@ export class TopicEditComponent implements OnInit {
     private: false,
     title: '',
     body: '',
+    slug: '',
     order: 0,
     id: null
   };
@@ -186,6 +187,9 @@ export class TopicEditComponent implements OnInit {
     } else {
       return 'topic0Draft';
     }
+  }
+  vote(comment: Comment, action: string) {
+    //
   }
 
   runSearch(term = null) {
