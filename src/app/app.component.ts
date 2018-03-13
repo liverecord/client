@@ -1,7 +1,5 @@
 import { Component } from '@angular/core';
 import {FrameType, WebSocketService} from './services/ws.service';
-import {of} from 'rxjs/observable/of';
-import { interval } from 'rxjs/observable/interval';
 import {UserService} from './services/user.service';
 
 @Component({

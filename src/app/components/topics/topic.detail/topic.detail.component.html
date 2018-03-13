@@ -1,11 +1,11 @@
 <div class="topic-container" [class.authorized]="user?.id > 0" [class.advancedCompose]="advancedCompose">
   <div class="topic-details">
     <h1>{{topic?.title}}</h1>
-    <div class="date">
+    <!-- div class="date">
       <span class="date"
         [hidden]="topic?.createdAt === topic?.updatedAt"
         [title]="topic?.createdAt">
-        {{topic?.createdAt | date: "short"}}
+        {{topic?.createdAt|date:"short"}}
       </span>
       <span class="date"
             [hidden]="topic?.createdAt !== topic?.updatedAt"
@@ -13,14 +13,14 @@
                 <i class="fa fa-pencil"></i>
                 <span>{{topic?.updatedAt | date: "short"}}</span>
       </span>
-    </div>
+    </div -->
 
     <div class="content topic-body" [innerHTML]="topic?.body"></div>
 
     <div class="flex-row topic-authoring">
       <div class="col" itemprop="author" itemscope itemtype="http://schema.org/Person">
         <div class="flex-row">
-          <div><a [routerLink]="['/users/' + topic?.user.slug]"><img [src]="topic?.user.picture" class="img-responsive" alt=""></a></div>
+          <div><a [routerLink]="['/users/' + topic?.user?.slug]"><img [src]="topic?.user?.picture" class="img-responsive" alt=""></a></div>
         </div>
       </div>
       <div class="col author">
@@ -33,23 +33,23 @@
       </div>
       <div class="col private" [hidden]="topic?.private">
         <div class="padlock"><i class="fa fa-fw fa-lock" i18n i18n-title="Access limited to"></i></div>
-        <a *ngFor="let aclu of topic?.acl" [title]="aclu?.name" [routerLink]="['/users/' + aclu?.slug]">
-          <img [src]="aclu.picture" class="img-responsive" [alt]="aclu.name">
+
+        <a *ngFor="let aclu of topic?.acl || []" [title]="aclu?.name" [routerLink]="['/users/' + aclu?.slug]">
+          <img [src]="aclu?.picture" class="img-responsive" [alt]="aclu?.name">
         </a>
+
       </div>
       <div class="col">
       </div>
       <div class="col">
-        <!-- lr-bookmark topic="topic"  ></lr-bookmark -->
       </div>
       <div class="col">
-        <!-- lr-rtc ng-show="user" topic="topic"></lr-rtc -->
       </div>
       <div class="col">
-        <a [routerLink]="['/topics/' + topic?.slug + '/edit/']"><i class="fa fa-fw fa-2x fa-edit"></i></a>
       </div>
       <div class="col">
-        <a [routerLink]="['https://www.addtoany.com/share?linkurl=', topic?.slug]"
+
+        <a [href]="'https://www.addtoany.com/share?linkurl=' + (topicAbsoluteUrl)"
            target="_blank"
         ><i class="fa fa-fw fa-2x fa-share-square-o"></i></a>
       </div>

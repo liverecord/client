@@ -9,7 +9,7 @@ export class Topic extends Model {
   total_comments?: number;
   updates?: number;
   order: number;
-  slug?: string;
+  slug: string;
   user?: User;
   acl: User[];
   category?: Category;

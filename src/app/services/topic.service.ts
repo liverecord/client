@@ -28,7 +28,7 @@ export class TopicService {
     });
   }
 
-  getTopic(slug: string): Observable<Topic> {
+  getTopic(slug?: string): Observable<Topic> {
     this.webSocketService.next({
       type: FrameType.Topic,
       data: {slug: slug},
