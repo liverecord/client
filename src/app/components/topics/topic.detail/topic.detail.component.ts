@@ -48,6 +48,7 @@ export class TopicDetailComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.topicAbsoluteUrl = encodeURIComponent(window.location.toString());
     this.comment = new Comment();
+    this.user = new User();
     this.comments = [];
     this.preparedComments = [];
     this.typists = [];
@@ -106,10 +107,9 @@ export class TopicDetailComponent implements OnInit, OnDestroy {
       this.comments = this.comments.sort((a, b: Comment) => {
         return a.createdAt === b.createdAt ? 0 : (a.createdAt > b.createdAt ? 1 : -1);
       }).filter((comment: Comment) => {
-        if (comment.topic.id === this.topic.id) {
+        if (comment.topicId === this.topic.id) {
           return comment;
         }
-
       });
     });
   }
