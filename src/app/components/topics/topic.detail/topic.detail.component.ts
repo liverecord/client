@@ -106,15 +106,22 @@ export class TopicDetailComponent implements OnInit, OnDestroy {
           scroll = true;
           break;
       }
-      this.comments = this.comments.sort((a, b: Comment) => {
-        return a.createdAt === b.createdAt ? (a.id > b.id ? 1 : -1) : (a.createdAt > b.createdAt ? 1 : -1);
-      }).filter((comment: Comment) => {
-        if (comment.topicId === this.topic.id) {
-          return comment;
-        }
+      this.comments = this.comments
+        .filter((comment: Comment) => {
+          if (comment.topicId === this.topic.id) {
+            return comment;
+          }
+        })
+        .sort((a, b: Comment) => {
+          if (a.createdAt.getTime() === b.createdAt.getTime()) {
+            return a.id > b.id ? 1 : -1;
+          } else {
+            return a.createdAt.getTime() > b.createdAt.getTime() ? 1 : -1;
+          }
       });
-
-      scroll && setTimeout(() => this.scrollToTheEnd(), 100);
+      if (scroll) {
+       setTimeout(() => this.scrollToTheEnd(), 100);
+      }
 
     });
   }
@@ -122,7 +129,7 @@ export class TopicDetailComponent implements OnInit, OnDestroy {
   scrollToTheEnd() {
     const anchor = document.getElementById('topicAnchor');
     if (anchor) {
-      anchor.scrollIntoView({behavior: 'smooth', block: 'end', inline: 'nearest'});
+      anchor.scrollIntoView({behavior: 'smooth', block: 'start', inline: 'start'});
     }
   }
 

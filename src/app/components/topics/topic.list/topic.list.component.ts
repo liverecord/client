@@ -44,7 +44,7 @@ export class TopicListComponent implements OnInit {
   }
 
   isTopicPrivate(t: Topic) {
-    return t.acl && t.acl.length === 0;
+    return t.acl && t.acl.length > 0;
   }
 
   isSection(name: string) {
