@@ -13,6 +13,7 @@ export class AppComponent {
     'root': true,
     'flex-column': true,
     'default': true,
+    disconnected: false,
     connected: false
   };
   title = 'lr';
@@ -23,6 +24,7 @@ export class AppComponent {
     webSocketService.status.subscribe((v) => {
       console.log('status', v);
       this.appClass.connected = v;
+      this.appClass.disconnected = !v;
     });
   }
 

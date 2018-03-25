@@ -5,7 +5,10 @@
     </div>
     <lr-category class="categories"></lr-category>
     <div class="items"></div>
-    <div class="settings"></div>
+    <div class="settings">
+
+      <span [hidden]="connected">Connecting...</span>
+    </div>
   </div>
   <div class="topic-list">
     <lr-topic-list></lr-topic-list>

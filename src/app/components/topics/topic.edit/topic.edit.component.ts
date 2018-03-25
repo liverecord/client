@@ -188,9 +188,7 @@ export class TopicEditComponent implements OnInit {
       return 'topic0Draft';
     }
   }
-  vote(comment: Comment, action: string) {
-    //
-  }
+
 
   runSearch(term = null) {
     const options = {

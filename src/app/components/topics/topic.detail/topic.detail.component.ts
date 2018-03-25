@@ -87,13 +87,14 @@ export class TopicDetailComponent implements OnInit, OnDestroy {
     });
 
     this.webSocketService.subscribe(frame => {
-
+      let scroll = false;
       switch (frame.type) {
         case FrameType.CommentList:
           frame.data.map((item) => {
             return Comment.fromObject(item);
           });
           this.comments = this.comments.concat(frame.data);
+          scroll = true;
           break;
         case FrameType.Comment:
         case FrameType.CommentSave:
@@ -102,20 +103,35 @@ export class TopicDetailComponent implements OnInit, OnDestroy {
             this.discardDraft();
             this.resetComment();
           }
+          scroll = true;
           break;
       }
       this.comments = this.comments.sort((a, b: Comment) => {
-        return a.createdAt === b.createdAt ? 0 : (a.createdAt > b.createdAt ? 1 : -1);
+        return a.createdAt === b.createdAt ? (a.id > b.id ? 1 : -1) : (a.createdAt > b.createdAt ? 1 : -1);
       }).filter((comment: Comment) => {
         if (comment.topicId === this.topic.id) {
           return comment;
         }
       });
+
+      scroll && setTimeout(() => this.scrollToTheEnd(), 100);
+
     });
+  }
+
+  scrollToTheEnd() {
+    const anchor = document.getElementById('topicAnchor');
+    if (anchor) {
+      anchor.scrollIntoView({behavior: 'smooth', block: 'end', inline: 'nearest'});
+    }
   }
 
   loadOlderComments() {
 
+  }
+
+  vote(comment: Comment, action: string) {
+    //
   }
 
   loadDraft() {

@@ -42,6 +42,11 @@ export class TopicListComponent implements OnInit {
   isTopicActive(t: Topic) {
     return this.activeTopicSlug === t.slug;
   }
+
+  isTopicPrivate(t: Topic) {
+    return t.acl && t.acl.length === 0;
+  }
+
   isSection(name: string) {
     return this.filters.section === name;
   }

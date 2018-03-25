@@ -215,7 +215,11 @@ export class ContenteditableDirective implements ControlValueAccessor {
     selection.removeAllRanges();
     range.selectNodeContents(el);
     range.collapse(false);
-    selection.addRange(range);
+    try {
+      selection.addRange(range);
+    } catch (e) {
+      console.log(e);
+    }
     el.focus();
   }
 

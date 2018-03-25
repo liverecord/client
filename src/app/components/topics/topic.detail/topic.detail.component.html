@@ -1,4 +1,4 @@
-<div class="topic-container" [class.authorized]="user?.id > 0" [class.advancedCompose]="advancedCompose">
+<div class="topic-container flex-column" [class.authorized]="user?.id > 0" [class.advancedCompose]="advancedCompose">
   <div class="topic-details">
     <h1>{{topic?.title}}</h1>
     <div class="date">
@@ -81,13 +81,16 @@
                   [href]="'/users/' + comment.user.slug"><img
                   [src]="comment.user.picture" class="img-responsive" alt="">
                 </a>
-                <lr-rank user="comment.user"></lr-rank>
+                <lr-rank user="comment.user"
+
+
+                ></lr-rank>
               </div>
 
             </div>
             <div class="flex-column comment-details">
               <div itemprop="author" itemscope itemtype="http://schema.org/Person" class="author"
-                   [hidden]="comments[$index-1] && comments[$index-1].user.id == comment.user.id">
+                   [hidden]="comments[$index-1] && comments[$index-1].user.id == comment.user.id && !isFirst">
                 <a itemprop="name" [href]="'/users/' + comment.user.slug">{{comment.user.name}}</a>
                 <span class="online" [hidden]="!comment.user.online" i18n-title="Online"><i class="fa fa-circle"></i></span>
                 <span class="date">
@@ -133,8 +136,8 @@
             </div>
           </div>
         </div>
-        <div class="join flex-center" ng-hide="user">
-          <div class="welcoming" ng-bind="'Intrigued? Wanna say something?'|translate"></div>
+        <div class="join flex-center" [hidden]="user">
+          <div class="welcoming" i18>Intrigued? Wanna say something?</div>
           <div class="flex-row flex-center">
           </div>
         </div>
