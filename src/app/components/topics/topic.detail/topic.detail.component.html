@@ -76,9 +76,8 @@
                itemscope
                itemtype="http://schema.org/Comment">
             <div class="avatar">
-              <div [hidden]="comment.hide">
-                <a
-                  [href]="'/users/' + comment.user.slug"><img
+              <div [hidden]="comments[$index-1] && comments[$index-1].user.id == comment.user.id && !isFirst">
+                <a [routerLink]="['/users/' + comment.user.slug + '/']"><img
                   [src]="comment.user.picture" class="img-responsive" alt="">
                 </a>
                 <lr-rank user="comment.user"
@@ -91,12 +90,12 @@
             <div class="flex-column comment-details">
               <div itemprop="author" itemscope itemtype="http://schema.org/Person" class="author"
                    [hidden]="comments[$index-1] && comments[$index-1].user.id == comment.user.id && !isFirst">
-                <a itemprop="name" [href]="'/users/' + comment.user.slug">{{comment.user.name}}</a>
+                <a itemprop="name" [routerLink]="['/users/' + comment.user.slug + '/']">{{comment.user.name}}</a>
                 <span class="online" [hidden]="!comment.user.online" i18n-title="Online"><i class="fa fa-circle"></i></span>
                 <span class="date">
                 <a class="time hidden-xs"
                    [name]="'comment_' + comment.id"
-                   [href]="'comment_' + comment.id" target="_self"
+                   [href]="'#comment_' + comment.id" target="_self"
                    [title]="comment.createdAt | date: 'medium'">{{comment.createdAt | date:'shortTime'}}</a>
               </span>
               </div>

@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, HostListener, OnDestroy, OnInit} from '@angular/core';
 import {TopicService} from '../../../services/topic.service';
 import {ActivatedRoute, ParamMap} from '@angular/router';
 import {EditableTopic, Topic} from '../../../models/topic';
@@ -8,6 +8,7 @@ import {User} from '../../../models/user';
 import {Comment} from '../../../models/comment';
 import {FrameType, WebSocketService} from '../../../services/ws.service';
 import {StorageService} from '../../../services/storage.service';
+import {send} from 'q';
 
 @Component({
   selector: 'lr-topic-detail',
@@ -161,6 +162,10 @@ export class TopicDetailComponent implements OnInit, OnDestroy {
   resetComment() {
     this.comment.body = '';
     this.sending = false;
+    const editor = document.querySelector('div.editor');
+    if (editor instanceof HTMLElement) {
+      editor.focus();
+    }
   }
 
   private sid(): string {
@@ -183,5 +188,15 @@ export class TopicDetailComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.comments = [];
+  }
+
+
+  @HostListener('keydown', ['$event'])
+  onKeyDown(e) {
+    if (e.ctrlKey || e.metaKey) {
+      if (e.keyCode === 13) {
+        this.sendComment();
+      }
+    }
   }
 }

@@ -23,7 +23,7 @@
       <span class="topic-status">
         <span class="counter" [hidden]="topic.updates">{{topic.updates}}</span>
       </span>
-      <span [hidden]="isTopicPrivate(topic)"><i class="fa fa-lock"></i></span>
+      <span [hidden]="!isTopicPrivate(topic)"><i class="fa fa-lock"></i></span>
       <span class="title">{{topic.title}}<span [hidden]="topic.title.length < 100">&hellip;</span></span>
     </a>
   </div>

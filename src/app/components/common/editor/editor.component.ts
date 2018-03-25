@@ -1,5 +1,4 @@
-import {Component, OnInit, Input, Output, EventEmitter, AfterViewInit, SimpleChanges, ViewChild} from '@angular/core';
-import {of} from 'rxjs/observable/of';
+import {Component, OnInit, Input, Output, EventEmitter, AfterViewInit, ViewChild} from '@angular/core';
 import {IntervalObservable} from 'rxjs/observable/IntervalObservable';
 import {ContenteditableDirective} from './contenteditable.directive';
 

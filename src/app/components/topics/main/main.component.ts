@@ -7,7 +7,7 @@ import {WebSocketService} from '../../../services/ws.service';
   styleUrls: ['./main.component.styl']
 })
 export class MainComponent implements OnInit {
-  protected connected: boolean;
+  public connected: boolean;
   constructor(protected webSocketService: WebSocketService) {
     this.connected = false;
   }
