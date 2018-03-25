@@ -64,8 +64,17 @@ export class EditorComponent implements OnInit, AfterViewInit {
   }
 
   static getSelectionStart(): any {
-    const node = document.getSelection().anchorNode;
-    return (node.nodeType === 3 ? node.parentNode : node);
+    const selection = document.getSelection();
+    if (selection) {
+      const node = selection.anchorNode;
+      if (node) {
+        return (node.nodeType === 3 ? node.parentNode : node);
+      } else {
+        return selection.baseNode;
+      }
+    } else {
+      return selection;
+    }
   }
 
   constructor() {  }
