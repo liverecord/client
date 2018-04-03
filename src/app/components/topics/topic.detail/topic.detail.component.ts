@@ -79,6 +79,7 @@ export class TopicDetailComponent implements OnInit, OnDestroy {
 
         this.topic = topic;
         this.comment.topic = this.topic;
+        this.comment.topicId = this.topic.id;
         this.titleService.setTitle(topic.title);
         this.comment.body = '';
         this.loadDraft();
@@ -89,17 +90,18 @@ export class TopicDetailComponent implements OnInit, OnDestroy {
 
     this.webSocketService.subscribe(frame => {
       let scroll = false;
+      let comments = this.comments;
       switch (frame.type) {
         case FrameType.CommentList:
           frame.data.map((item) => {
             return Comment.fromObject(item);
           });
-          this.comments = this.comments.concat(frame.data);
+          comments = this.comments.concat(frame.data);
           scroll = true;
           break;
         case FrameType.Comment:
         case FrameType.CommentSave:
-          this.comments.push(<Comment>Comment.fromObject(frame.data));
+          comments.push(<Comment>Comment.fromObject(frame.data));
           if (frame.requestId === this.requestId) {
             this.discardDraft();
             this.resetComment();
@@ -107,7 +109,7 @@ export class TopicDetailComponent implements OnInit, OnDestroy {
           scroll = true;
           break;
       }
-      this.comments = this.comments
+      comments
         .filter((comment: Comment) => {
           if (comment.topicId === this.topic.id) {
             return comment;
@@ -120,6 +122,19 @@ export class TopicDetailComponent implements OnInit, OnDestroy {
             return a.createdAt.getTime() > b.createdAt.getTime() ? 1 : -1;
           }
       });
+      comments.reduce((acc, currentComment: Comment, commentIndex: number) => {
+        const accumulatedCommentIds = acc.map(c => c.id);
+        const foundCommentIndex = accumulatedCommentIds.indexOf(currentComment.id);
+        if (foundCommentIndex > -1) {
+          if (acc[foundCommentIndex].updatedAt.getTime() < currentComment.updatedAt.getDate()) {
+            acc[foundCommentIndex] = currentComment;
+          }
+        } else {
+          acc.push(currentComment);
+        }
+        return acc;
+      }, []);
+      this.comments = comments;
       if (scroll) {
        setTimeout(() => this.scrollToTheEnd(), 100);
       }
