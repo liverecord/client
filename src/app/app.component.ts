@@ -22,7 +22,7 @@ export class AppComponent {
   constructor (private webSocketService: WebSocketService, protected userService: UserService) {
 
     webSocketService.status.subscribe((v) => {
-      console.log('status', v);
+      // console.log('status', v);
       this.appClass.connected = v;
       this.appClass.disconnected = !v;
     });
