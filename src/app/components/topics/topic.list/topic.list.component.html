@@ -15,7 +15,7 @@
        [class.active]="isTopicActive(topic)"
         id="topic_list_id_{{topic.id}}">
     <a class="topic-info"
-       [routerLink]="['/topics/' + topic.slug]"
+       [routerLink]="['/' , topic.category.slug , topic.slug]"
        [queryParams]="filters"
        [title]="topic.title"
 
@@ -32,26 +32,26 @@
 </div>
 <div class="switch">
   <a
-    [routerLink]="['/topics/' + activeTopicSlug]"
+    [routerLink]="['/', filters.category, activeTopicSlug]"
     [queryParams]="prepareFilters('newTopics')"
     [class.active]="isSection('newTopics')"
   ><i class="fa fa-newspaper-o" aria-hidden="true" i18n i18n-title="New questions"></i></a>
   <a
-    [routerLink]="['/topics/' + activeTopicSlug]"
+    [routerLink]="['/', filters.category, activeTopicSlug]"
     [queryParams]="prepareFilters('recentlyViewed')"
     [class.active]="isSection('recentlyViewed')"
     i18n
     i18n-title="Recently viewed"
   ><i class="fa fa-history" aria-hidden="true" i18n i18n-title="Recently viewed"></i></a>
   <a href=""
-     [routerLink]="['/topics/' + activeTopicSlug]"
+     [routerLink]="['/', filters.category, activeTopicSlug]"
      [queryParams]="prepareFilters('participated')"
      [class.active]="isSection('participated')"
      i18n
      i18n-title="Participated topics"
   ><i class="fa fa-comments" aria-hidden="true" i18n i18n-title="Participated topics"></i></a>
   <a
-    [routerLink]="['/topics/' + activeTopicSlug]"
+    [routerLink]="['/', filters.category, activeTopicSlug]"
     [queryParams]="prepareFilters('bookmarks')"
     [class.active]="isSection('bookmarks')"
     i18n
