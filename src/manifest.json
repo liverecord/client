@@ -1,0 +1,25 @@
+{
+  "short_name": "LiveRecord",
+  "name": "LiveRecord",
+  "display": "standalone",
+  "theme_color": "#303E4D",
+  "background_color": "#F7FAFC",
+  "icons": [
+    {
+      "src": "assets/lr-lg.png",
+      "type": "image/png",
+      "sizes": "48x48"
+    },
+    {
+      "src": "assets/lr-lg.png",
+      "type": "image/png",
+      "sizes": "96x96"
+    },
+    {
+      "src": "assets/lr-lg.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    }
+  ],
+  "start_url": "/"
+}
