@@ -1,5 +1,6 @@
 $normalGrey = #BCC9CE
 
+$slowAnimationDuration = 300ms
 
 :host
 
@@ -25,6 +26,8 @@ $normalGrey = #BCC9CE
     padding 1vh 1vw
     border-radius 3px
     overflow auto
+    width inherit
+    word-break: break-word;
 
     img
       max-width 90%
@@ -50,6 +53,7 @@ $normalGrey = #BCC9CE
       line-height: calc(3em - 0.5vh);
       height 0
       overflow hidden
+      border-bottom solid 1px transparent
 
       .uploadEditorButton
         position relative
@@ -70,15 +74,19 @@ $normalGrey = #BCC9CE
       line-height 1.618
       padding 0
       transition height $slowAnimationDuration
+      word-break-wrap max-width
       &.ng-untouched.ng-empty.ng-dirty::after
         content attr(placeholder) " "
 
   input,
   textarea,
-  [contenteditable] {
-    -webkit-user-select: text;
-    user-select: text;
-  }
+  [contenteditable]
+    -webkit-user-select text
+    user-select text
+    img
+      max-width 100%
+      height auto
+
 
 
 .compose.open
