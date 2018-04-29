@@ -12,6 +12,7 @@ $categoryPanelWidth = $ONE / (1+$PHI)
   align-content center
   flex-grow 1
   width 100%
+  overflow hidden
 
   .main
     display flex
@@ -19,17 +20,49 @@ $categoryPanelWidth = $ONE / (1+$PHI)
 
     .category-list
       order 1
-      flex-grow 1000
+      //flex-grow 1000
       width $categoryPanelWidth
       overflow hidden
       text-overflow ellipsis
+      transition all ease 300ms
+
+      .new-topic
+        .button
+          display block
 
     .topic-list
       order 2
-      flex-grow 1618
-      width $topicsPanelWidth
+      //flex-grow 1618
+      width $ONE
+      transition all ease 300ms
+
 
     .topic-details
       order 3
-      flex-grow 4236
-      width $topicPanelWidth
+      width 0
+      transition all ease 300ms
+      overflow hidden
+
+    &.topic-selected
+
+      .topic-list
+        width $topicsPanelWidth
+
+      .topic-details
+        //flex-grow 4236
+        width $topicPanelWidth
+
+        .compose
+          width $topicPanelWidth
+
+
+
+      @media screen and (max-width: 600px)
+        .category-list
+          transform translateX( - $topicPanelWidth)
+          width 0
+        .topic-list
+          transform translateX( - $topicPanelWidth)
+          width 0
+        .topic-details
+          width 100vw
