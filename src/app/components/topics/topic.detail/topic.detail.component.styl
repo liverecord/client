@@ -1,11 +1,11 @@
 :host
-  width 100%
+  width inherit
 
   $topicPanelWidth = 100%;
   .topic-container
-    height: calc(99vh - 3em)
-
-    .topic-details
+    height: calc(98vh - 6em)
+    width inherit
+    .topic-content
       display block
       padding-top 1px
       padding-bottom 1px
@@ -13,14 +13,24 @@
       padding-right 1vw
       overflow-y auto
       height: calc(98vh - 6em);
+      position relative
 
       .topic-body
         line-height 1.618
         text-rendering optimizeLegibility
         -webkit-font-smoothing antialiased
+        word-wrap break-word
         img, video
           max-width 50vw
           max-height 90vh
+
+        table
+          border-collapse collapse
+          th, td
+            border solid 1px rgba(0,0,0,0.1)
+          th
+            background-color rgba(0,0,0,0.1)
+
 
       .topic-authoring
         margin-top 1em
@@ -235,9 +245,13 @@
       line-height calc(3em + 1vh)
       // background-color white
       box-shadow 0 0 5px -2px #000000
-      overflow hidden
       transition height ease 300ms
       z-index 1
+      position absolute
+      bottom 0
+      right 0
+      width inherit
+
       button.control
         -webkit-appearance none
         cursor pointer
@@ -285,12 +299,12 @@
             button.format
               margin 0
 
-      &.advancedcompose
-        > .topic
+      &.advancedCompose
+        > .topic-details
           height calc(40vh - 3em)
         > .compose
           max-height calc(3em + 60vh)
           .text
-            textarea
+            .editor
               height calc(-0.5em + 29vh)
               margin-top 0
