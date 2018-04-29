@@ -7,7 +7,7 @@ import {User} from '../../../models/user';
   styleUrls: ['./rank.component.styl']
 })
 export class RankComponent implements OnInit {
-  @Input('user') user: User;
+  @Input() user: User;
 
   constructor() { }
 
