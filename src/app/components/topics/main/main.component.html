@@ -1,7 +1,10 @@
-<div class="main flex-row">
+<div class="main flex-row"  [class.topic-selected]="topic">
   <div class="category-list">
     <div class="new-topic">
-      <a routerLink="/topics/new" class="button" i18n>New topic</a>
+      <a routerLink="/topics/new" class="button">
+        <i class="fa fa-pencil-square-o"></i>
+        <span i18n>New topic</span>
+      </a>
     </div>
     <lr-category class="categories"></lr-category>
     <div class="items"></div>
@@ -15,6 +18,6 @@
     <div class="switch"></div>
   </div>
   <div class="topic-details">
-    <lr-topic-detail></lr-topic-detail>
+    <lr-topic-detail (topicSubject)="topicSelected($event)"></lr-topic-detail>
   </div>
 </div>
