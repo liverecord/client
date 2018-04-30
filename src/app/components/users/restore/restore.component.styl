@@ -1,0 +1,20 @@
+:host
+
+
+  input+span
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size inherit
+    margin-left -1.75em
+  input+span::after
+    transition all 100ms
+    opacity 0
+    color white
+    content " "
+  .ng-touched.ng-invalid+span::after
+    content "\f057"
+    color red
+    opacity 1
+  .ng-valid+span::after
+    content "\f00c"
+    color green
+    opacity 1
