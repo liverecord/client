@@ -2,8 +2,8 @@ import {Component, Input, OnInit} from '@angular/core';
 import { UserService } from '../../../services/user.service';
 import { User } from '../../../models/user';
 import { AuthData } from '../../../models/authData';
-import {FrameType, WebSocketService} from '../../../services/ws.service';
-import {Subject} from 'rxjs/Subject';
+import { FrameType, WebSocketService} from '../../../services/ws.service';
+import { NavigationEnd, Router } from '@angular/router';
 
 @Component({
   selector: 'lr-signin',
@@ -27,7 +27,7 @@ export class SigninComponent implements OnInit {
   user?: User;
   message: string;
 
-  constructor(private userService: UserService, private webSocketService: WebSocketService) { }
+  constructor(private userService: UserService, private webSocketService: WebSocketService, private router: Router) { }
 
   getUser(): void {
     this
@@ -51,7 +51,12 @@ export class SigninComponent implements OnInit {
       .authorize(this.authData)
       .subscribe(authorizationResponse => {
         if (authorizationResponse.success) {
-          //
+          /* this.router
+            .events
+            //.filter(event => event instanceof NavigationEnd)
+            .subscribe(e => {
+              console.log(e.url);
+            }); */
         } else {
           this.message = authorizationResponse.message;
           this.submitted = false;
@@ -59,6 +64,7 @@ export class SigninComponent implements OnInit {
         }
 
         console.log('signin userService getUser', authorizationResponse);
+
       });
   }
 
