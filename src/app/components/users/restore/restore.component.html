@@ -1,0 +1,42 @@
+<div class="flex flex-center">
+    <div class="component">
+
+      {{status}}
+
+      <h1 i18n>Restore password</h1>
+
+
+      <div *ngIf="submitted">
+        <p i18n>We will send you new password shortly to <b>{{restoreData.email}}</b>.
+          If you will not get it until after 15 minutes check the Spam/Junk folder, it must be hiding there.
+        </p>
+      </div>
+      <div *ngIf="!submitted">
+        <p i18n>Enter your email and we will send you new password.</p>
+
+        <form (submit)="onSubmit()" #resetPasswordDataForm="ngForm">
+          <div class="form-group">
+            <label for="email" i18n>Email</label>
+            <input
+              type="email"
+              email="true"
+              [disabled]="submitted"
+              [(ngModel)]="restoreData.email"
+              #email="ngModel"
+              i18n-placeholder
+              id="email"
+              name="email"
+              required
+              placeholder="Email" />
+            <span></span>
+          </div>
+          <div class="form-group">
+            <label></label>
+            <input type="submit" i18n value="Restore" [disabled]="disabled || submitted || resetPasswordDataForm.invalid">
+          </div>
+        </form>
+      </div>
+    </div>
+</div>
+
+
