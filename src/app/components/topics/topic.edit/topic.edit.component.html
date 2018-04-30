@@ -16,7 +16,7 @@
                 i18n>
           <option [ngValue]="null" i18n>Please select</option>
           <option
-            *ngFor="let category of categoriesObservable | async as categories; trackBy: trackById"
+            *ngFor="let category of categories; trackBy: trackById"
             [ngValue]="category">{{category.name}}
           </option>
         </select>
