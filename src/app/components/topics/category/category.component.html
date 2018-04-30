@@ -1,11 +1,10 @@
 <ul class="menu">
   <li
-    *ngFor="let category of categoriesObservable | async as categories; index as i;"
+    *ngFor="let category of categories; index as i;"
     [ngClass]="{'active': category.active}"
   ><a
     [ngClass]="{'active': category.active}"
-    [routerLink]="['/topics/']"
-    [queryParams]="{category: category.slug}">
+    [routerLink]="['/', category.slug]">
     {{category.name}}
   </a>
   </li>
