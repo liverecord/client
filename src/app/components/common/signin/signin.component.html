@@ -1,5 +1,5 @@
 <div *ngIf="! user?.id">
-  <h3 i18n>Join</h3>
+  <h1 i18n>Join</h1>
   <div class="sso">
     <span i18n>Sign in with</span>
     <a href="/api/oauth/facebook/" class="text-facebook" target="_top"><i class="fa fa-fw fa-facebook-official"></i></a>
@@ -47,7 +47,7 @@
     </div>
     <div class="form-group">
       <label>
-        <a href="/users/password/restore" class="small" i18n>Restore</a>
+        <a routerLink="/users/password/restore" class="small" i18n>Restore</a>
       </label>
       <label for="rememberMe" i18n>My Comp</label>
       <input type="checkbox"
