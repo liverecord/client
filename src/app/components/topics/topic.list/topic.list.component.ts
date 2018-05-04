@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import {TopicService} from '../../../services/topic.service';
-import {Observable} from 'rxjs/Observable';
+import {Observable} from 'rxjs';
 import {Topic} from '../../../models/topic';
 import {ActivatedRoute, ParamMap, Router} from '@angular/router';
-import {map} from 'rxjs/operators/map';
+import {map} from 'rxjs/operators';
 import {FormControl} from '@angular/forms';
 import {copyObj} from '@angular/animations/browser/src/util';
+import { switchMap } from 'rxjs/internal/operators';
 
 @Component({
   selector: 'lr-topic-list',
@@ -18,6 +19,7 @@ export class TopicListComponent implements OnInit {
   topics: Observable<Topic[]>;
   category: string;
   activeTopicSlug: string;
+  activeCategorySlug: string;
   activeFilter: string;
   topicsSearchTermField: FormControl;
 
@@ -25,7 +27,7 @@ export class TopicListComponent implements OnInit {
     page: '1',
     term: '',
     section: 'newTopics',
-    category: ''
+    category: '-'
   };
 
   search() {
@@ -66,18 +68,20 @@ export class TopicListComponent implements OnInit {
       .subscribe(term => {
         this.filters.term = term;
         this.router.navigate(
-          ['topics', this.activeTopicSlug],
+          [this.activeCategorySlug, this.activeTopicSlug],
           {
             queryParams: this.filters
           }
         );
       });
 
-    this.topics = this.route.queryParamMap
-      .switchMap((params: ParamMap) => {
-          this.filters.category = params.get('category') || '';
+    this.topics = this.route.paramMap
+      .pipe(
+        switchMap((params: ParamMap) => {
+          this.activeCategorySlug = this.filters.category = params.get('category') || '-';
           return this.topicService.getTopics(this.filters);
-      });
+        })
+      );
 
     this.route.queryParamMap.subscribe(next => {
       this.filters.category = next.get('category') || '';
@@ -89,6 +93,7 @@ export class TopicListComponent implements OnInit {
 
     this.route.paramMap.subscribe(next => {
       this.activeTopicSlug = next.get('slug') || '';
+      this.filters.category = this.activeCategorySlug = next.get('category') || '-';
     });
   }
 }
