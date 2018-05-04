@@ -1,18 +1,16 @@
 import { Injectable } from '@angular/core';
-import {Observable, Subscribable} from 'rxjs/Observable';
-import {Subject} from 'rxjs/Subject';
-import {Observer} from 'rxjs/Observer';
-import { webSocket} from 'rxjs/observable/dom/webSocket';
+import {Observable, Subscribable, Subject, Observer,  interval } from 'rxjs';
 import {StorageService} from './storage.service';
-import { interval } from 'rxjs/observable/interval';
+import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
+
 
 @Injectable()
 export class WebSocketService  {
-  public subject: Subject<any>;
+  public subject: WebSocketSubject<Frame>;
   public status: Subject<any>;
   public live: boolean;
 
-  readonly url = 'ws://localhost:8000/ws';
+  readonly url = 'ws://' + window.location.hostname + ':8000/ws';
 
   constructor(private store: StorageService) {
     this.live = false;
@@ -99,8 +97,11 @@ export class WebSocketService  {
     if (!this.subject) {
       this.create();
     }
+    if (typeof frame['requestId'] === 'undefined') {
+      frame.requestId = '';
+    }
     frame.data = JSON.stringify(frame.data);
-    return this.subject.next(JSON.stringify(frame));
+    return this.subject.next((frame));
   }
 }
 
@@ -124,6 +125,7 @@ export enum FrameType {
   Comment = 'Comment',
   CommentSave = 'CommentSave',
   CommentList = 'CommentList',
+  ResetPassword = 'ResetPassword',
   User = 'User'
 }
 
