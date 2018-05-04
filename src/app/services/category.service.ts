@@ -1,38 +1,35 @@
 import { Injectable } from '@angular/core';
 import {Category} from '../models/category';
 import {FrameType, WebSocketService} from './ws.service';
-import {Observable} from 'rxjs/Observable';
-import {of} from 'rxjs/observable/of';
+import {Observable, of,  Subject } from 'rxjs';
+import { StorageService } from './storage.service';
 
 @Injectable()
 export class CategoryService {
 
   categories: Category[];
+  categoriesSubject: Subject<Category[]>;
   slug: string;
 
-  constructor(private webSocketService: WebSocketService) {
+  constructor(private webSocketService: WebSocketService, private storage: StorageService) {
+    ///  public subject: Subject<any>;
     this.categories = [];
-    this.load();
-  }
-
-  load(): Observable<Category[]> {
+    this.categoriesSubject = new Subject<Category[]>();
+    const categories = storage.get('categories');
+    if (categories && categories instanceof Array) {
+      this.categories = categories.map(item => <Category>Category.fromObject(item));
+      this.next();
+    }
     this.webSocketService.next({
       type: FrameType.CategoryList,
       data: {}
     });
-    return Observable.create((observer) => {
-      this.webSocketService.subscribe(frame => {
+    this.webSocketService.subscribe(frame => {
+      if (frame.type === FrameType.CategoryList) {
         console.log('cats:', frame.data);
-
-        if (frame.type === FrameType.CategoryList) {
-          frame.data.map((item) => {
-            return Object.assign(new Category(), item);
-          });
-          this.categories = frame.data;
-          this.setSlug();
-          observer.next(this.categories);
-        }
-      });
+        this.categories = frame.data.map(item => <Category>Category.fromObject(item));
+        this.setSlug();
+      }
     });
   }
 
@@ -41,16 +38,21 @@ export class CategoryService {
       item.active = (item.slug === this.slug);
       return item;
     });
+    this.next();
   }
 
-  getCategories(): Observable<Category[]> {
-    return of(this.categories);
+  next() {
+    this.categoriesSubject.next(this.categories);
+    this.storage.set('categories', this.categories);
   }
 
-  setActive(slug: string): Observable<Category[]> {
+  getCategories(): Subject<Category[]> {
+    return this.categoriesSubject;
+  }
+
+  setActive(slug: string) {
     console.log('setActive', slug);
     this.slug = slug;
     this.setSlug();
-    return of(this.categories);
   }
 }
