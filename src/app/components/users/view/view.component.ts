@@ -3,8 +3,8 @@ import { UserService } from '../../../services/user.service';
 import { User } from '../../../models/user';
 import {FrameType, WebSocketService} from '../../../services/ws.service';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import {Observable} from 'rxjs/Observable';
-import 'rxjs/add/operator/switchMap';
+import {Observable} from 'rxjs';
+import { switchMap} from 'rxjs/internal/operators';
 
 @Component({
   selector: 'lr-view',
@@ -22,9 +22,12 @@ export class UserViewComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.user$ = this.route.paramMap
-      .switchMap((params: ParamMap) =>
-        this.userService.getUserInfo(params.get('slug')));
+    this.user$ = this
+      .route
+      .paramMap
+      .pipe(
+        switchMap((params: ParamMap) => this.userService.getUserInfo(params.get('slug')))
+      );
   }
 
 }
