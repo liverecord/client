@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {CategoryService} from '../../../services/category.service';
-import {Observable} from 'rxjs/Observable';
+import {Observable} from 'rxjs';
 import {Category} from '../../../models/category';
 import {ActivatedRoute, ParamMap} from '@angular/router';
 
@@ -11,17 +11,17 @@ import {ActivatedRoute, ParamMap} from '@angular/router';
 })
 export class CategoryComponent implements OnInit {
 
-  categoriesObservable: Observable<Category[]>;
+  categories: Category[];
 
   constructor(public categoryService: CategoryService, private route: ActivatedRoute) {
+    this.categoryService.getCategories().subscribe(cats => this.categories = cats)
     this.categoryService.setActive(
-      this.route.snapshot.queryParamMap.get('category')
+      this.route.snapshot.paramMap.get('category')
     );
   }
 
   ngOnInit() {
-    this.categoriesObservable = this.categoryService.load();
-    this.route.queryParamMap.subscribe(next => {
+    this.route.paramMap.subscribe(next => {
       this.categoryService.setActive(next.get('category'));
     });
   }
