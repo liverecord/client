@@ -3,7 +3,7 @@ import {FrameType, WebSocketService} from './ws.service';
 import {EditableTopic, Topic} from '../models/topic';
 import {User} from '../models/user';
 import {Comment} from '../models/comment';
-import {Observable} from 'rxjs/Observable';
+import {Observable} from 'rxjs';
 
 @Injectable()
 export class TopicService {
