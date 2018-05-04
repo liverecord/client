@@ -1,17 +1,51 @@
 import { Injectable } from '@angular/core';
 import { User } from '../models/user';
-import { Observable } from 'rxjs/Observable';
-import { of } from 'rxjs/observable/of';
-import { AuthData} from '../models/authData';
-import {FrameType, WebSocketService} from './ws.service';
+import { Observable ,  of ,  Subject } from 'rxjs';
+import { filter } from 'rxjs/operators';
+import { AuthData } from '../models/authData';
+import { FrameType, WebSocketService } from './ws.service';
 import { Storages, StorageService } from './storage.service';
-import {Subject} from 'rxjs/Subject';
 
 @Injectable()
 export class UserService {
 
-  constructor(private webSocketService: WebSocketService, private store: StorageService) {
-    this.init();
+  public authorized: boolean;
+
+  constructor(private store: StorageService, private webSocketService: WebSocketService) {
+    this.authorized = this.isAuthorized();
+    this.userSubject = new Subject<User>();
+    this.webSocketService.subscribe(
+      frame => {
+        console.log('data', frame);
+
+        switch (frame.type) {
+          case FrameType.Auth:
+            if (frame.data.jwt) {
+              // store token
+              this.saveToken(frame.data.jwt);
+            }
+            if (frame.data.user) {
+              this.setUser(
+                Object.assign(new User, frame.data.user)
+              );
+              this.authorized = this.isAuthorized();
+              this.authorizationResponse.success = true;
+            }
+            console.log('frame.data', frame.data);
+            break;
+          case FrameType.AuthError:
+            this.authorizationResponse.message = frame.data;
+            this.authorizationResponse.success = false;
+            break;
+        }
+      },
+      error => {
+        console.log('error', error);
+      },
+      () => {
+        console.log('complete');
+      }
+    );
   }
 
   readonly emptyUser: User = Object.freeze({
@@ -20,7 +54,7 @@ export class UserService {
     online: false
   });
 
-  user?: User = { ...this.emptyUser};
+  user: User = {...this.emptyUser};
   userSubject?: Subject<User>;
 
   authorizationResponse = {
@@ -29,6 +63,10 @@ export class UserService {
   };
 
   rememberMe = true;
+
+  public isAuthorized(): boolean {
+    return this.user.id > 0;
+  }
 
   setUser(user: User) {
     for (const k in user) {
@@ -54,7 +92,7 @@ export class UserService {
   }
 
   getUser(): Subject<User> {
-   return this.userSubject;
+    return this.userSubject;
   }
 
   getUserInfo(slug: string): Observable<User> {
@@ -93,7 +131,7 @@ export class UserService {
 
   signOut() {
     this.setUser(this.emptyUser);
-    this.user = { ...this.emptyUser};
+    this.user = {...this.emptyUser};
     this.store.remove('jwt');
   }
 
@@ -105,39 +143,19 @@ export class UserService {
     this.store.set('jwt', jwt);
   }
 
-  init() {
-    this.userSubject = new Subject<User>();
-    this.webSocketService.subscribe(
-      frame => {
-        console.log('data', frame);
-
-        switch (frame.type) {
-          case FrameType.Auth:
-            if (frame.data.jwt) {
-              // store token
-              this.saveToken(frame.data.jwt);
-            }
-            if (frame.data.user) {
-              this.setUser(
-                Object.assign(new User, frame.data.user)
-              );
-              this.authorizationResponse.success = true;
-            }
-            console.log('frame.data', frame.data);
-            break;
-          case FrameType.AuthError:
-            this.authorizationResponse.message = frame.data;
-            this.authorizationResponse.success = false;
-            break;
-        }
-      },
-      error => {
-        console.log('error', error);
-      },
-      () => {
-        console.log('complete');
-      }
-    );
+  restorePasswordSubscription(): any {
+    return this
+      .webSocketService
+      .subject
+      .pipe(
+        filter(frame => frame.type === FrameType.ResetPassword)
+      );
+  }
+  restorePassword(email: any) {
+    this.webSocketService.next({
+      type: FrameType.ResetPassword,
+      data: email
+    });
   }
 
 }
