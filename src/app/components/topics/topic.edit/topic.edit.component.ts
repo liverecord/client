@@ -2,7 +2,7 @@ import { Component, Input, OnInit} from '@angular/core';
 import {EditableTopic, Topic} from '../../../models/topic';
 import {CategoryService} from '../../../services/category.service';
 import {Category} from '../../../models/category';
-import {Observable} from 'rxjs/Observable';
+import {Observable,  Subject } from 'rxjs';
 import {User} from '../../../models/user';
 import {StorageService} from '../../../services/storage.service';
 import {UserService} from '../../../services/user.service';
@@ -40,7 +40,8 @@ export class TopicEditComponent implements OnInit {
   showSearchResults = false;
   focusedAclUser?: User;
 
-  categoriesObservable: Observable<Category[]>;
+  categoriesObservable: Subject<Category[]>;
+  categories: Category[];
   searchResults: User[];
   cachedSearchResults: User[];
 
@@ -49,16 +50,17 @@ export class TopicEditComponent implements OnInit {
               private store: StorageService,
               private userService: UserService,
               private topicService: TopicService) {
-    this.categoriesObservable = this.categoryService.getCategories();
+    this.categoryService.getCategories().subscribe(c => this.categories = c);
+
     this.userService.getUser().subscribe(u => {
       this.topic.user = u;
     });
   }
 
   ngOnInit() {
+    this.categoryService.next();
     this.cachedSearchResults = [];
     this.focusedAclUser = null;
-    this.categoriesObservable = this.categoryService.load();
     this.userService.getUsers(null).subscribe((users) => {
       this.cachedSearchResults = users;
       this.updateSearchResults();
@@ -148,7 +150,9 @@ export class TopicEditComponent implements OnInit {
     try {
       setTimeout(() => {
         const el = document.querySelector('.acl-list-box .focus img');
-        el && el.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'center'});
+        if (el) {
+          el.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'center'});
+        }
       }, 100);
     } catch (e) {
       //
@@ -169,7 +173,7 @@ export class TopicEditComponent implements OnInit {
       this.discardDraft();
       this.topic = t;
       this.sendButtonActive = true;
-      this.router.navigate(['topics/' + t.slug]);
+      this.router.navigate([t.category.slug + '/' + t.slug]);
     });
   }
 
