@@ -1,5 +1,12 @@
-<div class="topic-container flex-column" [class.authorized]="user?.id > 0" [class.advancedCompose]="advancedCompose">
-  <div class="topic-details">
+<div class="topic-container flex-column"
+     [class.authorized]="user?.id > 0"
+     [class.topic-selected]="topic"
+     [class.advancedCompose]="advancedCompose"
+>
+  <div *ngIf="!topic" class="topic-details">
+    <p>Pick a topic to view and discuss</p>
+  </div>
+  <div *ngIf="topic" class="topic-content" [style.height]="topicDetailsBlockHeight">
     <h1>{{topic?.title}}</h1>
     <div class="date">
       <span class="date"
@@ -17,14 +24,18 @@
 
     <div class="content topic-body" [innerHTML]="topic?.body"></div>
 
-    <div class="flex-row topic-authoring">
+    <div class="flex-row topic-authoring"  *ngIf="topic">
       <div class="col" itemprop="author" itemscope itemtype="http://schema.org/Person">
         <div class="flex-row">
-          <div><a [routerLink]="['/users/' + topic?.user?.slug]"><img [src]="topic?.user?.picture" class="img-responsive" alt=""></a></div>
+          <div>
+            <a [routerLink]="['/users/', topic?.user?.slug]">
+              <img *ngIf="topic" [src]="topic?.user?.picture" class="img-responsive" alt="">
+            </a>
+          </div>
         </div>
       </div>
-      <div class="col author">
-        <a itemprop="name" [routerLink]="['/users/' + topic?.user.slug]">{{topic?.user.name}}</a>
+      <div class="col author" *ngIf="topic.user">
+        <a itemprop="name" [routerLink]="['/users/' , topic?.user.slug]">{{topic?.user.name}}</a>
         <span class="online" [hidden]="!topic?.user.online" title="Online"><i class="fa fa-circle"></i></span>
         <br><lr-rank user="topic?.user" style="float: left"></lr-rank>
       </div>
@@ -145,14 +156,14 @@
 
   </div>
 
-  <div class="compose flex-row" [class.sending]="sending" [class.open]="advancedCompose">
+  <div *ngIf="topic" class="compose flex-row" [class.sending]="sending" [class.open]="advancedCompose">
     <div class="controls">
       <button class="control" (click)="switchAdvancedCompose()" [disabled]="sending">
         <i class="fa " [class.fa-plus]="!advancedCompose" [class.fa-minus]="advancedCompose"></i>
       </button>
     </div>
     <div class="text">
-      <lr-editor [(html)]="comment.body" (change)="saveDraft()"></lr-editor>
+      <lr-editor [(html)]="comment.body" (change)="saveDraft()" (drop)="dragend($event)"></lr-editor>
     </div>
     <div class="send control">
       <button (click)="sendComment()"
