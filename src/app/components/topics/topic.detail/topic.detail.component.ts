@@ -1,4 +1,4 @@
-import {Component, HostListener, OnDestroy, OnInit} from '@angular/core';
+import { Component, EventEmitter, HostListener, OnDestroy, OnInit, Output } from '@angular/core';
 import {TopicService} from '../../../services/topic.service';
 import {ActivatedRoute, ParamMap} from '@angular/router';
 import {EditableTopic, Topic} from '../../../models/topic';
@@ -6,9 +6,11 @@ import {Title} from '@angular/platform-browser';
 import {UserService} from '../../../services/user.service';
 import {User} from '../../../models/user';
 import {Comment} from '../../../models/comment';
-import {FrameType, WebSocketService} from '../../../services/ws.service';
+import { Frame, FrameType, WebSocketService } from '../../../services/ws.service';
 import {StorageService} from '../../../services/storage.service';
-import {send} from 'q';
+import { switchMap } from 'rxjs/operators';
+import { webSocket } from 'rxjs/webSocket';
+import { WebSocketSubject, WebSocketSubjectConfig } from 'rxjs/internal/observable/dom/WebSocketSubject';
 
 @Component({
   selector: 'lr-topic-detail',
@@ -17,11 +19,14 @@ import {send} from 'q';
 })
 export class TopicDetailComponent implements OnInit, OnDestroy {
 
+  @Output() topicSubject = new EventEmitter<Topic>();
+
   topic: Topic;
   user: User;
   typists: User[];
   sending: boolean;
   sendButtonActive: boolean;
+  topicDetailsBlockHeight: string;
   advancedCompose: boolean;
   comment: Comment;
   comments: Comment[];
@@ -34,7 +39,7 @@ export class TopicDetailComponent implements OnInit, OnDestroy {
     limit: 1,
     total: 0
   };
-
+  ws: WebSocketSubject<any>;
   constructor(private topicService: TopicService,
               private route: ActivatedRoute,
               private titleService: Title,
@@ -44,6 +49,17 @@ export class TopicDetailComponent implements OnInit, OnDestroy {
     this.sending = false;
     this.sendButtonActive = false;
     this.advancedCompose = false;
+    this.topicDetailsBlockHeight = '90vh';
+    this.ws = webSocket({
+      url: this.webSocketService.getWsUrl(),
+      protocol: '',
+      binaryType: 'blob'
+    });
+    this.ws.subscribe(
+       (msg) => console.log('message received: ', msg),
+     (err) => console.log(err),
+     () => console.log('complete')
+      );
   }
 
   ngOnInit() {
@@ -72,12 +88,14 @@ export class TopicDetailComponent implements OnInit, OnDestroy {
     this
       .route
       .paramMap
-      .switchMap((params: ParamMap) => {
-        return this.topicService.getTopic(params.get('slug'));
-      }).subscribe((topic: Topic) => {
+      .pipe(
+        switchMap((params: ParamMap) => this.topicService.getTopic(params.get('slug')))
+      ).subscribe((topic: Topic) => {
+
         this.comments = [];
 
         this.topic = topic;
+        this.topicSubject.emit(topic);
         this.comment.topic = this.topic;
         this.comment.topicId = this.topic.id;
         this.titleService.setTitle(topic.title);
@@ -85,7 +103,10 @@ export class TopicDetailComponent implements OnInit, OnDestroy {
         this.loadDraft();
         this.sendButtonActive = true;
 
-        this.topicAbsoluteUrl = encodeURIComponent(window.location.hostname + '/topics/' + this.topic.slug);
+        this.topicAbsoluteUrl = encodeURIComponent(
+          window.location.protocol + '//' +
+          window.location.host  + '/' + this.topic.category.slug + '/' + this.topic.slug
+        );
     });
 
     this.webSocketService.subscribe(frame => {
@@ -205,6 +226,18 @@ export class TopicDetailComponent implements OnInit, OnDestroy {
     this.comments = [];
   }
 
+  updateTopicHeight() {
+    const composeEl = document.querySelector('div.editor');
+    const headerEl = document.querySelector('lr-header');
+    const topicCont = document.querySelector('div.topic-details');
+    console.log('blockes', headerEl, composeEl, topicCont);
+
+    if (topicCont && composeEl) {
+      this.topicDetailsBlockHeight = (
+        window.innerHeight - composeEl.clientHeight - headerEl.clientHeight
+      ) + 'px';
+    }
+  }
 
   @HostListener('keydown', ['$event'])
   onKeyDown(e) {
@@ -213,5 +246,11 @@ export class TopicDetailComponent implements OnInit, OnDestroy {
         this.sendComment();
       }
     }
+    this.updateTopicHeight();
+  }
+
+  dragend($event) {
+    console.log($event);
+    this.ws.next($event.dataTransfer.files[0]);
   }
 }
