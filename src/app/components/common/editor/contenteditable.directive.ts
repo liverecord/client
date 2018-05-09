@@ -90,7 +90,7 @@ export class ContenteditableDirective implements ControlValueAccessor {
 
   @HostListener('drop', ['$event'])
   onDrop($event) {
-    console.log($event);
+    // console.log($event);
   }
 
   @HostListener('keyup')
@@ -279,6 +279,10 @@ export class ContenteditableDirective implements ControlValueAccessor {
     if (this.exOnChange) {
       this.exOnChange(this.el.nativeElement.innerHTML);
     }
+  }
+
+  getNativeElement(): Element {
+    return this.el.nativeElement;
   }
 
   get value(): any {
