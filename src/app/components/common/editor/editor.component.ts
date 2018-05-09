@@ -1,7 +1,5 @@
 import {Component, OnInit, Input, Output, EventEmitter, AfterViewInit, ViewChild} from '@angular/core';
-import {IntervalObservable} from 'rxjs/observable/IntervalObservable';
 import {ContenteditableDirective} from './contenteditable.directive';
-
 
 @Component({
   selector: 'lr-editor',
@@ -10,7 +8,7 @@ import {ContenteditableDirective} from './contenteditable.directive';
 })
 
 export class EditorComponent implements OnInit, AfterViewInit {
-  @Input('html') html: string;
+  @Input() html: string;
   @Output() htmlChange = new EventEmitter<string>();
   @Output('change') change = new EventEmitter<string>();
 
@@ -85,7 +83,8 @@ export class EditorComponent implements OnInit, AfterViewInit {
   }
 
   refreshState() {
-    if (document.activeElement === document.querySelector('div.editor')) {
+
+    if (document.activeElement === this.contentEditable.getNativeElement()) {
       this.toolbar.map(function(item) {
         const pn = {
           'createLink': 'a',
@@ -106,6 +105,10 @@ export class EditorComponent implements OnInit, AfterViewInit {
     }
   }
 
+  dragend(event) {
+    console.log(event);
+  }
+
   update() {
     if (this.previousHtml !== this.html) {
       this.htmlChange.emit(this.html);
@@ -117,13 +120,10 @@ export class EditorComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     // this is fallback to sync whatever event wasn't fired right away
-    (new IntervalObservable(1000)).subscribe(() => {
-      this.update();
-    });
+    setInterval(() => this.update(), 1000);
     setTimeout(() => {
       this.contentEditable.moveCaret();
       this.refreshState();
-
     }, 1000);
     this.contentEditable.moveCaret();
 
