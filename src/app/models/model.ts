@@ -4,7 +4,7 @@ export class Model {
   updatedAt?: Date;
   deletedAt?: Date;
 
-  static normalizeDate(object: any) {
+  static normalizeDate(object: any): any {
     for (const prop in object)  {
       if (object.hasOwnProperty(prop) && prop.indexOf('edAt') > -1 && ! (object[prop] instanceof Date)) {
         object[prop] = new Date(object[prop]);
@@ -13,9 +13,13 @@ export class Model {
     return object;
   }
 
-  static fromObject(object: any): Model {
-    object = this.normalizeDate(object);
-    return Object.assign(new Model(), object);
+  static create<T>(c: {new(): T}): T {
+    return new c();
+  }
+
+  static fromObject<T>(this: new() => T, object: any): T {
+    object = Model.normalizeDate(object);
+    return Object.assign(new this(), object);
   }
 
   static fromJson(data: string): Model {
