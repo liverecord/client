@@ -4,3 +4,17 @@ vertical-gradient(topColor, bottomColor)
   background -o-linear-gradient(topColor, bottomColor)
   background -moz-linear-gradient(topColor, bottomColor)
   background linear-gradient(topColor, bottomColor)
+
+@keyframes flyTopRightAndDisappear
+  0%
+    opacity 1
+    transform translate(0, 0)
+  59%
+    opacity 0
+    transform translate(2em, -2em)
+  60%
+    opacity 0
+    transform translate(-2em, 2em) scale(0)
+  100%
+    opacity 1
+    transform translate(0, 0) scale(1)
