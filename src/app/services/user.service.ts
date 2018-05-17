@@ -3,7 +3,7 @@ import { User } from '../models/user';
 import { Observable ,  of ,  Subject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { AuthData } from '../models/authData';
-import { FrameType, WebSocketService } from './ws.service';
+import { FrameType, WebSocketService, Frame } from './ws.service';
 import { Storages, StorageService } from './storage.service';
 
 @Injectable()
@@ -26,8 +26,9 @@ export class UserService {
             }
             if (frame.data.user) {
               this.setUser(
-                Object.assign(new User, frame.data.user)
+                User.fromObject(frame.data.user)
               );
+
               this.authorized = this.isAuthorized();
               this.authorizationResponse.success = true;
             }
@@ -148,7 +149,7 @@ export class UserService {
       .webSocketService
       .subject
       .pipe(
-        filter(frame => frame.type === FrameType.ResetPassword)
+        filter(frame => 'type' in frame && frame.type === FrameType.ResetPassword)
       );
   }
   restorePassword(email: any) {
