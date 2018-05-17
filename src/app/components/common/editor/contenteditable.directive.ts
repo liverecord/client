@@ -295,6 +295,7 @@ export class ContenteditableDirective implements ControlValueAccessor {
 
   writeValue(obj: any): void {
     this.el.nativeElement.innerHTML = obj;
+    document.execCommand('defaultParagraphSeparator', false, 'p');
   }
 
   registerOnChange(fn: any): void {
