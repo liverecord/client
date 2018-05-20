@@ -258,27 +258,23 @@
         width $topicPanelWidth * 0.065
         height calc(3em + 1vh)
         text-align center
-      .controls
+      .advanced-compose-control
         width calc(4vh + 1vw)
         text-align center
         min-width 1.5em
         button
-          // color $lightGrey
-          // border solid 2px $lightGrey
           border-radius 1em
           width 1.5em
           height 1.5em
           text-align center
           padding 0
-      .send
+      .send-control
         width 3vw
         min-width 1em
         text-align center
-        // border-left solid 0 $lightGrey
         button
           width 100%
           padding 0.25em 0
-          // color $blueRegular
           font-size 1em
           text-align center
           transition:all
@@ -289,8 +285,6 @@
         button.sending
           animation-name flyTopRightAndDisappear
           animation-timing-function ease-out
-
-
 
       .text
         width calc(100% - 5vh - 5vw)
