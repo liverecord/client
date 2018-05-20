@@ -7,8 +7,9 @@ import {User} from '../../../models/user';
 import {StorageService} from '../../../services/storage.service';
 import {UserService} from '../../../services/user.service';
 import {TopicService} from '../../../services/topic.service';
-import { Router } from '@angular/router';
-import {FormControl} from '@angular/forms';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { FormControl, FormGroup } from '@angular/forms';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'lr-topic-edit',
@@ -44,8 +45,10 @@ export class TopicEditComponent implements OnInit {
   categories: Category[];
   searchResults: User[];
   cachedSearchResults: User[];
+  topicEditForm: FormGroup;
 
   constructor(public categoryService: CategoryService,
+              private route: ActivatedRoute,
               private router: Router,
               private store: StorageService,
               private userService: UserService,
@@ -73,6 +76,16 @@ export class TopicEditComponent implements OnInit {
       .subscribe(term => {
         this.runSearch(term);
       });
+
+    this
+      .route
+      .paramMap
+      .pipe(
+        switchMap((params: ParamMap) => this.topicService.getTopic(params.get('slug')))
+      ).subscribe((topic: Topic) => {
+
+      // this.topic = topic;
+    });
   }
 
   loadDraft() {
@@ -160,21 +173,23 @@ export class TopicEditComponent implements OnInit {
   }
 
   formUpdate(e) {
-    console.log(e);
+    console.log(e, this.topicEditForm);
   }
 
   onSubmit() {
-
+    // topicEditForm
     this.saveDraft();
-    this.sendButtonActive = true;
-    this.topicService
-      .saveTopic(this.topic)
-      .subscribe(t => {
-      this.discardDraft();
-      this.topic = t;
-      this.sendButtonActive = true;
-      this.router.navigate([t.category.slug + '/' + t.slug]);
-    });
+    if (this.sendButtonActive === true) {
+      this.sendButtonActive = false;
+      this.topicService
+        .saveTopic(this.topic)
+        .subscribe(t => {
+        this.discardDraft();
+        this.topic = t;
+        this.sendButtonActive = true;
+        this.router.navigate([t.category.slug + '/' + t.slug]);
+      });
+    }
   }
 
   docClick() {
