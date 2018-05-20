@@ -18,6 +18,7 @@ $red = #B2150A
 
 @import "../func.styl"
 
+
   :root
     --main-theme-color: #303E4D
     --body-color: #F7FAFC
@@ -148,10 +149,36 @@ $red = #B2150A
       .topic-details
         background-color var(--body-color, gray)
 
+        .compose
+          background-color rgba(255,255,255, 0.75)
+          backdrop-filter: blur(20px);
+          button
+            -webkit-appearance none
+            cursor pointer
+          .advanced-compose-control
+            button
+              color $lightGrey
+              background-color transparent
+              border solid 2px $lightGrey
+          .send-control
+            button
+              color $lightGrey
+              background-color transparent
+              border solid 2px transparent
+
+              &.sending
+                animation-name flyTopRightAndDisappear
+                animation-timing-function ease-out
+          .text
+            lr-editor
+              div.toolbar
+                  button.format
+                    i
+                      color $lightGrey
+
+
     lr-editor
       border solid 1px $normalGrey
-
-
       div.toolbar
         border-bottom solid 1px $normalGrey
         background-color rgba(0,0,0,0.025)
@@ -171,6 +198,44 @@ $red = #B2150A
       div.editor:focus
         outline alpha($blueRegular, 50%) solid 1px
 
+    .uploads
+      position absolute
+      top -2em
+      width 85%
+      .upload
+        border solid 1px $baseThemeColor
+        font-size 0.8em
+        line-height 1.4em
+        height 1.4em
+        padding 1px
+        position relative
+        button.cancel
+          position absolute
+          right 0
+          top 0
+          height inherit
+          background-color transparent
+          color red
+          padding 0
+          border none
+        .progress
+          position absolute
+          left 1
+          top 1
+          transition width 2s
+          white-space nowrap
+          height 1.4em
+          padding 0 0.2em
+          &.bar
+            background-color $baseThemeColor
+            z-index 1
+          &.back
+            z-index 2
+          &.front
+            color white
+            z-index 3
+            overflow hidden
+
     .ask-form
       select,textarea,input[type="text"],input[type="email"],input[type="password"],button
         box-sizing border-box
@@ -189,7 +254,6 @@ $red = #B2150A
 
       button[disabled]
         background-color desaturate($baseThemeColor, 50%)
-
 
       .private
         background rgba(0,0,0,0.1)
