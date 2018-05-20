@@ -4,7 +4,9 @@
       <span [hidden]="!editing" i18n>Create new topic</span>
       <span [hidden]="editing"><span i18n>Edit topic</span> <q>{{topic?.title}}</q></span>
     </h1>
-    <form (submit)="onSubmit()" #topicEditForm="ngForm" (change)="formUpdate(topicEditForm)">
+    <form (submit)="onSubmit()"
+          #topicEditForm="ngForm"
+          (change)="formUpdate(topicEditForm)">
       <div class="flex-row">
         <select id="questionCategory"
                 name="questionCategory"
@@ -31,7 +33,8 @@
           type="text"
           [(ngModel)]="topic.title"
           #qt="ngModel"
-          i18n-placeholder="Topic title"
+          i18n-placeholder
+          placeholder="Topic title"
           (change)="saveDraft()"
           required>
         <span></span>
@@ -79,43 +82,20 @@
             </div>
           </div>
         </div>
-
         <i class="fa fa-fw fa-lock" [hidden]="! topic.private"></i>
         <i class="fa fa-fw fa-unlock" [hidden]="topic.private"></i>
-
       </div>
       <div class="flex-row">
         <lr-editor [(html)]="topic.body" (change)="saveDraft()"></lr-editor>
       </div>
-
-      <!--
-      <div class="flex-row">
-        <hr>
-        cool:
-
-      </div>
-      -->
-
       <div class="flex-row">
         <button type="submit" [disabled]="topicEditForm.invalid">
           <span [hidden]="editing" i18n>Create</span>
           <span [hidden]="! editing" i18n>Save</span>
         </button>
       </div>
-
-      <!--
-      <pre>
-        {{topic | json}}
-      </pre>
-
-      <pre>
-
-      </pre>
-    <div [innerHtml]="topic.body" ></div>
-      -->
     </form>
     <textarea [ngModel]="topic.body" ></textarea>
-
   </div>
 </div>
 
