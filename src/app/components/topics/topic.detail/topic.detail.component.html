@@ -153,28 +153,21 @@
         </div>
         <div id="topicAnchor"><span></span></div>
       </div>
-
   </div>
-
   <div *ngIf="topic" class="compose flex-row" [class.sending]="sending" [class.open]="advancedCompose">
-    <div class="controls">
-      <button class="control" (click)="switchAdvancedCompose()" [disabled]="sending">
+    <div class="advanced-compose-control">
+      <button (click)="switchAdvancedCompose()" [disabled]="sending">
         <i class="fa " [class.fa-plus]="!advancedCompose" [class.fa-minus]="advancedCompose"></i>
       </button>
     </div>
     <div class="text">
-      <lr-editor [(html)]="comment.body" (change)="saveDraft()" (drop)="dragend($event)"></lr-editor>
+      <lr-editor [(html)]="comment.body" (change)="saveDraft()"></lr-editor>
     </div>
-    <div class="send control">
+    <div class="send-control">
       <button (click)="sendComment()"
               [disabled]="!sendButtonActive"
               [class.sending]="sending"
       ><i class="fa fa-paper-plane"></i></button>
     </div>
   </div>
-
-
 </div>
-
-
-
