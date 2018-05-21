@@ -1,23 +1,33 @@
-import { Component, EventEmitter, HostListener, OnDestroy, OnInit, Output } from '@angular/core';
-import {TopicService} from '../../../services/topic.service';
-import {ActivatedRoute, ParamMap} from '@angular/router';
-import {EditableTopic, Topic} from '../../../models/topic';
-import {Title} from '@angular/platform-browser';
-import {UserService} from '../../../services/user.service';
-import {User} from '../../../models/user';
-import {Comment} from '../../../models/comment';
+import {
+  Component,
+  EventEmitter,
+  HostListener,
+  OnDestroy,
+  ChangeDetectorRef,
+  OnInit,
+  Output,
+  AfterViewInit,
+} from '@angular/core';
+import { TopicService } from '../../../services/topic.service';
+import { ActivatedRoute, ParamMap } from '@angular/router';
+import { EditableTopic, Topic } from '../../../models/topic';
+import { Title } from '@angular/platform-browser';
+import { UserService } from '../../../services/user.service';
+import { User } from '../../../models/user';
+import { UploadFile } from '../../../models/file';
+import { Comment } from '../../../models/comment';
 import { Frame, FrameType, WebSocketService } from '../../../services/ws.service';
-import {StorageService} from '../../../services/storage.service';
+import { StorageService } from '../../../services/storage.service';
 import { switchMap } from 'rxjs/operators';
-import { webSocket } from 'rxjs/webSocket';
-import { WebSocketSubject, WebSocketSubjectConfig } from 'rxjs/internal/observable/dom/WebSocketSubject';
+import { fromEvent } from 'rxjs';
+import { debounce, debounceTime } from 'rxjs/internal/operators';
 
 @Component({
   selector: 'lr-topic-detail',
   templateUrl: './topic.detail.component.html',
-  styleUrls: ['./topic.detail.component.styl']
+  styleUrls: ['./topic.detail.component.styl'],
 })
-export class TopicDetailComponent implements OnInit, OnDestroy {
+export class TopicDetailComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @Output() topicSubject = new EventEmitter<Topic>();
 
@@ -39,28 +49,20 @@ export class TopicDetailComponent implements OnInit, OnDestroy {
     limit: 1,
     total: 0
   };
-  ws: WebSocketSubject<any>;
+
   constructor(private topicService: TopicService,
               private route: ActivatedRoute,
               private titleService: Title,
               private store: StorageService,
               private webSocketService: WebSocketService,
-              private userService: UserService) {
+              private userService: UserService,
+              private changeDetectorRef: ChangeDetectorRef) {
     this.sending = false;
     this.sendButtonActive = false;
     this.advancedCompose = false;
     this.topicDetailsBlockHeight = '90vh';
-    this.ws = webSocket({
-      url: this.webSocketService.getWsUrl(),
-      protocol: '',
-      binaryType: 'blob'
-    });
-    this.ws.subscribe(
-       (msg) => console.log('message received: ', msg),
-     (err) => console.log(err),
-     () => console.log('complete')
-      );
   }
+
 
   ngOnInit() {
     this.topicAbsoluteUrl = encodeURIComponent(window.location.toString());
@@ -72,41 +74,41 @@ export class TopicDetailComponent implements OnInit, OnDestroy {
     this.requestId = 'ttt';
     this.pagination = {
       page: 1,
-        pages: 1,
-        limit: 1,
-        total: 0
+      pages: 1,
+      limit: 1,
+      total: 0,
     };
     this
       .userService
       .getUser()
       .subscribe((user: User) => {
-      this.user = user;
-      this.comment.user = this.user;
-    });
+        this.user = user;
+        this.comment.user = this.user;
+      });
     this.comment.body = '';
 
     this
       .route
       .paramMap
       .pipe(
-        switchMap((params: ParamMap) => this.topicService.getTopic(params.get('slug')))
+        switchMap((params: ParamMap) => this.topicService.getTopic(params.get('slug'))),
       ).subscribe((topic: Topic) => {
 
-        this.comments = [];
+      this.comments = [];
 
-        this.topic = topic;
-        this.topicSubject.emit(topic);
-        this.comment.topic = this.topic;
-        this.comment.topicId = this.topic.id;
-        this.titleService.setTitle(topic.title);
-        this.comment.body = '';
-        this.loadDraft();
-        this.sendButtonActive = true;
+      this.topic = topic;
+      this.topicSubject.emit(topic);
+      this.comment.topic = this.topic;
+      this.comment.topicId = this.topic.id;
+      this.titleService.setTitle(topic.title);
+      this.comment.body = '';
+      this.loadDraft();
+      this.sendButtonActive = true;
 
-        this.topicAbsoluteUrl = encodeURIComponent(
-          window.location.protocol + '//' +
-          window.location.host  + '/' + this.topic.category.slug + '/' + this.topic.slug
-        );
+      this.topicAbsoluteUrl = encodeURIComponent(
+        window.location.protocol + '//' +
+        window.location.host + '/' + this.topic.category.slug + '/' + this.topic.slug,
+      );
     });
 
     this.webSocketService.subscribe(frame => {
@@ -142,7 +144,7 @@ export class TopicDetailComponent implements OnInit, OnDestroy {
           } else {
             return a.createdAt.getTime() > b.createdAt.getTime() ? 1 : -1;
           }
-      });
+        });
       comments.reduce((acc, currentComment: Comment, commentIndex: number) => {
         const accumulatedCommentIds = acc.map(c => c.id);
         const foundCommentIndex = accumulatedCommentIds.indexOf(currentComment.id);
@@ -157,9 +159,21 @@ export class TopicDetailComponent implements OnInit, OnDestroy {
       }, []);
       this.comments = comments;
       if (scroll) {
-       setTimeout(() => this.scrollToTheEnd(), 100);
+        setTimeout(() => this.scrollToTheEnd(), 100);
       }
+      this.updateTopicHeight();
+    });
+  }
 
+
+  /**
+   * DOM is getting ready at this stage
+   */
+  ngAfterViewInit() {
+    fromEvent(window, 'resize').pipe(
+      debounceTime(100),
+    ).subscribe(() => {
+      this.updateTopicHeight();
     });
   }
 
@@ -168,6 +182,8 @@ export class TopicDetailComponent implements OnInit, OnDestroy {
     if (anchor) {
       anchor.scrollIntoView({behavior: 'smooth', block: 'start', inline: 'start'});
     }
+    this.updateTopicHeight();
+
   }
 
   loadOlderComments() {
@@ -197,7 +213,14 @@ export class TopicDetailComponent implements OnInit, OnDestroy {
 
   resetComment() {
     this.comment.body = '';
-    this.sending = false;
+    setTimeout(() => {
+      this.sending = false;
+    }, 200);
+
+    this.focusEditor();
+  }
+
+  focusEditor() {
     const editor = document.querySelector('div.editor');
     if (editor instanceof HTMLElement) {
       editor.focus();
@@ -211,8 +234,10 @@ export class TopicDetailComponent implements OnInit, OnDestroy {
       return 'topicComment0Draft';
     }
   }
+
   switchAdvancedCompose() {
     this.advancedCompose = !this.advancedCompose;
+    this.updateTopicHeight();
   }
 
   sendComment() {
@@ -227,16 +252,20 @@ export class TopicDetailComponent implements OnInit, OnDestroy {
   }
 
   updateTopicHeight() {
-    const composeEl = document.querySelector('div.editor');
-    const headerEl = document.querySelector('lr-header');
-    const topicCont = document.querySelector('div.topic-details');
-    console.log('blockes', headerEl, composeEl, topicCont);
-
-    if (topicCont && composeEl) {
-      this.topicDetailsBlockHeight = (
-        window.innerHeight - composeEl.clientHeight - headerEl.clientHeight
-      ) + 'px';
-    }
+    setTimeout(() => {
+      const composeEl = document.querySelector('lr-editor');
+      const headerEl = document.querySelector('lr-header');
+      const topicCont = document.querySelector('div.topic-details');
+      if (topicCont && composeEl && headerEl) {
+        const topicDetailsBlockHeight = (
+          window.innerHeight - composeEl.clientHeight - headerEl.clientHeight - 2
+        ) + 'px';
+        if (topicDetailsBlockHeight !== this.topicDetailsBlockHeight) {
+          this.topicDetailsBlockHeight = topicDetailsBlockHeight;
+          this.changeDetectorRef.markForCheck();
+        }
+      }
+    }, 10);
   }
 
   @HostListener('keydown', ['$event'])
@@ -248,9 +277,5 @@ export class TopicDetailComponent implements OnInit, OnDestroy {
     }
     this.updateTopicHeight();
   }
-
-  dragend($event) {
-    console.log($event);
-    this.ws.next($event.dataTransfer.files[0]);
-  }
 }
+
