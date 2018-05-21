@@ -1,9 +1,10 @@
-<div>
+<div (drop)="onDrop($event)">
   <div class="toolbar">
     <button *ngFor="let btn of toolbar"
             [class.active]="btn.active"
             title="{{mapKey(btn.hotKey)}}"
             class="format"
+            type="button"
             (mousedown)="format(btn.command, $event)">
       <i class="fa fa-fw fa-{{btn.fa}}"></i>
     </button>
@@ -24,5 +25,14 @@
        (blur)="update()"
        (update)="update()"
        class="editor"
-  ></div>
+  ><p></p></div>
+  <div class="uploads">
+    <div class="upload" *ngFor="let upload of uploads;index as uploadIndex">
+      <div class="progress back" [style.width]="upload.progressPercent">{{upload.name}}</div>
+      <div class="progress front" [style.width]="upload.progressPercent"
+           title="{{upload.uploaded}} of {{upload.size}}">{{upload.name}}</div>
+      <div class="progress bar" [style.width]="upload.progressPercent">&nbsp;</div>
+      <button class="cancel" (click)="cancelUpload(uploadIndex)"><i class="fa fa-times-circle"></i></button>
+    </div>
+  </div>
 </div>
