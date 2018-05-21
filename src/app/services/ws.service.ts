@@ -3,10 +3,9 @@ import {Observable, Subscribable, Subject, Observer,  interval } from 'rxjs';
 import {StorageService} from './storage.service';
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 
-
 @Injectable()
 export class WebSocketService  {
-  public subject: WebSocketSubject<Frame>;
+  public subject: WebSocketSubject<Frame|ArrayBuffer>;
   public status: Subject<any>;
   public live: boolean;
 
@@ -33,14 +32,25 @@ export class WebSocketService  {
   create(): Subject<any>  {
     console.log('connecting...');
     if (!this.subject) {
-      this.subject = webSocket(this.getWsUrl());
+      this.subject = webSocket({
+        url: this.getWsUrl(),
+        deserializer: function (e: MessageEvent) { console.log('deserializer'); return JSON.parse(e.data); },
+        serializer: function (value: Frame | ArrayBuffer) {
+          console.log('serializer');
+          if (value instanceof ArrayBuffer) {
+            return value;
+          } else {
+            return JSON.stringify(value);
+          }
+        },
+      });
       this.subject.subscribe(
-        (frameFromServer) => {
+        (frameFromServer: Frame) => {
           this.live = true;
           this.status.next(this.live);
           console.log('ws svc raw ffs', frameFromServer);
 
-          if (frameFromServer.data) {
+          if (frameFromServer.data && typeof frameFromServer.data === 'string') {
             frameFromServer.data = JSON.parse(frameFromServer.data);
           }
           console.log('ws decoded ffs', frameFromServer);
@@ -91,17 +101,21 @@ export class WebSocketService  {
 
   /**
    * Send Frame to the server
-   * @param frame
+   * @param f
    */
-  next(frame: Frame) {
+  next(f: Frame | ArrayBuffer) {
     if (!this.subject) {
       this.create();
     }
-    if (typeof frame['requestId'] === 'undefined') {
-      frame.requestId = '';
+    if (f instanceof ArrayBuffer) {
+      // we don't have to do anything here
+    } else {
+      if (typeof f['requestId'] === 'undefined') {
+        f.requestId = '';
+      }
+      f.data = JSON.stringify(f.data);
     }
-    frame.data = JSON.stringify(frame.data);
-    return this.subject.next((frame));
+    return this.subject.next(f);
   }
 }
 
@@ -126,7 +140,9 @@ export enum FrameType {
   CommentSave = 'CommentSave',
   CommentList = 'CommentList',
   ResetPassword = 'ResetPassword',
-  User = 'User'
+  User = 'User',
+  File = 'Upload',
+  CancelUpload = 'CancelUpload',
 }
 
 export interface Frame {
