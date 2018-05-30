@@ -1,7 +1,9 @@
-import {Component, OnInit, Input, Output, EventEmitter, AfterViewInit, ViewChild} from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit, ViewChild, OnDestroy } from '@angular/core';
 import {ContenteditableDirective} from './contenteditable.directive';
 import { UploadFile } from '../../../models/file';
-import { FrameType, WebSocketService } from '../../../services/ws.service';
+import { Frame, FrameType, WebSocketService } from '../../../services/ws.service';
+import { Subject } from 'rxjs/Subject';
+import 'rxjs/add/operator/takeUntil';
 
 @Component({
   selector: 'lr-editor',
@@ -9,13 +11,14 @@ import { FrameType, WebSocketService } from '../../../services/ws.service';
   styleUrls: ['./editor.component.styl'],
 })
 
-export class EditorComponent implements OnInit, AfterViewInit {
+export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() html: string;
   @Output() htmlChange = new EventEmitter<string>();
   @Output('change') change = new EventEmitter<string>();
 
   @ViewChild(ContenteditableDirective)
   private contentEditable: ContenteditableDirective;
+  private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
 
   private previousHtml = '';
   uploads: UploadFile[];
@@ -81,6 +84,7 @@ export class EditorComponent implements OnInit, AfterViewInit {
     private webSocketService: WebSocketService,
   ) {
     this.uploads = [];
+    console.log('Editor initiated');
   }
 
   format(command, $event) {
@@ -121,6 +125,10 @@ export class EditorComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+    this.webSocketService
+      .subject
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(this.frameListener.bind(this));
     // this is fallback to sync whatever event wasn't fired right away
     setInterval(() => this.update(), 1000);
     setTimeout(() => {
@@ -129,37 +137,45 @@ export class EditorComponent implements OnInit, AfterViewInit {
     }, 1000);
     this.contentEditable.moveCaret();
     this.refreshState();
-    this.webSocketService.subscribe(frame => {
-      switch (frame.type) {
-        case FrameType.CancelUpload:
-          const cancelledUpload = <UploadFile>UploadFile.fromObject(frame.data);
-          const cancelledUploadFileIndex = this.getUploadIndex(cancelledUpload);
-          if (cancelledUploadFileIndex >= 0) {
-            this.uploads.splice(cancelledUploadFileIndex, 1);
+  }
+
+  ngOnDestroy() {
+    console.log('Editor ngOnDestroy');
+    this.ngUnsubscribe.next(true);
+    this.ngUnsubscribe.complete();
+  }
+
+  private frameListener(frame: Frame) {
+    switch (frame.type) {
+      case FrameType.CancelUpload:
+        const cancelledUpload = <UploadFile>UploadFile.fromObject(frame.data);
+        const cancelledUploadFileIndex = this.getUploadIndex(cancelledUpload);
+        if (cancelledUploadFileIndex >= 0) {
+          this.uploads.splice(cancelledUploadFileIndex, 1);
+        }
+        break;
+      case FrameType.File:
+        const f = UploadFile.fromObject(frame.data);
+        f.calculateProgressPercent();
+        const uploadFileIndex = this.getUploadIndex(f);
+        if (uploadFileIndex < 0) {
+          this.uploads.push(f);
+        }
+        if (f.path && f.path.length > 0 && f.uploaded === f.size) {
+          this.focusEditor();
+          let html = '';
+          if (f.type.startsWith('image/', 0)) {
+            html = createImage('http://localhost:8000' + f.path, f.name);
+          } else if (f.type.startsWith('video/', 0)) {
+            html = createVideo('http://localhost:8000' + f.path, f.name);
+          } else {
+            html = createLink('http://localhost:8000' + f.path, f.name);
           }
-          break;
-        case FrameType.File:
-          const f = <UploadFile>UploadFile.fromObject(frame.data);
-          f.calculateProgressPercent();
-          const uploadFileIndex = this.getUploadIndex(f);
-          if (uploadFileIndex < 0) {
-            this.uploads.push(f);
-          }
-          if (f.path && f.path.length > 0 && f.uploaded === f.size) {
-            this.focusEditor();
-            let html = '';
-            if (f.type.startsWith('image/', 0)) {
-              html = createImage('http://localhost:8000' + f.path, f.name);
-            } else if (f.type.startsWith('video/', 0)) {
-              html = createVideo('http://localhost:8000' + f.path, f.name);
-            } else {
-              html = createLink('http://localhost:8000' + f.path, f.name);
-            }
-            document.execCommand('insertHTML', false,  html + ' ');
-            this.uploads.splice(uploadFileIndex, 1);
-          }
-          break;
-      }});
+          document.execCommand('insertHTML', false,  html + ' ');
+          this.uploads.splice(uploadFileIndex, 1);
+        }
+        break;
+    }
   }
 
   private getUploadIndex(f: UploadFile): number {

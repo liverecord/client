@@ -203,6 +203,10 @@ export class ContenteditableDirective implements ControlValueAccessor {
     } else if (e.keyCode === 9) {
       e.preventDefault();
       document.execCommand('insertHTML', false, '&emsp;');
+    } else if (e.keyCode === 8) { // Backspace
+        if (e.target.tagName === 'SPAN') {
+          e.target.outerHTML = e.target.innerHTML;
+        }
     }
     console.log(e);
     this.updateModel();

@@ -159,7 +159,7 @@ export class TopicDetailComponent implements OnInit, OnDestroy, AfterViewInit {
       }, []);
       this.comments = comments;
       if (scroll) {
-        setTimeout(() => this.scrollToTheEnd(), 100);
+        setTimeout(() => this.scrollToTheEnd(), 200);
       }
       this.updateTopicHeight();
     });
@@ -178,12 +178,11 @@ export class TopicDetailComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   scrollToTheEnd() {
+    this.updateTopicHeight();
     const anchor = document.getElementById('topicAnchor');
     if (anchor) {
       anchor.scrollIntoView({behavior: 'smooth', block: 'start', inline: 'start'});
     }
-    this.updateTopicHeight();
-
   }
 
   loadOlderComments() {
@@ -215,6 +214,7 @@ export class TopicDetailComponent implements OnInit, OnDestroy, AfterViewInit {
     this.comment.body = '';
     setTimeout(() => {
       this.sending = false;
+      this.updateTopicHeight();
     }, 200);
 
     this.focusEditor();
@@ -241,9 +241,13 @@ export class TopicDetailComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   sendComment() {
-    if (!this.sending) {
-      this.sending = true;
-      this.topicService.saveComment(this.comment, this.requestId);
+    if (this.user && this.user.id > 0) {
+      if (!this.sending) {
+        this.sending = true;
+        this.topicService.saveComment(this.comment, this.requestId);
+      }
+    } else {
+      alert('You have to sign-in first');
     }
   }
 

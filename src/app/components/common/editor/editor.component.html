@@ -1,4 +1,4 @@
-<div (drop)="onDrop($event)">
+<div (drop)="onDrop($event)" style="position: relative">
   <div class="toolbar">
     <button *ngFor="let btn of toolbar"
             [class.active]="btn.active"

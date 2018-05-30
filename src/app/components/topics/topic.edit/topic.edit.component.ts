@@ -10,6 +10,7 @@ import {TopicService} from '../../../services/topic.service';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { FormControl, FormGroup } from '@angular/forms';
 import { switchMap } from 'rxjs/operators';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'lr-topic-edit',
@@ -36,7 +37,7 @@ export class TopicEditComponent implements OnInit {
   editing = false;
   submitted = false;
   disabled = false;
-  sendButtonActive = false;
+  sendButtonActive = true;
   userSearchActive = false;
   showSearchResults = false;
   focusedAclUser?: User;
@@ -52,6 +53,7 @@ export class TopicEditComponent implements OnInit {
               private router: Router,
               private store: StorageService,
               private userService: UserService,
+              private titleService: Title,
               private topicService: TopicService) {
     this.categoryService.getCategories().subscribe(c => this.categories = c);
 
@@ -84,7 +86,11 @@ export class TopicEditComponent implements OnInit {
         switchMap((params: ParamMap) => this.topicService.getTopic(params.get('slug')))
       ).subscribe((topic: Topic) => {
 
-      // this.topic = topic;
+      if (this.route.snapshot.params['slug'] === topic.slug) {
+        this.topic = topic;
+        this.editing = true;
+        this.titleService.setTitle('✎ ' + topic.title);
+      }
     });
   }
 

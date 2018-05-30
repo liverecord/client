@@ -18,6 +18,7 @@ export class WebSocketService  {
     interval(10000).subscribe(() => {
       this.isOpen();
     });
+    console.log('WebSocketService created!');
   }
 
   getWsUrl(): string {
@@ -32,6 +33,7 @@ export class WebSocketService  {
   create(): Subject<any>  {
     console.log('connecting...');
     if (!this.subject) {
+      console.log('creating new WebSocket Connection');
       this.subject = webSocket({
         url: this.getWsUrl(),
         deserializer: function (e: MessageEvent) { console.log('deserializer'); return JSON.parse(e.data); },
@@ -99,6 +101,10 @@ export class WebSocketService  {
     return this.subject.subscribe(observerOrNext, error, complete);
   }
 
+  unsubscribe() {
+    return this.subject.unsubscribe();
+  }
+
   /**
    * Send Frame to the server
    * @param f
@@ -113,9 +119,19 @@ export class WebSocketService  {
       if (typeof f['requestId'] === 'undefined') {
         f.requestId = '';
       }
+      if (f.requestId === '') {
+        f.requestId = this.createRequestId();
+      }
       f.data = JSON.stringify(f.data);
     }
     return this.subject.next(f);
+  }
+
+  createRequestId(): string {
+    function randoms(): string {
+      return Math.random().toString(36).substring(2, 8);
+    }
+    return (randoms() + randoms() + randoms()).substr(0, 16);
   }
 }
 

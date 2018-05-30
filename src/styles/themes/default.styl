@@ -54,7 +54,9 @@ $red = #B2150A
       box-shadow 1px 1px 1px -1px rgba(0,0,0,0.2) inset
 
     button[disabled],input[type=submit][disabled],input[type=reset][disabled]
-      background-color desaturate($blueRegular, 20)
+      background-color desaturate($blueRegular, 50)
+      border solid 1px desaturate($blueRegular, 50)
+      opacity 0.5
 
     select,
     input[type=text],
@@ -247,13 +249,13 @@ $red = #B2150A
         color $blueDark
         background-color lighten($lightColor, 10)
 
-      button
+      /*button
         background-color $baseThemeColor
         color $lightColor
         border solid 1px $baseThemeColor
 
       button[disabled]
-        background-color desaturate($baseThemeColor, 50%)
+        background-color desaturate($baseThemeColor, 50%)*/
 
       .private
         background rgba(0,0,0,0.1)
