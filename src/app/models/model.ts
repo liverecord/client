@@ -6,7 +6,7 @@ export class Model {
 
   static normalizeDate(object: any): any {
     for (const prop in object)  {
-      if (object.hasOwnProperty(prop) && prop.indexOf('edAt') > -1 && ! (object[prop] instanceof Date)) {
+      if (object.hasOwnProperty(prop) && (prop.indexOf('edAt') > -1 || prop.indexOf('edDate') > -1) && ! (object[prop] instanceof Date)) {
         object[prop] = new Date(object[prop]);
       }
     }
