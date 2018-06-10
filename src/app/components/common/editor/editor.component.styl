@@ -20,6 +20,12 @@ $slowAnimationDuration = 300ms
       margin 0.1vh
       border-radius: 0.2vh;
 
+  [contenteditable=true]:empty:before
+    content attr(title)
+    display block
+    color $normalGrey
+
+
   div.editor
     display block
     min-height 1em
@@ -34,6 +40,43 @@ $slowAnimationDuration = 300ms
       max-height 50vh
       height auto
       width auto
+
+  .uploads
+    z-index 5
+    position absolute
+    top -2em
+    width 85%
+    .upload
+      font-size 0.8em
+      line-height 1.4em
+      height 1.4em
+      padding 1px
+      position relative
+      button.cancel
+        position absolute
+        right 0
+        top 0
+        height inherit
+        padding 0
+        border none
+      .progress
+        position absolute
+        left 1
+        top 1
+        transition width 2s
+        white-space nowrap
+        height 1.4em
+        padding 0 0.2em
+        &.bar
+          z-index 7
+        &.back
+          z-index 9
+        &.front
+          z-index 11
+          overflow hidden
+        .speed, .remaining
+          font-family monospace
+          font-size 0.9em
 
 .ask-form
   :host
