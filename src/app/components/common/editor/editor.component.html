@@ -8,11 +8,13 @@
             (mousedown)="format(btn.command, $event)">
       <i class="fa fa-fw fa-{{btn.fa}}"></i>
     </button>
-    <span id="uploadEditorButton"
+    <span id="uploadEditorButton" style="position: relative"
           class="format uploadEditorButton">
-    <i class="fa fa-fw fa-paperclip"></i>
-    <input type="file" id="uploadEditorFileInput" style="position: absolute;left: 0;top: 0;opacity: 0.001;width: 2em;">
-  </span>
+      <i class="fa fa-fw fa-paperclip"></i>
+      <input type="file" id="uploadEditorFileInput"
+           (change)="onFileSelect($event)"
+           style="position: absolute;left: 0;top: 0;opacity: 0.001;width: 2em;cursor: pointer">
+    </span>
     <span>
   </span>
   </div>
@@ -25,12 +27,17 @@
        (blur)="update()"
        (update)="update()"
        class="editor"
+       [title]="placeholder"
   ><p></p></div>
   <div class="uploads">
     <div class="upload" *ngFor="let upload of uploads;index as uploadIndex">
-      <div class="progress back" [style.width]="upload.progressPercent">{{upload.name}}</div>
+      <div class="progress back" [style.width]="upload.progressPercent">{{upload.name}}
+        <span class="remaining">{{upload.remaining}}</span>@<span class="speed">{{upload.speed}}</span>
+      </div>
       <div class="progress front" [style.width]="upload.progressPercent"
-           title="{{upload.uploaded}} of {{upload.size}}">{{upload.name}}</div>
+           title="{{upload.uploaded}} of {{upload.size}}">{{upload.name}}
+        <span class="remaining">{{upload.remaining}}</span>@<span class="speed">{{upload.speed}}</span>
+      </div>
       <div class="progress bar" [style.width]="upload.progressPercent">&nbsp;</div>
       <button class="cancel" (click)="cancelUpload(uploadIndex)"><i class="fa fa-times-circle"></i></button>
     </div>
