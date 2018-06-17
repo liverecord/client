@@ -13,6 +13,7 @@ import 'rxjs/add/operator/takeUntil';
 
 export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() html: string;
+  @Input() placeholder: string;
   @Output() htmlChange = new EventEmitter<string>();
   @Output('change') change = new EventEmitter<string>();
 
@@ -203,33 +204,68 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
     console.log('topic.detail', $event);
     if ($event.dataTransfer.files.length > 0) {
       $event.preventDefault();
-      for (let i = 0; i < $event.dataTransfer.files.length; i++) {
-        const fr = new FileReader();
-        const file = $event.dataTransfer.files[i];
-        fr.addEventListener('load', (e) => {
-          console.log(e, fr.result, file, JSON.stringify(file));
-          this.webSocketService.next({
-            type: FrameType.File,
-            data: {
-              name: file.name,
-              size: file.size,
-              type: file.type,
-              lastModifiedDate: file.lastModifiedDate,
-            }
-          });
-          this.webSocketService.next(fr.result);
-        });
-        fr.addEventListener('onabort', (a) => {
-          console.log('onabort', a);
-        });
-        fr.addEventListener('progress', (p) => {
-          console.log('progress', p);
-        });
-        fr.addEventListener('onloadend', (e) => {
-          console.log('load', e);
-        });
-        fr.readAsArrayBuffer(file);
-      }
+      this.uploadFiles($event.dataTransfer.files);
+    }
+  }
+
+  onFileSelect($event) {
+    this.uploadFiles($event.target.files);
+  }
+
+  uploadFile(file) {
+    const f = UploadFile.fromObject({
+      name: file.name,
+      size: file.size,
+      type: file.type,
+      lastModifiedDate: file.lastModifiedDate,
+      loaded: 0,
+      uploaded: 0,
+      uploadStartedDate: Date.now(),
+    });
+    f.calculateProgressPercent();
+    const uploadFileIndex = this.getUploadIndex(f);
+    if (uploadFileIndex < 0) {
+      this.uploads.push(f);
+    }
+    // actual upload
+    const fr = new FileReader();
+    fr.addEventListener('load', (e) => {
+      // console.log(e, fr.result, file, JSON.stringify(file));
+      this.webSocketService.next({
+        type: FrameType.File,
+        data: {
+          name: file.name,
+          size: file.size,
+          loaded: file.size,
+          type: file.type,
+          lastModifiedDate: file.lastModifiedDate,
+        }
+      });
+      this.webSocketService.next(fr.result);
+    });
+
+    fr.addEventListener('onabort', (a) => {
+      alert('File read cancelled');
+    });
+    fr.addEventListener('onerror', (a) => {
+      alert('Error while reading the file. ' + a.type);
+    });
+
+    fr.addEventListener('progress', (p) => {
+      f.loaded = p.loaded;
+      f.calculateProgressPercent();
+    });
+
+    fr.addEventListener('onloadend', (e) => {
+     f.loaded = f.size;
+     f.calculateProgressPercent();
+    });
+    fr.readAsArrayBuffer(file);
+  }
+
+  uploadFiles(files) {
+    for (let i = 0; i < files.length; i++) {
+      this.uploadFile(files[i]);
     }
   }
 
@@ -276,7 +312,7 @@ function createVideo(src, alt) {
 
 function createLink(href, anchor) {
   const ie = document.createElement('a');
-  ie.setAttribute('link', href);
+  ie.setAttribute('href', href);
   ie.setAttribute('target', '_blank');
   ie.setAttribute('rel', 'nofollow');
   ie.innerText = anchor;
