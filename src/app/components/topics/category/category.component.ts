@@ -14,7 +14,7 @@ export class CategoryComponent implements OnInit {
   categories: Category[];
 
   constructor(public categoryService: CategoryService, private route: ActivatedRoute) {
-    this.categoryService.getCategories().subscribe(cats => this.categories = cats)
+    this.categoryService.getCategories().subscribe(cats => this.categories = cats);
     this.categoryService.setActive(
       this.route.snapshot.paramMap.get('category')
     );
