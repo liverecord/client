@@ -21,7 +21,7 @@ export class ContenteditableDirective implements ControlValueAccessor {
 
 
   constructor(private el: ElementRef, private sanitizer: DomSanitizer) {
-    el.nativeElement.focus();
+    // el.nativeElement.focus();
   }
 
   static wrapSelection(prefix, suffix: string): void {
@@ -300,6 +300,8 @@ export class ContenteditableDirective implements ControlValueAccessor {
   writeValue(obj: any): void {
     this.el.nativeElement.innerHTML = obj;
     document.execCommand('defaultParagraphSeparator', false, 'p');
+    document.execCommand('enableInlineTableEditing', false, true);
+    document.execCommand('enableObjectResizing', false, true);
   }
 
   registerOnChange(fn: any): void {
