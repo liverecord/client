@@ -2,73 +2,72 @@
      [class.authorized]="user?.id > 0"
      [class.topic-selected]="topic"
      [class.advancedCompose]="advancedCompose"
+     [class.private]="topic?.private"
 >
   <div *ngIf="!topic" class="topic-details">
     <p>Pick a topic to view and discuss</p>
   </div>
   <div *ngIf="topic" class="topic-content" [style.height]="topicDetailsBlockHeight">
-    <h1>{{topic?.title}}</h1>
-    <div class="date">
-      <span class="date"
-        [hidden]="topic?.createdAt === topic?.updatedAt"
-        [title]="topic?.createdAt">
-        {{topic?.createdAt|date:"short"}}
-      </span>
-      <span class="date"
-            [hidden]="topic?.createdAt !== topic?.updatedAt"
-            title="{{topic?.createdAt}}, {{topic?.updatedAt}}">
-                <i class="fa fa-pencil"></i>
-                <span>{{topic?.updatedAt | date: "short"}}</span>
-      </span>
-    </div>
-
-    <div class="content topic-body" [innerHTML]="topic?.body"></div>
-
-    <div class="flex-row topic-authoring"  *ngIf="topic">
-      <div class="col" itemprop="author" itemscope itemtype="http://schema.org/Person">
-        <div class="flex-row">
-          <div>
-            <a [routerLink]="['/users/', topic?.user?.slug]">
-              <img *ngIf="topic" [src]="topic?.user?.picture" class="img-responsive" alt="">
-            </a>
+    <div class="topic-main-content">
+      <h1>{{topic?.title}}</h1>
+      <div class="date">
+        <span class="date"
+          [hidden]="topic?.createdAt === topic?.updatedAt"
+          [title]="topic?.createdAt">
+          {{topic?.createdAt|date:"short"}}
+        </span>
+        <span class="date"
+              [hidden]="topic?.createdAt !== topic?.updatedAt"
+              title="{{topic?.createdAt}}, {{topic?.updatedAt}}">
+                  <i class="fa fa-pencil"></i>
+                  <span>{{topic?.updatedAt | date: "short"}}</span>
+        </span>
+      </div>
+      <div class="content topic-body" [innerHTML]="topic?.body"></div>
+      <div class="flex-row topic-authoring"  *ngIf="topic">
+        <div class="col" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <div class="flex-row">
+            <div>
+              <a [routerLink]="['/users/', topic?.user?.slug]">
+                <img *ngIf="topic" [src]="topic?.user?.picture" class="img-responsive" alt="">
+              </a>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="col author" *ngIf="topic.user">
-        <a itemprop="name" [routerLink]="['/users/' , topic?.user.slug]">{{topic?.user.name}}</a>
-        <span class="online" [hidden]="!topic?.user.online" title="Online"><i class="fa fa-circle"></i></span>
-        <br><lr-rank user="topic?.user" style="float: left"></lr-rank>
-      </div>
-      <div class="col" style="flex-grow: 1">
+        <div class="col author" *ngIf="topic.user">
+          <a itemprop="name" [routerLink]="['/users/' , topic?.user.slug]">{{topic?.user.name}}</a>
+          <span class="online" [hidden]="!topic?.user.online" title="Online"><i class="fa fa-circle"></i></span>
+          <br><lr-rank user="topic?.user" style="float: left"></lr-rank>
+        </div>
+        <div class="col" style="flex-grow: 1">
 
-      </div>
-      <div class="col private" [hidden]="topic?.private">
-        <div class="padlock"><i class="fa fa-fw fa-lock" i18n i18n-title="Access limited to"></i></div>
+        </div>
+        <div class="col private" [hidden]="topic?.private">
+          <div class="padlock"><i class="fa fa-fw fa-lock" i18n i18n-title="Access limited to"></i></div>
 
-        <a *ngFor="let aclu of topic?.acl || []" [title]="aclu?.name" [routerLink]="['/users/' + aclu?.slug]">
-          <img [src]="aclu?.picture" class="img-responsive" [alt]="aclu?.name">
-        </a>
+          <a *ngFor="let aclu of topic?.acl || []" [title]="aclu?.name" [routerLink]="['/users/' + aclu?.slug]">
+            <img [src]="aclu?.picture" class="img-responsive" [alt]="aclu?.name">
+          </a>
 
-      </div>
-      <div class="col">
-      </div>
-      <div class="col">
-      </div>
-      <div class="col">
-      </div>
-      <div class="col">
-        <a itemprop="name" [routerLink]="['/topics/' + topic?.slug + '/edit/']"><i class="fa fa-edit"></i></a>
-      </div>
-      <div class="col">
+        </div>
+        <div class="col">
+        </div>
+        <div class="col">
+        </div>
+        <div class="col">
+        </div>
+        <div class="col">
+          <a itemprop="name" [routerLink]="['/topics/' + topic?.slug + '/edit/']"><i class="fa fa-edit"></i></a>
+        </div>
+        <div class="col">
 
-        <a [href]="'https://www.addtoany.com/share?linkurl=' + (topicAbsoluteUrl)"
-           target="_blank"
-        ><i class="fa fa-fw fa-share-square-o"></i></a>
+          <a [href]="'https://www.addtoany.com/share?linkurl=' + (topicAbsoluteUrl)"
+             target="_blank"
+          ><i class="fa fa-fw fa-share-square-o"></i></a>
+        </div>
       </div>
     </div>
-
     <div class="comments">
-
         <div class="pagination">
           <a class="show-old-comments" (click)="loadOlderComments()" [hidden]="pagination.page >= pagination.pages">
            <span i18n>Show earlier comments</span> ({{pagination.total - pagination.page * pagination.limit}})
@@ -91,12 +90,8 @@
                 <a [routerLink]="['/users/' + comment.user.slug + '/']"><img
                   [src]="comment.user.picture" class="img-responsive" alt="">
                 </a>
-                <lr-rank user="comment.user"
-
-
-                ></lr-rank>
+                <lr-rank user="comment.user"></lr-rank>
               </div>
-
             </div>
             <div class="flex-column comment-details">
               <div itemprop="author" itemscope itemtype="http://schema.org/Person" class="author"
@@ -107,7 +102,9 @@
                 <a class="time hidden-xs"
                    [name]="'comment_' + comment.id"
                    [href]="'#comment_' + comment.id" target="_self"
-                   [title]="comment.createdAt | date: 'medium'">{{comment.createdAt | date:'shortTime'}}</a>
+                   [title]="comment.createdAt | date: 'medium'" >
+                      {{ comment.createdAt | date:'shortTime' }}
+                  </a>
               </span>
               </div>
               <div class="content">
@@ -154,6 +151,7 @@
         <div id="topicAnchor"><span></span></div>
       </div>
   </div>
+
   <div *ngIf="topic" class="compose flex-row" [class.sending]="sending" [class.open]="advancedCompose">
     <div class="advanced-compose-control">
       <button (click)="switchAdvancedCompose()" [disabled]="sending">
@@ -161,7 +159,7 @@
       </button>
     </div>
     <div class="text">
-      <lr-editor [(html)]="comment.body" (change)="saveDraft()"></lr-editor>
+      <lr-editor [(html)]="comment.body" (change)="saveDraft()" placeholder="Type your comment here..."></lr-editor>
     </div>
     <div class="send-control">
       <button (click)="sendComment()"
