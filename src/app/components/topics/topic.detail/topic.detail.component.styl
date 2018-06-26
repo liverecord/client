@@ -9,12 +9,14 @@
       display block
       padding-top 1px
       padding-bottom 1px
-      padding-left 1vw
-      padding-right 1vw
       overflow-y auto
       height: calc(98vh - 6em);
       position relative
-
+      .topic-main-content
+        display block
+        padding-top 1px
+        padding-left 1vw
+        padding-right 1vw
       .topic-body
         line-height 1.618
         text-rendering optimizeLegibility
@@ -94,8 +96,11 @@
         margin-bottom 2vh
 
       .comments
+        padding-left 1vw
+        padding-right 1vw
 
-        .pagination
+
+      .pagination
           margin-top 1vh
           text-align center
           .show-old-comments
@@ -211,7 +216,7 @@
               opacity 1
           &.me
             .text
-              color rgba(0,0,0,0.1)
+              color rgba(0,0,0,0.5)
           &.spam
             .text
               opacity 0.1
