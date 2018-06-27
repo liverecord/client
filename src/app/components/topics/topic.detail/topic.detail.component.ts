@@ -9,7 +9,7 @@ import {
   AfterViewInit,
 } from '@angular/core';
 import { TopicService } from '../../../services/topic.service';
-import { ActivatedRoute, ParamMap } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { EditableTopic, Topic } from '../../../models/topic';
 import { Title } from '@angular/platform-browser';
 import { UserService } from '../../../services/user.service';
@@ -52,6 +52,7 @@ export class TopicDetailComponent implements OnInit, OnDestroy, AfterViewInit {
 
   constructor(private topicService: TopicService,
               private route: ActivatedRoute,
+              private router: Router,
               private titleService: Title,
               private store: StorageService,
               private webSocketService: WebSocketService,
@@ -80,7 +81,7 @@ export class TopicDetailComponent implements OnInit, OnDestroy, AfterViewInit {
     };
     this
       .userService
-      .getUser()
+      .getUser(true)
       .subscribe((user: User) => {
         this.user = user;
         this.comment.user = this.user;
@@ -178,11 +179,12 @@ export class TopicDetailComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   scrollToTheEnd() {
-    this.updateTopicHeight();
-    const anchor = document.getElementById('topicAnchor');
-    if (anchor) {
-      anchor.scrollIntoView({behavior: 'smooth', block: 'start', inline: 'start'});
-    }
+    this.updateTopicHeight(() => {
+      const anchor = document.getElementById('topicAnchor');
+      if (anchor) {
+        anchor.scrollIntoView({behavior: 'smooth', block: 'start', inline: 'start'});
+      }
+    });
   }
 
   loadOlderComments() {
@@ -194,7 +196,7 @@ export class TopicDetailComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   loadDraft() {
-    if (!this.topic.id) {
+    if (this.topic.id) {
       const comment = this.store.get(this.sid());
       if (comment) {
         this.comment.body = comment;
@@ -246,8 +248,9 @@ export class TopicDetailComponent implements OnInit, OnDestroy, AfterViewInit {
         this.sending = true;
         this.topicService.saveComment(this.comment, this.requestId);
       }
-    } else {
-      alert('You have to sign-in first');
+    } else if (confirm('Commenting is for project members only. Would you like to join?')) {
+      this.userService.redirectUrl = this.route.snapshot.url.join('/');
+      this.router.navigate(['users', 'login']);
     }
   }
 
@@ -255,7 +258,7 @@ export class TopicDetailComponent implements OnInit, OnDestroy, AfterViewInit {
     this.comments = [];
   }
 
-  updateTopicHeight() {
+  updateTopicHeight(callback = null) {
     setTimeout(() => {
       const composeEl = document.querySelector('lr-editor');
       const headerEl = document.querySelector('lr-header');
@@ -268,6 +271,9 @@ export class TopicDetailComponent implements OnInit, OnDestroy, AfterViewInit {
           this.topicDetailsBlockHeight = topicDetailsBlockHeight;
           this.changeDetectorRef.markForCheck();
         }
+      }
+      if (callback) {
+        callback();
       }
     }, 10);
   }
