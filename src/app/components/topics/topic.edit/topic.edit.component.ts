@@ -21,7 +21,7 @@ export class TopicEditComponent implements OnInit {
 
   @Input()
   topic: EditableTopic = {
-    category: null,
+    category: <Category>{id: 0, name: 'not selected', slug: ''},
     acl: [],
     private: false,
     title: '',
@@ -34,7 +34,7 @@ export class TopicEditComponent implements OnInit {
   userSearchTerm = '';
 
   userSearchTermField: FormControl;
-  editing = false;
+  isEditing = false;
   submitted = false;
   disabled = false;
   sendButtonActive = true;
@@ -48,6 +48,7 @@ export class TopicEditComponent implements OnInit {
   cachedSearchResults: User[];
   topicEditForm: FormGroup;
 
+
   constructor(public categoryService: CategoryService,
               private route: ActivatedRoute,
               private router: Router,
@@ -57,12 +58,14 @@ export class TopicEditComponent implements OnInit {
               private topicService: TopicService) {
     this.categoryService.getCategories().subscribe(c => this.categories = c);
 
-    this.userService.getUser().subscribe(u => {
+    this.userService.getUser(true).subscribe(u => {
       this.topic.user = u;
     });
   }
 
   ngOnInit() {
+    this.titleService.setTitle('✎');
+
     this.categoryService.next();
     this.cachedSearchResults = [];
     this.focusedAclUser = null;
@@ -88,12 +91,18 @@ export class TopicEditComponent implements OnInit {
 
       if (this.route.snapshot.params['slug'] === topic.slug) {
         this.topic = topic;
-        this.editing = true;
+        this.isEditing = true;
         this.titleService.setTitle('✎ ' + topic.title);
       }
     });
   }
-
+  cancel() {
+   if (this.isEditing) {
+     this.router.navigate([this.topic.category.slug + '/' + this.topic.slug]);
+   } else {
+     this.router.navigate(['/']);
+   }
+  }
   loadDraft() {
     if (!this.topic.id) {
       const topic = this.store.get(this.sid());
@@ -243,10 +252,14 @@ export class TopicEditComponent implements OnInit {
     this.saveDraft();
   }
 
-  inArray(user: User, arr: User[]) {
+  inArray(user: User, arr: User[]): boolean {
     return arr.some(item => {
       return item.id === user.id;
     });
+  }
+
+  protected compareById(o1: any, o2: any): boolean {
+    return o1 && o2 ? o1.id === o2.id : o1 === o2;
   }
 
   removeFromAcl(user: User) {
