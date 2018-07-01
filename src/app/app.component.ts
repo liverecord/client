@@ -19,8 +19,8 @@ export class AppComponent {
   title = 'lr';
   theme = 'default';
 
-  constructor (private webSocketService: WebSocketService, protected userService: UserService) {
-
+  constructor (private webSocketService: WebSocketService,
+               protected userService: UserService) {
     webSocketService.status.subscribe((v) => {
       // console.log('status', v);
       this.appClass.connected = v;
