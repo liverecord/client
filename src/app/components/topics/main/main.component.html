@@ -1,7 +1,7 @@
 <div class="main flex-row"  [class.topic-selected]="topic">
   <div class="category-list">
     <div class="new-topic">
-      <a routerLink="/topics/new" class="button">
+      <a routerLink="/topics/new" class="button primary">
         <i class="fa fa-pencil-square-o"></i>
         <span i18n>New topic</span>
       </a>
@@ -9,8 +9,22 @@
     <lr-category class="categories"></lr-category>
     <div class="items"></div>
     <div class="settings">
-
-      <span [hidden]="connected">Connecting...</span>
+      <div *ngIf="user?.id" class="flex-row">
+        <div class="avatar">
+          <img [src]="user?.picture" alt="{{user?.name}}">
+        </div>
+        <div class="user">
+          <a routerLink="/users/{{user?.slug}}">{{user?.name}}</a>
+          <br>
+          <kbd>@{{user?.slug}}</kbd>
+        </div>
+        <div class="cog">
+          <a routerLink="/settings"><i class="fa fa-cog"></i></a>
+        </div>
+      </div>
+      <div *ngIf="!user?.id" class="cog">
+        <a routerLink="/users/login">Join</a>
+      </div>
     </div>
   </div>
   <div class="topic-list">
