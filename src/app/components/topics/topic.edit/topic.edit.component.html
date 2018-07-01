@@ -1,8 +1,8 @@
 <div class="flex-column ask-form">
   <div (click)="docClick()">
     <h1>
-      <span [hidden]="!editing" i18n>Create new topic</span>
-      <span [hidden]="editing"><span i18n>Edit topic</span> <q>{{topic?.title}}</q></span>
+      <span [hidden]="!isEditing" i18n>Create new topic</span>
+      <span [hidden]="isEditing"><span i18n>Edit topic</span> <q>{{topic?.title}}</q></span>
     </h1>
     <form (submit)="onSubmit()"
           #topicEditForm="ngForm"
@@ -13,12 +13,13 @@
                 #qc="ngModel"
                 required
                 [(ngModel)]="topic.category"
+                [compareWith]="compareById"
                 (change)="saveDraft()"
-                i18n-placeholder="Category"
                 i18n>
-          <option [ngValue]="null" i18n>Please select</option>
+          <option [ngValue]="{id: 0, name: ''}" i18n>Please select a category</option>
           <option
             *ngFor="let category of categories; trackBy: trackById"
+
             [ngValue]="category">{{category.name}}
           </option>
         </select>
@@ -86,12 +87,16 @@
         <i class="fa fa-fw fa-unlock" [hidden]="topic.private"></i>
       </div>
       <div class="flex-row">
-        <lr-editor [(html)]="topic.body" (change)="saveDraft()"></lr-editor>
+        <lr-editor [(html)]="topic.body" (change)="saveDraft()" placeholder="Add details here..."></lr-editor>
       </div>
       <div class="flex-row">
-        <button type="submit" [disabled]="topicEditForm.invalid">
-          <span [hidden]="editing" i18n>Create</span>
-          <span [hidden]="! editing" i18n>Save</span>
+        <button type="submit" [disabled]="topicEditForm.invalid" class="primary">
+          <span [hidden]="isEditing" i18n>Create</span>
+          <span [hidden]="! isEditing" i18n>Save changes</span>
+        </button>
+        <div>&nbsp;</div>
+        <button type="button" i18n (click)="cancel()">
+          Cancel
         </button>
       </div>
     </form>
