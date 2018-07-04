@@ -7,6 +7,7 @@ export class Topic extends Model {
   body: string;
   total_views?: number;
   total_comments?: number;
+  unread_comments?: number;
   updates?: number;
   order: number;
   slug: string;
