@@ -45,9 +45,8 @@ export class StorageService {
     }
     if (typeof v === 'string') {
       return JSON.parse(v);
-    } else {
-      return v;
     }
+    return v;
   }
 
   remove(key: string) {
@@ -68,10 +67,17 @@ export class StorageService {
     if (v === null) {
       v = sessionStorage.getItem(key);
     }
-    if (typeof v === 'string') {
-      return JSON.parse(v);
-    } else {
-      return v;
+    return JSON.parse(v);
+  }
+
+  clear() {
+    switch (this.storageArea) {
+      case Storages.Local:
+        localStorage.clear();
+        break;
+      case Storages.Session:
+        sessionStorage.clear();
+        break;
     }
   }
 }
