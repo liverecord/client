@@ -5,13 +5,37 @@ import { filter } from 'rxjs/operators';
 import { AuthData } from '../models/authData';
 import { FrameType, WebSocketService, Frame } from './ws.service';
 import { Storages, StorageService } from './storage.service';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class UserService {
 
   public authorized: boolean;
+  public redirectUrl: string;
 
-  constructor(private store: StorageService, private webSocketService: WebSocketService) {
+  readonly emptyUser: User = Object.freeze({
+    id: 0,
+    name: '',
+    gender: '',
+    online: false,
+    settings: {
+      notifications: {
+        email: false
+      }
+    }
+  });
+
+  user: User = {...this.emptyUser};
+  userSubject?: Subject<User>;
+
+  authorizationResponse = {
+    message: '',
+    success: false
+  };
+
+  rememberMe = true;
+
+  constructor(private store: StorageService, private webSocketService: WebSocketService, private router: Router) {
     this.authorized = this.isAuthorized();
     this.userSubject = new Subject<User>();
     this.webSocketService.subscribe(
@@ -31,11 +55,15 @@ export class UserService {
 
               this.authorized = this.isAuthorized();
               this.authorizationResponse.success = true;
+              if (this.redirectUrl) {
+                this.router.navigate([this.redirectUrl]);
+                this.redirectUrl = null;
+              }
             }
             console.log('frame.data', frame.data);
             break;
           case FrameType.AuthError:
-            this.authorizationResponse.message = frame.data;
+            this.authorizationResponse.message = frame.data.message;
             this.authorizationResponse.success = false;
             break;
         }
@@ -49,21 +77,6 @@ export class UserService {
     );
   }
 
-  readonly emptyUser: User = Object.freeze({
-    id: 0,
-    name: '',
-    online: false
-  });
-
-  user: User = {...this.emptyUser};
-  userSubject?: Subject<User>;
-
-  authorizationResponse = {
-    message: '',
-    success: false
-  };
-
-  rememberMe = true;
 
   public isAuthorized(): boolean {
     return this.user.id > 0;
@@ -92,7 +105,10 @@ export class UserService {
     return of(this.authorizationResponse);
   }
 
-  getUser(): Subject<User> {
+  getUser(remind?: boolean): Subject<User> {
+    if (remind) {
+      setTimeout(() => { this.userSubject.next(this.user); }, 50);
+    }
     return this.userSubject;
   }
 
