@@ -32,8 +32,9 @@ progress
 template, // 1
 [hidden],
 [hidden]::before,
-[hidden].fa
-  display none
+[hidden].fa,
+.hidden
+  display none !important
 
 a
   -webkit-text-decoration-skip objects
@@ -113,3 +114,5 @@ input
   select
     text-indent -2px
 
+video, audio, img, object, pre
+  max-width 100%

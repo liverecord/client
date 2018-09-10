@@ -30,10 +30,12 @@ export class TopicService {
   }
 
   getTopic(slug?: string): Observable<Topic> {
-    this.webSocketService.next({
-      type: FrameType.Topic,
-      data: {slug: slug},
-    });
+    if (slug) {
+      this.webSocketService.next({
+        type: FrameType.Topic,
+        data: {slug: slug},
+      });
+    }
     return Observable.create((observer) => {
       this.webSocketService.subscribe(frame => {
         if (frame.type === FrameType.Topic) {

@@ -31,6 +31,7 @@ export class CategoryService {
         this.setSlug();
       }
     });
+    console.log('CategoryService constructor');
   }
 
   private setSlug() {

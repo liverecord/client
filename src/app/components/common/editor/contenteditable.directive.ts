@@ -50,6 +50,7 @@ export class ContenteditableDirective implements ControlValueAccessor {
               'a', 'b', 'strong', 'i', 'em', 'q', 'kbd', 'span', 'sub', 'sup', 's',
               'img', 'video',
               'ol', 'ul', 'li',
+              'table', 'thead', 'tbody', 'tfoot', 'th', 'tr', 'td',
               'p', 'br', 'blockquote', 'code', 'pre'
             ],
 
@@ -69,10 +70,17 @@ export class ContenteditableDirective implements ControlValueAccessor {
       }
       document.execCommand('insertHTML', false, s);
     } else if (e.clipboardData.types.indexOf('text/plain') > -1) {
-      e.preventDefault(); // prevent pasting
-      let s = e.clipboardData.getData('text/plain');
-      s = this.linky(s);
-      document.execCommand('insertHTML', false, s);
+
+      if (e.target.nodeName === 'PRE' || e.target.parentNode.nodeName === 'PRE') {
+
+      } else {
+        e.preventDefault(); // prevent pasting
+        let s = e.clipboardData.getData('text/plain');
+        s = '<p>' + s.trim().replace(/\n\n+/g, '</p><p>').replace(/\n+/g, '<br>') + '</p>';
+        s = this.linky(s);
+        document.execCommand('insertHTML', false, s);
+
+      }
     }
     this.updateModel();
   }

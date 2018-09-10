@@ -40,7 +40,7 @@ export class UserService {
     this.userSubject = new Subject<User>();
     this.webSocketService.subscribe(
       frame => {
-        console.log('data', frame);
+        // console.log('data', frame);
 
         switch (frame.type) {
           case FrameType.Auth:
@@ -60,7 +60,7 @@ export class UserService {
                 this.redirectUrl = null;
               }
             }
-            console.log('frame.data', frame.data);
+            // console.log('frame.data', frame.data);
             break;
           case FrameType.AuthError:
             this.authorizationResponse.message = frame.data.message;

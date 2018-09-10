@@ -11,7 +11,8 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist",
+            "outputPath": "dist/app-dist",
+            "deployUrl": "/app-dist/",
             "index": "src/index.html",
             "main": "src/main.ts",
             "tsConfig": "src/tsconfig.app.json",
@@ -60,6 +61,7 @@
           },
           "configurations": {
             "production": {
+              "extractCss": true,
               "browserTarget": "client:build:production"
             }
           }

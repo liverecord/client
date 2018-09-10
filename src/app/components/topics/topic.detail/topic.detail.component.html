@@ -4,10 +4,15 @@
      [class.advancedCompose]="advancedCompose"
      [class.private]="topic?.private"
 >
-  <div *ngIf="!topic" class="topic-details">
+  <div *ngIf="loading" class="topic-details">
+    <div class="container flex flex-center">
+      <img src="/app-dist/assets/loader.gif" alt="Loading..." width="16" height="16">
+    </div>
+  </div>
+  <div *ngIf="!topic && !loading" class="topic-details">
     <p>Pick a topic to view and discuss</p>
   </div>
-  <div *ngIf="topic" class="topic-content" [style.height]="topicDetailsBlockHeight">
+  <div *ngIf="topic && !loading" class="topic-content" [style.height]="topicDetailsBlockHeight">
     <div class="topic-main-content">
       <h1>{{topic?.title}}</h1>
       <div class="date">
@@ -27,7 +32,7 @@
       <div class="flex-row topic-authoring"  *ngIf="topic">
         <div class="col" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <div class="flex-row">
-            <div>
+            <div *ngIf="topic">
               <a [routerLink]="['/users/', topic?.user?.slug]">
                 <img *ngIf="topic" [src]="topic?.user?.picture" class="img-responsive" alt="">
               </a>
@@ -36,13 +41,13 @@
         </div>
         <div class="col author" *ngIf="topic.user">
           <a itemprop="name" [routerLink]="['/users/' , topic?.user.slug]">{{topic?.user.name}}</a>
-          <span class="online" [hidden]="!topic?.user.online" title="Online"><i class="fa fa-circle"></i></span>
+          <span class="online" [hidden]="!topic?.user?.online" title="Online"><i class="fa fa-circle"></i></span>
           <br><lr-rank user="topic?.user" style="float: left"></lr-rank>
         </div>
         <div class="col" style="flex-grow: 1">
 
         </div>
-        <div class="col private" [hidden]="topic?.private">
+        <div class="col private" [hidden]="!topic?.private">
           <div class="padlock"><i class="fa fa-fw fa-lock" i18n i18n-title="Access limited to"></i></div>
 
           <a *ngFor="let aclu of topic?.acl || []" [title]="aclu?.name" [routerLink]="['/users/' + aclu?.slug]">
@@ -57,7 +62,9 @@
         <div class="col">
         </div>
         <div class="col">
-          <a itemprop="name" [routerLink]="['/topics/' + topic?.slug + '/edit/']"><i class="fa fa-edit"></i></a>
+          <a
+            *ngIf="topic.user.id === user.id"
+            itemprop="name" [routerLink]="['/topics/' + topic?.slug + '/edit/']"><i class="fa fa-edit"></i></a>
         </div>
         <div class="col">
 
@@ -69,9 +76,14 @@
     </div>
     <div class="comments">
         <div class="pagination">
-          <a class="show-old-comments" (click)="loadOlderComments()" [hidden]="pagination.page >= pagination.pages">
-           <span i18n>Show earlier comments</span> ({{pagination.total - pagination.page * pagination.limit}})
-          </a>
+          <button class="show-old-comments"
+                  type="button"
+             (click)="loadOlderComments()"
+             [class.hidden]="! pagination.left"
+          >
+           <span i18n>Show earlier comments</span>
+            <span >({{pagination.left}})</span>
+          </button>
         </div>
         <div class="comments-list" id="commentsList">
           <div class="comment flex-row"
@@ -134,9 +146,11 @@
 
         <div class="flex-center flex-row">
           <div class="typists">
-            <div class="list" [hidden]="!typists.length">
+            <div class="list">
               <div class="starter"><i class="fa fa-pencil"></i></div>
-              <div class="typist" *ngFor="let typist of typists || []"><img
+              <div class="typist" *ngFor="let typist of typists || []"
+                   [@flyInOut]="'in'"
+              ><img
                 [src]="typist.picture"
                 [alt]="typist.name"
                 [title]="typist.name" class="img-responsive"></div>
@@ -151,8 +165,7 @@
         <div id="topicAnchor"><span></span></div>
       </div>
   </div>
-
-  <div *ngIf="topic" class="compose flex-row" [class.sending]="sending" [class.open]="advancedCompose">
+  <div *ngIf="topic && !loading" class="compose flex-row" [class.sending]="sending" [class.open]="advancedCompose">
     <div class="advanced-compose-control">
       <button (click)="switchAdvancedCompose()" [disabled]="sending">
         <i class="fa " [class.fa-plus]="!advancedCompose" [class.fa-minus]="advancedCompose"></i>
@@ -162,7 +175,9 @@
       <lr-editor [(html)]="comment.body" (change)="saveDraft()" placeholder="Type your comment here..."></lr-editor>
     </div>
     <div class="send-control">
-      <button (click)="sendComment()"
+      <button
+        type="button"
+        (click)="sendComment()"
               [disabled]="!sendButtonActive"
               [class.sending]="sending"
       ><i class="fa fa-paper-plane"></i></button>

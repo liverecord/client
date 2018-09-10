@@ -1,6 +1,7 @@
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { NgModule, LOCALE_ID } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -62,7 +63,8 @@ registerLocaleData(localeRu, localeRuExtra);
     AppRoutingModule,
     ReactiveFormsModule,
     FormsModule,
-    ServiceWorkerModule.register('/ngsw-worker.js', {enabled: environment.production})
+    ServiceWorkerModule.register('/ngsw-worker.js', {enabled: environment.production}),
+    BrowserAnimationsModule
   ],
   providers: [
     { provide: LOCALE_ID, useValue: 'en' },

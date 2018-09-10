@@ -12,6 +12,7 @@
       overflow-y auto
       height: calc(98vh - 6em);
       position relative
+      width inherit
       .topic-main-content
         display block
         padding-top 1px
@@ -99,8 +100,7 @@
         padding-left 1vw
         padding-right 1vw
 
-
-      .pagination
+        .pagination
           margin-top 1vh
           text-align center
           .show-old-comments
@@ -124,6 +124,11 @@
           .text
             transition all $slowAnimationDuration
             overflow-wrap break-word
+            pre
+              max-width 80%
+            td
+              max-width 80%
+
           .date
             font-weight 100
             overflow hidden
@@ -214,9 +219,7 @@
           &:hover
             .text-feedback
               opacity 1
-          &.me
-            .text
-              color rgba(0,0,0,0.5)
+
           &.spam
             .text
               opacity 0.1
@@ -239,6 +242,7 @@
               position absolute
             .content
               padding 1em
+
 
 
 
@@ -307,3 +311,71 @@
             .editor
               height calc(-0.5em + 29vh)
               margin-top 0
+
+  $fastAnimationDuration = 100ms
+  $slowAnimationDuration = 300ms
+
+  .typists
+    white-space nowrap
+    margin 0 auto
+    overflow hidden
+    text-align center
+    border-radius 3vh
+    line-height 3vh
+    font-size 2vh
+    min-width 3vh
+    padding 0.5vh
+    display inline-flex
+    justify-content center
+    .list
+      display inline-flex
+      opacity 1
+      transition: $fastAnimationDuration linear all;
+      &.ng-hide
+        opacity 0
+        transition:1s linear all;
+
+    .starter
+      padding-left 0.5vh
+      padding-right 0.5vh
+      // color lighten($blueDark, 60)
+
+    .typist
+      &.ng-enter
+        transition: $fastAnimationDuration linear all;
+        opacity 0
+        img
+          width 0
+          height 0
+          opacity 0
+      &.ng-enter.ng-enter-active
+        opacity 1
+        img
+          width 3vh
+          height 3vh
+          opacity 1
+      &.ng-leave
+        transition: $slowAnimationDuration linear all;
+        opacity 1
+        img
+          width 3vh
+          height 3vh
+          opacity 1
+      &.ng-leave.ng-leave-active
+        opacity 0
+        img
+          width 0
+          opacity 0
+          height 0
+      img
+        height 3vh
+        width  3vh
+        border-radius 1.5vh
+        vertical-align middle
+        margin-right 0.5vh
+        opacity 1
+        transition: $slowAnimationDuration linear all;
+        &.ng-leave
+          opacity 0
+          height 0
+          width  0

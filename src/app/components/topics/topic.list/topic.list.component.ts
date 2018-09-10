@@ -7,6 +7,8 @@ import {map} from 'rxjs/operators';
 import {FormControl} from '@angular/forms';
 import {copyObj} from '@angular/animations/browser/src/util';
 import { switchMap } from 'rxjs/internal/operators';
+import { FrameType, WebSocketService } from '../../../services/ws.service';
+import { Comment } from '../../../models/comment';
 
 @Component({
   selector: 'lr-topic-list',
@@ -14,9 +16,8 @@ import { switchMap } from 'rxjs/internal/operators';
   styleUrls: ['./topic.list.component.styl']
 })
 export class TopicListComponent implements OnInit {
-  constructor(private topicService: TopicService, private route: ActivatedRoute, private router: Router) { }
-
-  topics: Observable<Topic[]>;
+  topics: Topic[];
+  topicsObservable: Observable<Topic[]>;
   category: string;
   activeTopicSlug: string;
   activeCategorySlug: string;
@@ -29,6 +30,17 @@ export class TopicListComponent implements OnInit {
     section: 'newTopics',
     category: '-'
   };
+
+  constructor(
+    private webSocketService: WebSocketService,
+    private topicService: TopicService,
+    private route: ActivatedRoute,
+    private router: Router) {
+    this.topics = [];
+    this.activeTopicSlug = '';
+    this.activeCategorySlug = '';
+    this.activeFilter = '';
+  }
 
   search() {
     //
@@ -59,6 +71,15 @@ export class TopicListComponent implements OnInit {
     return filters;
   }
 
+  filterTopics() {
+    this.topics = this.topics.filter((topic) => {
+      if (this.activeCategorySlug.length > 0) {
+        return topic.category.slug === this.activeCategorySlug;
+      }
+      return true;
+    });
+  }
+
   ngOnInit() {
     this.filters.section = 'newTopics';
 
@@ -75,13 +96,18 @@ export class TopicListComponent implements OnInit {
         );
       });
 
-    this.topics = this.route.paramMap
+    this.topicsObservable = this.route.paramMap
       .pipe(
         switchMap((params: ParamMap) => {
-          this.activeCategorySlug = this.filters.category = params.get('category') || '-';
+          this.activeCategorySlug = this.filters.category = params.get('category') || '';
           return this.topicService.getTopics(this.filters);
         })
       );
+
+    this.topicsObservable.subscribe((topics) => {
+      this.topics = topics;
+      this.filterTopics();
+    });
 
     this.route.queryParamMap.subscribe(next => {
       this.filters.category = next.get('category') || '';
@@ -93,7 +119,26 @@ export class TopicListComponent implements OnInit {
 
     this.route.paramMap.subscribe(next => {
       this.activeTopicSlug = next.get('slug') || '';
-      this.filters.category = this.activeCategorySlug = next.get('category') || '-';
+      this.filters.category = this.activeCategorySlug = next.get('category') || '';
+    });
+
+
+    this.webSocketService.subscribe(frame => {
+      console.log('topic list!', frame.type);
+      if (frame.type === FrameType.CommentSave) {
+        const comment = <Comment>Comment.fromObject(frame.data);
+        this.topics = this.topics.map((topic) => {
+          if (comment.topicId === topic.id) {
+            console.log('topic.user.id', topic.user.id, 'comment.user.id', comment.user.id);
+            if (this.activeTopicSlug === topic.slug) {
+              topic.unread_comments = 0;
+            } else {
+              topic.unread_comments += 1;
+            }
+          }
+          return topic;
+        });
+      }
     });
   }
 }

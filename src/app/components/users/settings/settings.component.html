@@ -13,12 +13,15 @@
         <input type="text" placeholder="Name" name="profileName"
                id="profileName"
                [(ngModel)]="profile.name"
-               required minlength="2" maxlength="32"
+               required
+               minlength="2"
+               maxlength="32"
                #profileNameInput
                [disabled]="sending">
         <i class="fa fa-fw fa-times" [hidden]="! profileNameInput.invalid"></i>
         <i class="fa fa-fw fa-check" [hidden]="! profileNameInput.valid"></i>
 
+        {{profileNameInput.error | json }}
 
         <div [hidden]="!profileNameInput.error" role="alert">
           <div [hidden]="required" class="help-block">Введите имя, которое будет отображаться.</div>
@@ -106,6 +109,6 @@
   </span></p>
   <hr>
   <div *ngIf="profile?.id">
-    <button (click)="signOut()">Sign Out</button>
+    <button type="button" (click)="signOut()">Sign Out</button>
   </div>
 </div>

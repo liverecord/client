@@ -38,10 +38,11 @@ export class WebSocketService  {
         url: this.getWsUrl(),
         deserializer: function (e: MessageEvent) { console.log('deserializer'); return JSON.parse(e.data); },
         serializer: function (value: Frame | ArrayBuffer) {
-          console.log('serializer');
           if (value instanceof ArrayBuffer) {
+            console.log('serializer of FileUpload');
             return value;
           } else {
+            console.log('serializer', value);
             return JSON.stringify(value);
           }
         },
@@ -155,6 +156,7 @@ export enum FrameType {
   Comment = 'Comment',
   CommentSave = 'CommentSave',
   CommentList = 'CommentList',
+  CommentTyping = 'CommentTyping',
   ResetPassword = 'ResetPassword',
   User = 'User',
   File = 'Upload',

@@ -1,31 +1,34 @@
 import {
+  AfterViewInit,
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   HostListener,
   OnDestroy,
-  ChangeDetectorRef,
   OnInit,
   Output,
-  AfterViewInit,
 } from '@angular/core';
 import { TopicService } from '../../../services/topic.service';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { EditableTopic, Topic } from '../../../models/topic';
+import { Topic } from '../../../models/topic';
 import { Title } from '@angular/platform-browser';
 import { UserService } from '../../../services/user.service';
 import { User } from '../../../models/user';
-import { UploadFile } from '../../../models/file';
 import { Comment } from '../../../models/comment';
-import { Frame, FrameType, WebSocketService } from '../../../services/ws.service';
+import { FrameType, WebSocketService } from '../../../services/ws.service';
 import { StorageService } from '../../../services/storage.service';
 import { switchMap } from 'rxjs/operators';
-import { fromEvent } from 'rxjs';
-import { debounce, debounceTime } from 'rxjs/internal/operators';
+import { fromEvent, Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/internal/operators';
+import animations from './topic.detail.animations';
+
+const TYPISTS_TIMEOUT = 10000;
 
 @Component({
   selector: 'lr-topic-detail',
   templateUrl: './topic.detail.component.html',
   styleUrls: ['./topic.detail.component.styl'],
+  animations: animations
 })
 export class TopicDetailComponent implements OnInit, OnDestroy, AfterViewInit {
 
@@ -33,7 +36,6 @@ export class TopicDetailComponent implements OnInit, OnDestroy, AfterViewInit {
 
   topic: Topic;
   user: User;
-  typists: User[];
   sending: boolean;
   sendButtonActive: boolean;
   topicDetailsBlockHeight: string;
@@ -43,12 +45,17 @@ export class TopicDetailComponent implements OnInit, OnDestroy, AfterViewInit {
   preparedComments: Comment[];
   topicAbsoluteUrl: string;
   requestId: string;
+  loading: boolean;
   pagination: {
-    page: 1,
-    pages: 1,
-    limit: 1,
-    total: 0
+    page: number,
+    pages: number,
+    limit: number,
+    total: number,
+    left: number
   };
+  typing$: Subject<Event>;
+  typists: User[];
+  typistsTimeouts: number[];
 
   constructor(private topicService: TopicService,
               private route: ActivatedRoute,
@@ -58,27 +65,31 @@ export class TopicDetailComponent implements OnInit, OnDestroy, AfterViewInit {
               private webSocketService: WebSocketService,
               private userService: UserService,
               private changeDetectorRef: ChangeDetectorRef) {
+    this.topic = null;
+    this.loading = false;
     this.sending = false;
     this.sendButtonActive = false;
     this.advancedCompose = false;
     this.topicDetailsBlockHeight = '90vh';
-  }
-
-
-  ngOnInit() {
-    this.topicAbsoluteUrl = encodeURIComponent(window.location.toString());
+    this.pagination = <any>{
+      page: <number>1,
+      pages: <number>1,
+      limit: <number>1,
+      total: <number>0,
+      left: <number>0
+    };
     this.comment = new Comment();
     this.user = new User();
     this.comments = [];
     this.preparedComments = [];
-    this.typists = [];
     this.requestId = 'ttt';
-    this.pagination = {
-      page: 1,
-      pages: 1,
-      limit: 1,
-      total: 0,
-    };
+    this.typists = [];
+    this.typistsTimeouts = [];
+    this.typing$ = new Subject<Event>();
+  }
+
+  ngOnInit() {
+    this.topicAbsoluteUrl = encodeURIComponent(window.location.toString());
     this
       .userService
       .getUser(true)
@@ -92,9 +103,14 @@ export class TopicDetailComponent implements OnInit, OnDestroy, AfterViewInit {
       .route
       .paramMap
       .pipe(
-        switchMap((params: ParamMap) => this.topicService.getTopic(params.get('slug'))),
+        switchMap((params: ParamMap) => {
+          this.loading = true;
+          this.topic = null;
+          this.comments = [];
+          return this.topicService.getTopic(params.get('slug'));
+        }),
       ).subscribe((topic: Topic) => {
-
+      this.saveDraft();
       this.comments = [];
 
       this.topic = topic;
@@ -105,11 +121,13 @@ export class TopicDetailComponent implements OnInit, OnDestroy, AfterViewInit {
       this.comment.body = '';
       this.loadDraft();
       this.sendButtonActive = true;
-
-      this.topicAbsoluteUrl = encodeURIComponent(
-        window.location.protocol + '//' +
-        window.location.host + '/' + this.topic.category.slug + '/' + this.topic.slug,
-      );
+      this.loading = false;
+      if (this.topic && this.topic.category) {
+        this.topicAbsoluteUrl = encodeURIComponent(
+          window.location.protocol + '//' +
+          window.location.host + '/' + this.topic.category.slug + '/' + this.topic.slug,
+        );
+      }
     });
 
     this.webSocketService.subscribe(frame => {
@@ -117,27 +135,53 @@ export class TopicDetailComponent implements OnInit, OnDestroy, AfterViewInit {
       let comments = this.comments;
       switch (frame.type) {
         case FrameType.CommentList:
-          frame.data.map((item) => {
+          frame.data.comments.map((item) => {
             return Comment.fromObject(item);
           });
-          comments = this.comments.concat(frame.data);
+          comments = this.comments.concat(frame.data.comments);
+          this.pagination = frame.data.pagination;
+          this.pagination.pages = Math.round(Math.ceil(this.pagination.total / this.pagination.limit));
+          this.pagination.left = this.pagination.total - this.pagination.limit * this.pagination.page;
+          this.pagination.left = this.pagination.left < 0 ? 0 : this.pagination.left;
           scroll = true;
           break;
         case FrameType.Comment:
         case FrameType.CommentSave:
-          comments.push(<Comment>Comment.fromObject(frame.data));
+          const comment = <Comment>Comment.fromObject(frame.data);
+          comments.push(comment);
+          if (this.typistsTimeouts[comment.user.id]) {
+            window.clearTimeout(this.typistsTimeouts[comment.user.id]);
+          }
+          this.typists = this.typists.filter((t) => t.id !== comment.user.id);
           if (frame.requestId === this.requestId) {
             this.discardDraft();
             this.resetComment();
           }
           scroll = true;
           break;
+        case FrameType.CommentTyping:
+          if (this.topic.id === frame.data.topicId) {
+            const typist = <User>frame.data.user;
+            const typistIds = this.typists.map(c => c.id);
+            if (!typistIds.includes(typist.id)) {
+              this.typists.push(typist);
+            }
+            if (this.typistsTimeouts[typist.id]) {
+              window.clearTimeout(this.typistsTimeouts[typist.id]);
+            }
+            this.typistsTimeouts[typist.id] = window.setTimeout(() => {
+              this.typists = this.typists.filter((t) => t.id !== typist.id);
+            }, TYPISTS_TIMEOUT);
+            console.log('typistx', this.typists);
+          }
+          break;
       }
-      comments
+      comments = comments
         .filter((comment: Comment) => {
           if (comment.topicId === this.topic.id) {
             return comment;
           }
+          return false;
         })
         .sort((a, b: Comment) => {
           if (a.createdAt.getTime() === b.createdAt.getTime()) {
@@ -172,9 +216,20 @@ export class TopicDetailComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   ngAfterViewInit() {
     fromEvent(window, 'resize').pipe(
-      debounceTime(100),
+      debounceTime(40),
     ).subscribe(() => {
       this.updateTopicHeight();
+    });
+    this.typing$.pipe(
+      debounceTime(100)
+    ).subscribe(() => {
+      this.webSocketService.next({
+        type: FrameType.CommentTyping,
+        data: {
+          topicId: this.topic.id,
+          typist: this.user.id
+        }
+      });
     });
   }
 
@@ -188,7 +243,13 @@ export class TopicDetailComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   loadOlderComments() {
-
+    this.webSocketService.next({
+      type: FrameType.CommentList,
+      data: {
+        topicId: this.topic.id,
+        page: this.pagination.page + 1
+      }
+    });
   }
 
   vote(comment: Comment, action: string) {
@@ -256,6 +317,7 @@ export class TopicDetailComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnDestroy() {
     this.comments = [];
+    console.log('Topic Details ngOnDestroy');
   }
 
   updateTopicHeight(callback = null) {
@@ -280,10 +342,14 @@ export class TopicDetailComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @HostListener('keydown', ['$event'])
   onKeyDown(e) {
-    if (e.ctrlKey || e.metaKey) {
+    if (
+      this.store.get('sendCommentsCtrl') === 'Enter' && !e.shiftKey ||
+      this.store.get('sendCommentsCtrl') !== 'Enter' && !e.shiftKey && (e.ctrlKey || e.metaKey)) {
       if (e.keyCode === 13) {
         this.sendComment();
       }
+    } else {
+      this.typing$.next(e);
     }
     this.updateTopicHeight();
   }

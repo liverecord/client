@@ -11,7 +11,7 @@
 </div>
 <div class="list">
   <div class="topic flex-row"
-       *ngFor="let topic of topics | async as topicsArray; trackBy: trackById"
+       *ngFor="let topic of topics; trackBy: trackById"
        [class.active]="isTopicActive(topic)"
         id="topic_list_id_{{topic.id}}">
     <a class="topic-info"

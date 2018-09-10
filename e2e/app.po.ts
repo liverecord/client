@@ -6,6 +6,6 @@ export class AppPage {
   }
 
   getParagraphText() {
-    return element(by.css('lr-root h1')).getText();
+    return element(by.css('.logo > a:nth-child(1)')).getText();
   }
 }

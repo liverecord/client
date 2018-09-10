@@ -1,6 +1,6 @@
 $normalGrey = #BCC9CE
 
-$slowAnimationDuration = 300ms
+$slowAnimationDuration = 100ms
 
 :host
 
@@ -40,6 +40,25 @@ $slowAnimationDuration = 300ms
       max-height 50vh
       height auto
       width auto
+  .upload-drop-here
+    z-index 5
+    position absolute
+    top -10em
+    width 100%
+    height 12em
+    background white
+    margin 0
+    line-height 1em
+    .bounds
+      height 12em
+
+      margin 0.1em
+      padding 0.1em
+      border dashed 2px gray
+      .tooltip
+        color gray
+        text-align center
+
 
   .uploads
     z-index 5
@@ -113,7 +132,7 @@ $slowAnimationDuration = 300ms
       outline none
       margin-top calc(0.691em + 0.5vh - 1px)
       min-height 1.8em
-      max-height calc(60vh)
+      max-height calc(30vh)
       line-height 1.618
       padding 0
       transition height $slowAnimationDuration

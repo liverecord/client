@@ -12,7 +12,7 @@ $normalGrey = #BCC9CE
 $darkGrey = #8E949F
 $lightColor = #F7FAFC
 $fastAnimationDuration = 100ms
-$slowAnimationDuration = 300ms
+$slowAnimationDuration = 100ms
 
 $red = #B2150A
 
@@ -185,8 +185,16 @@ $red = #B2150A
         background-color var(--body-color, gray)
 
         .comments-list
-          .comment:hover
-            background-color alpha($blueLight, 0.05)
+          .comment
+            .text
+              color #000
+            &:hover
+              background-color alpha($blueLight, 0.05)
+
+            &.me
+              .text
+                color $blueDark
+
         .show-old-comments
           border solid 1px
         .compose
@@ -322,3 +330,16 @@ $red = #B2150A
           color red
         i.fa-check
           color $greenDark
+
+  pre, :not(pre) > code, :not(pre) > * > code
+    padding 0.2em
+    background-color rgba(0,0,0,0.05)
+  pre
+    border-left solid 0.2em $greenLight
+    display block
+    white-space: pre-wrap;
+
+  kbd
+    padding 0.1em 0.1em
+    border solid 1px rgba(0,0,0,0.1)
+    background-color rgba(0,0,0,0.05)

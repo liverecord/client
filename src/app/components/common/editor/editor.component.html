@@ -1,4 +1,7 @@
-<div (drop)="onDrop($event)" style="position: relative">
+<div
+  (drop)="onDrop($event)"
+  style="position: relative">
+
   <div class="toolbar">
     <button *ngFor="let btn of toolbar"
             [class.active]="btn.active"
@@ -39,7 +42,12 @@
         <span class="remaining">{{upload.remaining}}</span>@<span class="speed">{{upload.speed}}</span>
       </div>
       <div class="progress bar" [style.width]="upload.progressPercent">&nbsp;</div>
-      <button class="cancel" (click)="cancelUpload(uploadIndex)"><i class="fa fa-times-circle"></i></button>
+      <button type="button" class="cancel" (click)="cancelUpload(uploadIndex)"><i class="fa fa-times-circle"></i></button>
+    </div>
+  </div>
+  <div class="upload-drop-here" [hidden]="!isUploadHelperDisplayed" >
+    <div class="bounds">
+      <i class="tooltip" i18n>Drop your file here to be uploaded!</i>
     </div>
   </div>
 </div>

@@ -7,23 +7,28 @@
       </a>
     </div>
     <lr-category class="categories"></lr-category>
-    <div class="items"></div>
+
     <div class="settings">
-      <div *ngIf="user?.id" class="flex-row">
-        <div class="avatar">
-          <img [src]="user?.picture" alt="{{user?.name}}">
-        </div>
-        <div class="user">
-          <a routerLink="/users/{{user?.slug}}">{{user?.name}}</a>
-          <br>
-          <kbd>@{{user?.slug}}</kbd>
-        </div>
-        <div class="cog">
-          <a routerLink="/settings"><i class="fa fa-cog"></i></a>
-        </div>
+      <div *ngIf="connected">
+          <div *ngIf="user?.id" class="flex-row">
+            <div class="avatar">
+              <img [src]="user?.picture" alt="{{user?.name}}">
+            </div>
+            <div class="user">
+              <a routerLink="/users/{{user?.slug}}">{{user?.name}}</a>
+              <br>
+              <kbd>@{{user?.slug}}</kbd>
+            </div>
+            <div class="cog">
+              <a routerLink="/settings"><i class="fa fa-cog"></i></a>
+            </div>
+          </div>
+          <div *ngIf="!user?.id" class="cog">
+            <a routerLink="/users/login">Join</a>
+          </div>
       </div>
-      <div *ngIf="!user?.id" class="cog">
-        <a routerLink="/users/login">Join</a>
+      <div *ngIf="!connected" class="flex-row flex-center">
+        <div class=""><span i18n>Connecting...</span></div>
       </div>
     </div>
   </div>

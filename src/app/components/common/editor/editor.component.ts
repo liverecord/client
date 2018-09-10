@@ -4,6 +4,8 @@ import { UploadFile } from '../../../models/file';
 import { Frame, FrameType, WebSocketService } from '../../../services/ws.service';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
+import { fromEvent, merge } from 'rxjs';
+import { debounceTime, last } from 'rxjs/operators';
 
 @Component({
   selector: 'lr-editor',
@@ -24,31 +26,9 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
   private previousHtml = '';
   uploads: UploadFile[];
 
-  toolbar = [
-    {active: true,  command: 'bold', fa: 'bold', hotKey: 'Ctrl+B'},
-    {active: false, command: 'italic', fa: 'italic', hotKey: 'Ctrl+I'},
-    {active: false, command: 'underline', fa: 'underline', hotKey: 'Ctrl+U'},
+  isUploadHelperDisplayed: boolean;
 
-    {active: false, command: 'insertOrderedList', fa: 'list-ol', hotKey: 'Ctrl+Shift+;'},
-    {active: false, command: 'insertUnorderedList', fa: 'list-ul', hotKey: 'Ctrl+Shift+L'},
-
-    {active: false, command: 'picture', fa: 'picture-o', hotKey: 'Ctrl+G'},
-    {active: false, command: 'createLink', fa: 'link', hotKey: 'Ctrl+K'},
-    {active: false, command: 'unlink', fa: 'chain-broken', hotKey: 'Ctrl+Shift+K'},
-
-    {active: false, command: 'code', fa: 'code', hotKey: 'Ctrl+M'},
-    {active: false, command: 'kbd', fa: 'keyboard-o', hotKey: 'Ctrl+Shift+M'},
-    {active: false, command: 'blockquote', fa: 'quote-left', hotKey: 'Ctrl+Q'},
-    {active: false, command: 'subscript', fa: 'subscript', hotKey: ''},
-    {active: false, command: 'superscript', fa: 'superscript', hotKey: ''},
-
-    {active: false, command: 'indent', fa: 'indent', hotKey: 'Ctrl+]'},
-    {active: false, command: 'outdent', fa: 'outdent', hotKey: 'Ctrl+['},
-
-    {active: false, command: 'removeFormat', fa: 'eraser', hotKey: 'Ctrl+D'},
-    {active: false, command: 'insertParagraph', fa: 'paragraph', hotKey: 'Ctrl+P'},
-
-  ];
+  toolbar: any[];
 
   static getSpecifiedElement(node, tagName) {
     // console.log('item.command', node);
@@ -85,7 +65,35 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
     private webSocketService: WebSocketService,
   ) {
     this.uploads = [];
+    this.isUploadHelperDisplayed = false;
     console.log('Editor initiated');
+
+    this.toolbar = [
+      {active: true,  command: 'bold', fa: 'bold', hotKey: 'Ctrl+B'},
+      {active: false, command: 'italic', fa: 'italic', hotKey: 'Ctrl+I'},
+      {active: false, command: 'underline', fa: 'underline', hotKey: 'Ctrl+U'},
+
+      {active: false, command: 'insertOrderedList', fa: 'list-ol', hotKey: 'Ctrl+Shift+;'},
+      {active: false, command: 'insertUnorderedList', fa: 'list-ul', hotKey: 'Ctrl+Shift+L'},
+
+      {active: false, command: 'picture', fa: 'picture-o', hotKey: 'Ctrl+G'},
+      {active: false, command: 'createLink', fa: 'link', hotKey: 'Ctrl+K'},
+      {active: false, command: 'unlink', fa: 'chain-broken', hotKey: 'Ctrl+Shift+K'},
+
+      {active: false, command: 'pre', fa: 'code', hotKey: 'Ctrl+M'},
+
+      {active: false, command: 'kbd', fa: 'keyboard-o', hotKey: 'Ctrl+Shift+M'},
+      {active: false, command: 'blockquote', fa: 'quote-left', hotKey: 'Ctrl+Q'},
+      {active: false, command: 'subscript', fa: 'subscript', hotKey: ''},
+      {active: false, command: 'superscript', fa: 'superscript', hotKey: ''},
+
+      {active: false, command: 'indent', fa: 'indent', hotKey: 'Ctrl+]'},
+      {active: false, command: 'outdent', fa: 'outdent', hotKey: 'Ctrl+['},
+
+      {active: false, command: 'removeFormat', fa: 'eraser', hotKey: 'Ctrl+D'},
+      {active: false, command: 'insertParagraph', fa: 'paragraph', hotKey: 'Ctrl+P'},
+
+    ];
   }
 
   format(command, $event) {
@@ -101,6 +109,7 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
           'createLink': 'a',
           'kbd': 'kbd',
           'blockquote': 'blockquote',
+          'pre': 'pre',
           'code': 'code'
         };
         if (pn[item.command]) {
@@ -192,6 +201,26 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
   }
   ngAfterViewInit() {
     this.refreshState();
+    const ne = document.querySelector('.editor');
+    const udh = document.querySelector('.upload-drop-here');
+    const onEnterUpload = fromEvent(ne, 'dragenter');
+    const onEnterUploadHere = fromEvent(udh, 'dragenter');
+    const onLeaveUpload = fromEvent(document, 'dragleave');
+    const stream = merge(onEnterUpload, onEnterUploadHere, onLeaveUpload.pipe(
+      debounceTime(100)
+    ));
+    stream
+      .pipe(
+        debounceTime(200)
+      )
+      .subscribe(
+        (e) => {
+          console.log(e);
+          this.isUploadHelperDisplayed = (e.type === 'dragenter');
+        },
+        () => {
+          this.isUploadHelperDisplayed = false;
+        });
   }
 
   mapKey(key: string): string {
@@ -202,10 +231,20 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
 
   onDrop($event) {
     console.log('topic.detail', $event);
+    this.isUploadHelperDisplayed = false;
+
     if ($event.dataTransfer.files.length > 0) {
       $event.preventDefault();
       this.uploadFiles($event.dataTransfer.files);
     }
+  }
+
+  displayDragAccept($event) {
+   // this.isUploadHelperDisplayed = true;
+  }
+
+  hideDragAccept($event) {
+   // this.isUploadHelperDisplayed = false;
   }
 
   onFileSelect($event) {

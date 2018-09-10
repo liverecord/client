@@ -23,6 +23,7 @@ export class User extends Model {
   gender?: string;
   picture?: string;
   slug?: string;
+  about?: string;
   rank?: number;
   settings: Settings;
 
