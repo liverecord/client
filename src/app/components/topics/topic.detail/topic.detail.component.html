@@ -85,6 +85,9 @@
             <span >({{pagination.left}})</span>
           </button>
         </div>
+
+        <lr-conference></lr-conference>
+
         <div class="comments-list" id="commentsList">
           <div class="comment flex-row"
                *ngFor="let comment of comments; index as $index; first as isFirst"
@@ -147,7 +150,7 @@
         <div class="flex-center flex-row">
           <div class="typists">
             <div class="list">
-              <div class="starter"><i class="fa fa-pencil"></i></div>
+              <div class="starter" *ngIf="typists.length"><i class="fa fa-pencil"></i></div>
               <div class="typist" *ngFor="let typist of typists || []"
                    [@flyInOut]="'in'"
               ><img

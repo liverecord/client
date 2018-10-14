@@ -22,7 +22,7 @@ import { fromEvent, Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/internal/operators';
 import animations from './topic.detail.animations';
 
-const TYPISTS_TIMEOUT = 10000;
+const TYPISTS_TIMEOUT = 3000;
 
 @Component({
   selector: 'lr-topic-detail',

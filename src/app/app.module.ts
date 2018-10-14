@@ -25,6 +25,7 @@ import { UserLoginComponent } from './components/users/login/login.component';
 import { SettingsComponent } from './components/users/settings/settings.component';
 import { ListComponent } from './components/users/list/list.component';
 import { RankComponent } from './components/common/rank/rank.component';
+import { ConferenceService } from './services/conference.service';
 import { CategoryService } from './services/category.service';
 import { EditorComponent } from './components/common/editor/editor.component';
 import { ContenteditableDirective } from './components/common/editor/contenteditable.directive';
@@ -34,6 +35,7 @@ import { environment } from '../environments/environment';
 import { ServiceWorkerService } from './services/service-worker.service';
 import { BookmarkComponent } from './components/common/bookmark/bookmark.component';
 import { RestoreComponent } from './components/users/restore/restore.component';
+import { ConferenceComponent } from './components/common/conference/conference.component';
 
 registerLocaleData(localeRu, localeRuExtra);
 
@@ -56,7 +58,8 @@ registerLocaleData(localeRu, localeRuExtra);
     EditorComponent,
     ContenteditableDirective,
     BookmarkComponent,
-    RestoreComponent
+    RestoreComponent,
+    ConferenceComponent
   ],
   imports: [
     BrowserModule,
@@ -74,6 +77,7 @@ registerLocaleData(localeRu, localeRuExtra);
     CategoryService,
     TopicService,
     ServiceWorkerService,
+    ConferenceService,
     Title
   ],
   bootstrap: [AppComponent]
