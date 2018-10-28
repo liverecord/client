@@ -280,7 +280,9 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
           lastModifiedDate: file.lastModifiedDate,
         }
       });
-      this.webSocketService.next(fr.result);
+      if (fr.result !== null && fr.result instanceof ArrayBuffer) {
+        this.webSocketService.next(fr.result);
+      }
     });
 
     fr.addEventListener('onabort', (a) => {

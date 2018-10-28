@@ -308,8 +308,8 @@ export class ContenteditableDirective implements ControlValueAccessor {
   writeValue(obj: any): void {
     this.el.nativeElement.innerHTML = obj;
     document.execCommand('defaultParagraphSeparator', false, 'p');
-    document.execCommand('enableInlineTableEditing', false, true);
-    document.execCommand('enableObjectResizing', false, true);
+    document.execCommand('enableInlineTableEditing', false, 'true');
+    document.execCommand('enableObjectResizing', false, 'true');
   }
 
   registerOnChange(fn: any): void {
