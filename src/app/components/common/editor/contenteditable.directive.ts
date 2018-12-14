@@ -1,4 +1,4 @@
-import { Directive, ElementRef, Input, forwardRef, HostListener } from '@angular/core';
+import { Directive, ElementRef, Input, forwardRef, HostListener, OnDestroy } from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
 import {DomSanitizer} from '@angular/platform-browser';
 import * as DOMPurify from 'dompurify';
@@ -14,15 +14,26 @@ import * as DOMPurify from 'dompurify';
     }
   ]
 })
-export class ContenteditableDirective implements ControlValueAccessor {
+export class ContenteditableDirective implements ControlValueAccessor, OnDestroy {
 
   exOnChange: any;
   exOnTouched: any;
 
+  private changes: MutationObserver;
 
   constructor(private el: ElementRef, private sanitizer: DomSanitizer) {
-    // el.nativeElement.focus();
+    const element = this.el.nativeElement;
+    this.changes = new MutationObserver((ms) => {
+      console.log('MutationObserver', ms);
+      this.updateModel();
+    });
+    this.changes.observe(element, {
+      attributes: false,
+      childList: true,
+      characterData: true
+    });
   }
+
 
   static wrapSelection(prefix, suffix: string): void {
     suffix = suffix || prefix;
@@ -35,6 +46,10 @@ export class ContenteditableDirective implements ControlValueAccessor {
     }
     document.execCommand('insertHTML', false,
       newHtml);
+  }
+
+  ngOnDestroy() {
+    this.changes.disconnect();
   }
 
   @HostListener('paste', ['$event'])
@@ -92,27 +107,11 @@ export class ContenteditableDirective implements ControlValueAccessor {
   @HostListener('compositionend')
   @HostListener('dragend')
   @HostListener('change')
-  onDragEnd() {
-    this.updateModel();
-  }
-
-  @HostListener('drop', ['$event'])
-  onDrop($event) {
-    // console.log($event);
-  }
-
   @HostListener('keyup')
-  onKeyUp() {
-    this.updateModel();
-  }
-
   @HostListener('cut')
-  onCut() {
-    this.updateModel();
-  }
-
   @HostListener('change')
-  onChange() {
+  @HostListener('drop')
+  onDragEnd() {
     this.updateModel();
   }
 

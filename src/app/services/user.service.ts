@@ -13,7 +13,8 @@ export class UserService {
   public authorized: boolean;
   public redirectUrl: string;
 
-  readonly emptyUser: User = Object.freeze({
+  /*
+  readonly emptyUser: Readonly<{ id: number; name: string; gender: string; online: boolean; settings: { notifications: { email: boolean } } }> = Object.freeze({
     id: 0,
     name: '',
     gender: '',
@@ -24,8 +25,8 @@ export class UserService {
       }
     }
   });
-
-  user: User = {...this.emptyUser};
+*/
+  user: User;
   userSubject?: Subject<User>;
 
   authorizationResponse = {
@@ -36,6 +37,7 @@ export class UserService {
   rememberMe = true;
 
   constructor(private store: StorageService, private webSocketService: WebSocketService, private router: Router) {
+    this.user = new User();
     this.authorized = this.isAuthorized();
     this.userSubject = new Subject<User>();
     this.webSocketService.subscribe(
@@ -147,8 +149,8 @@ export class UserService {
   }
 
   signOut() {
-    this.setUser(this.emptyUser);
-    this.user = {...this.emptyUser};
+    this.setUser(new User());
+    // this.user = {...this.emptyUser};
     this.store.remove('jwt');
   }
 

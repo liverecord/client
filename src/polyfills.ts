@@ -40,11 +40,11 @@
 /** IE10 and IE11 requires the following for the Reflect API. */
 // import 'core-js/es6/reflect';
 
+(window as any).global = window;
 
 /** Evergreen browsers require these. **/
 // Used for reflect-metadata in JIT. If you use AOT (and only Angular decorators), you can remove.
 import 'core-js/es7/reflect';
-
 
 /**
  * Required to support Web Animations `@angular/platform-browser/animations`.
@@ -59,21 +59,8 @@ import 'core-js/es7/reflect';
  */
 import 'zone.js/dist/zone';  // Included with Angular CLI.
 
-(window as any).global = window;
-
-import 'webrtc-adapter';
-
-
 /***************************************************************************************************
  * APPLICATION IMPORTS
  */
 
-/**
- * Date, currency, decimal and percent pipes.
- * Needed for: All but Chrome, Firefox, Edge, IE11 and Safari 10
- */
-// import 'intl';  // Run `npm install --save intl`.
-/**
- * Need to import at least one locale-data with intl.
- */
-// import 'intl/locale-data/jsonp/en';
+import adapter from 'webrtc-adapter';

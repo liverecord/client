@@ -36,6 +36,7 @@ import { ServiceWorkerService } from './services/service-worker.service';
 import { BookmarkComponent } from './components/common/bookmark/bookmark.component';
 import { RestoreComponent } from './components/users/restore/restore.component';
 import { ConferenceComponent } from './components/common/conference/conference.component';
+import { VideoViewDirective } from './components/common/conference/videoview.directive';
 
 registerLocaleData(localeRu, localeRuExtra);
 
@@ -59,7 +60,8 @@ registerLocaleData(localeRu, localeRuExtra);
     ContenteditableDirective,
     BookmarkComponent,
     RestoreComponent,
-    ConferenceComponent
+    ConferenceComponent,
+    VideoViewDirective
   ],
   imports: [
     BrowserModule,

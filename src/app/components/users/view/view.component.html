@@ -1,5 +1,5 @@
-<div class="flex-column " style="width: 100%;">
-  <div id="topic" style="position: relative">
+<div class="flex-column" style="width: 100%;">
+  <div class="user-view">
     <div itemscope itemtype="http://schema.org/Person" class="user-info flex-center"
     *ngIf="user$ | async as userInfo">
       <h1>
@@ -28,6 +28,11 @@
       <div *ngIf="user && userInfo._id === user._id">
         <p>
           <a class="button" routerLink="/settings" i18n>Settings</a></p>
+      </div>
+
+      <div>
+        <hr>
+        <p><a class="button" routerLink="/" i18n>Return to main screen</a></p>
       </div>
     </div>
 

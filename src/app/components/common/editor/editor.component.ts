@@ -1,4 +1,14 @@
-import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit, ViewChild, OnDestroy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  AfterViewInit,
+  ViewChild,
+  OnDestroy,
+  ElementRef,
+} from '@angular/core';
 import {ContenteditableDirective} from './contenteditable.directive';
 import { UploadFile } from '../../../models/file';
 import { Frame, FrameType, WebSocketService } from '../../../services/ws.service';
@@ -6,6 +16,7 @@ import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 import { fromEvent, merge } from 'rxjs';
 import { debounceTime, last } from 'rxjs/operators';
+import { Host } from '@angular/core/src/di/metadata';
 
 @Component({
   selector: 'lr-editor',
@@ -17,7 +28,7 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() html: string;
   @Input() placeholder: string;
   @Output() htmlChange = new EventEmitter<string>();
-  @Output('change') change = new EventEmitter<string>();
+  @Output() change = new EventEmitter<string>();
 
   @ViewChild(ContenteditableDirective)
   private contentEditable: ContenteditableDirective;
@@ -61,8 +72,13 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+  destruct() {
+    //
+  }
+
   constructor(
     private webSocketService: WebSocketService,
+    private el: ElementRef
   ) {
     this.uploads = [];
     this.isUploadHelperDisplayed = false;
@@ -325,7 +341,7 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   focusEditor() {
-    const editor = document.querySelector('.editor');
+    const editor = this.el.nativeElement.querySelector('.editor');
     if (editor instanceof HTMLElement) {
       editor.focus();
     }

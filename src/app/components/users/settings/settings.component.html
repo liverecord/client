@@ -108,7 +108,9 @@
     <a (click)="forgetDevice()">Forget this device</a>
   </span></p>
   <hr>
-  <div *ngIf="profile?.id">
-    <button type="button" (click)="signOut()">Sign Out</button>
-  </div>
+  <p>
+    <a class="button" routerLink="/" i18n>Return to main screen</a>
+    |
+    <button  *ngIf="profile?.id" type="button" (click)="signOut()">Sign Out</button></p>
+  <p>&nbsp;</p>
 </div>

@@ -1,5 +1,5 @@
 <div *ngIf="! user?.id">
-  <h1 i18n>Join</h1>
+  <h1 i18n>Join the project</h1>
   <div class="sso">
     <span i18n>Sign in with</span>
     <a href="/api/oauth/facebook/" class="text-facebook" target="_top"><i class="fa fa-fw fa-facebook-official"></i></a>
@@ -8,9 +8,11 @@
     <a href="/api/oauth/vkontakte/" class="text-vk" target="_top"><i class="fa fa-fw fa-vk"></i></a>
     <a href="/api/oauth/github/" class="text-github" target="_top"><i class="fa fa-fw fa-github"></i></a>
     <a href="/api/oauth/google/" class="text-google" target="_top"><i class="fa fa-fw fa-google-plus-square"></i></a>
+
+    <div i18n="">or use old school way</div>
   </div>
-  <hr size="1">
-  <p i18n>Signin or signup</p>
+
+  <p i18n>Sign in or sign up</p>
   <p>{{message}}</p>
   <form (submit)="onSubmit()" #authDataForm="ngForm">
     <div class="form-group">
@@ -49,7 +51,7 @@
       <label>
         <a routerLink="/users/password/restore" class="small" i18n>Restore</a>
       </label>
-      <label for="rememberMe" i18n>My Comp</label>
+      <label for="rememberMe" i18n>remeber</label>
       <input type="checkbox"
              [(ngModel)]="authData.rememberMe"
              [disabled]="submitted"
@@ -62,11 +64,16 @@
       <label></label>
       <input type="submit" i18n value="Join" [disabled]="disabled || submitted || authDataForm.invalid">
     </div>
+    <div class="form-group" *ngIf="disabled">
+      <div class="tip" i18n="">Sorry, we are offline now. Please, come back later.</div>
+    </div>
   </form>
 </div>
 <div *ngIf="user?.id">
   <button (click)="signOut()" type="button">Sign Out</button>
 </div>
+
+<!--
 User
 <pre>
 {{user | json}}
@@ -75,3 +82,5 @@ Auth data
 <pre>
 {{authData | json}}
 </pre>
+
+-->

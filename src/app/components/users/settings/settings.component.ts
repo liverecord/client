@@ -36,6 +36,8 @@ export class SettingsComponent implements OnInit {
   }
 
   forgetDevice() {
-    this.storage.clear();
+    if (confirm('All your settings, drafts and sign in data will be destroyed on this device!\n\nAre you wish to continue?')) {
+      this.storage.clear();
+    }
   }
 }

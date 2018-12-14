@@ -19,7 +19,7 @@ const routes: Routes = [
   {path: 'settings', component: SettingsComponent, canActivate: [AuthorizedGuard] },
   {path: 'users/login', component: UserLoginComponent},
   {path: 'users/password/restore', component: RestoreComponent },
-  {path: 'users/:slug', component: UserViewComponent},
+  {path: 'users/:slug', component: UserViewComponent, canActivate: [AuthorizedGuard]},
   {path: ':category/new', component: TopicEditComponent, canActivate: [AuthorizedGuard]},
   {path: ':category/:slug', component: MainComponent},
   {path: ':category/:slug/edit', component: TopicEditComponent, canActivate: [AuthorizedGuard]},

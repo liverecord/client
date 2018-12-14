@@ -25,11 +25,23 @@ export class User extends Model {
   slug?: string;
   about?: string;
   rank?: number;
-  settings: Settings;
+  settings?: Settings;
 
   public constructor() {
     super();
     this.settings = new Settings();
+    this.id = 0;
+    this.name = '';
+    this.slug = '';
+  }
+
+  public uiData (): User {
+    return <User>{
+      id: this.id,
+      name: this.name,
+      slug: this.slug,
+      picture: this.picture
+    };
   }
 }
 

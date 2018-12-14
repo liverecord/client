@@ -14,7 +14,8 @@ import { Title } from '@angular/platform-browser';
 })
 export class UserViewComponent implements OnInit {
 
-  userInfo: User;
+  user: User;
+  activeUser: User;
   user$: Observable<User>;
 
   slug: string;
@@ -36,6 +37,10 @@ export class UserViewComponent implements OnInit {
       );
 
     this.user$.subscribe((u) => this.titleService.setTitle(u.name));
+
+    this.userService.getUser(true).subscribe(u => {
+      this.user = u;
+    });
   }
 
 }

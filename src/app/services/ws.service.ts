@@ -34,19 +34,23 @@ export class WebSocketService  {
     console.log('connecting...');
     if (!this.subject) {
       console.log('creating new WebSocket Connection');
-      this.subject = webSocket({
-        url: this.getWsUrl(),
-        deserializer: function (e: MessageEvent) { console.log('deserializer'); return JSON.parse(e.data); },
-        serializer: function (value: Frame | ArrayBuffer) {
-          if (value instanceof ArrayBuffer) {
-            console.log('serializer of FileUpload');
-            return value;
-          } else {
-            console.log('serializer', value);
-            return JSON.stringify(value);
-          }
-        },
-      });
+      try {
+        this.subject = webSocket({
+          url: this.getWsUrl(),
+          deserializer: function (e: MessageEvent) { console.log('deserializer'); return JSON.parse(e.data); },
+          serializer: function (value: Frame | ArrayBuffer) {
+            if (value instanceof ArrayBuffer) {
+              console.log('serializer of FileUpload');
+              return value;
+            } else {
+              console.log('serializer', value);
+              return JSON.stringify(value);
+            }
+          },
+        });
+      } catch (e) {
+        console.error('Error during websocket connection setup', e);
+      }
       this.subject.subscribe(
         (frameFromServer: Frame) => {
           this.live = true;
@@ -159,6 +163,7 @@ export enum FrameType {
   CommentTyping = 'CommentTyping',
   ResetPassword = 'ResetPassword',
   CallInit = 'CallInit',
+  CallStop = 'CallStop',
   CallCandidate = 'CallCandidate',
   CallLocalDescription = 'CallLocalDescription',
   User = 'User',

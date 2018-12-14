@@ -1,10 +1,27 @@
 <p>
   conference works!
 </p>
+<div *ngIf="this.conference.peers.length > 0">
   <p>Local</p>
-    <video id="local" width="200" height="200" autoplay></video>
-  <p>Remote</p>
-    <video id="remote" width="200" height="200" autoplay></video>
+  <video
+    class="local-video"
+      *ngIf="this.conference.peers[0].LocalStream() && this.conference.peers[0].LocalStream().active"
+      [lrVideoView]=this.conference.peers[0].LocalStream()
+      width="200" height="100" [poster]="this.conference.user?.picture" muted="muted" autoplay></video>
   <p></p>
+</div>
+<div *ngFor="let peer of this.conference.peers" class="peer">
+
+  <a [routerLink]="['/users/', peer.remoteUser?.slug]">{{peer.remoteUser.name}}</a>
+  <div class="stream" *ngFor="let stream of peer.remoteStreams">
+    <video
+      *ngIf="stream.active"
+      [lrVideoView]=stream
+           [poster]="peer.remoteUser?.picture" autoplay
+    >{{stream.id}}</video>
+  </div>
+</div>
+
     <button type="button" (click)="start()">Start call</button>
     <button type="button" (click)="hangup()">Stop call</button>
+
