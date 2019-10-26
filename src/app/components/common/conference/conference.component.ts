@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ConferenceService, LrPeer } from '../../../services/conference.service';
+import { ConferenceService  } from '../../../services/conference.service';
+import { LrPeer } from '../../../services/lrpeer';
 
 @Component({
   selector: 'lr-conference',

@@ -3,7 +3,6 @@ import { User } from '../../../models/user';
 import { UserService } from '../../../services/user.service';
 import { StorageService } from '../../../services/storage.service';
 import { Title } from '@angular/platform-browser';
-import { i18nExtract } from '@angular/compiler-cli/src/transformers/program';
 
 @Component({
   selector: 'lr-settings',
@@ -11,13 +10,13 @@ import { i18nExtract } from '@angular/compiler-cli/src/transformers/program';
   styleUrls: ['./settings.component.styl']
 })
 export class SettingsComponent implements OnInit {
-  profile: User;
+  profile?: User;
   sending: boolean;
   constructor(private userService: UserService,
               private storage: StorageService,
               private titleService: Title) {
     this.sending = false;
-    this.profile = new User();
+    // this.profile = new User();
   }
 
   ngOnInit() {
@@ -27,8 +26,12 @@ export class SettingsComponent implements OnInit {
       .subscribe(u => this.profile = u);
   }
 
-  saveGlobalSettings() {
-    //
+  saveSettings() {
+    if (this.profile) {
+      this.sending = true;
+      this.userService.updateUser(this.profile, this.profile.id.toString());
+      this.sending = false;
+    }
   }
 
   signOut() {

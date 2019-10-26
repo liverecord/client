@@ -5,9 +5,9 @@ import {Category} from './category';
 export class Topic extends Model {
   title: string;
   body: string;
-  total_views?: number;
-  total_comments?: number;
-  unread_comments?: number;
+  totalViews?: number;
+  totalComments?: number;
+  unreadComments?: number;
   updates?: number;
   order: number;
   slug: string;
@@ -16,6 +16,7 @@ export class Topic extends Model {
   category?: Category;
   active?: boolean;
   private?: boolean;
+  pinned?: boolean;
 }
 
 export class EditableTopic extends Topic {

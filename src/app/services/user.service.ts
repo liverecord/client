@@ -6,26 +6,13 @@ import { AuthData } from '../models/authData';
 import { FrameType, WebSocketService, Frame } from './ws.service';
 import { Storages, StorageService } from './storage.service';
 import { Router } from '@angular/router';
+import { Comment } from '../models/comment';
 
 @Injectable()
 export class UserService {
 
   public authorized: boolean;
   public redirectUrl: string;
-
-  /*
-  readonly emptyUser: Readonly<{ id: number; name: string; gender: string; online: boolean; settings: { notifications: { email: boolean } } }> = Object.freeze({
-    id: 0,
-    name: '',
-    gender: '',
-    online: false,
-    settings: {
-      notifications: {
-        email: false
-      }
-    }
-  });
-*/
   user: User;
   userSubject?: Subject<User>;
 
@@ -177,4 +164,27 @@ export class UserService {
     });
   }
 
+
+  updateUser(user: User, requestId: string) {
+    const {
+      id,
+      email,
+      name,
+      gender,
+      about,
+      settings
+    } = user;
+    this.webSocketService.next({
+      type: FrameType.UserUpdate,
+      data: {
+        id,
+        email,
+        name,
+        gender,
+        about,
+        settings
+      },
+      requestId: requestId
+    });
+  }
 }

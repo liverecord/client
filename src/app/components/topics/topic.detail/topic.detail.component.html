@@ -48,7 +48,7 @@
 
         </div>
         <div class="col private" [hidden]="!topic?.private">
-          <div class="padlock"><i class="fa fa-fw fa-lock" i18n i18n-title="Access limited to"></i></div>
+          <div class="padlock"><i class="fa fa-fw fa-lock" data-i18n data-i18n-title="Access limited to"></i></div>
 
           <a *ngFor="let aclu of topic?.acl || []" [title]="aclu?.name" [routerLink]="['/users/' + aclu?.slug]">
             <img [src]="aclu?.picture" class="img-responsive" [alt]="aclu?.name">
@@ -81,7 +81,7 @@
              (click)="loadOlderComments()"
              [class.hidden]="! pagination.left"
           >
-           <span i18n>Show earlier comments</span>
+           <span data-i18n>Show earlier comments</span>
             <span >({{pagination.left}})</span>
           </button>
         </div>
@@ -112,7 +112,7 @@
               <div itemprop="author" itemscope itemtype="http://schema.org/Person" class="author"
                    [hidden]="comments[$index-1] && comments[$index-1].user.id == comment.user.id && !isFirst">
                 <a itemprop="name" [routerLink]="['/users/' + comment.user.slug + '/']">{{comment.user.name}}</a>
-                <span class="online" [hidden]="!comment.user.online" i18n-title="Online"><i class="fa fa-circle"></i></span>
+                <span class="online" [hidden]="!comment.user.online" data-i18n-title="Online"><i class="fa fa-circle"></i></span>
                 <span class="date">
                 <a class="time hidden-xs"
                    [name]="'comment_' + comment.id"

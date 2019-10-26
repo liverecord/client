@@ -6,6 +6,7 @@ export class UploadFile extends Model {
   uploadStartedDate: Date;
   lastModifiedDate: Date;
   path: string;
+  url: string;
   size: number;
   loaded: number;
   uploaded: number;

@@ -47,11 +47,16 @@ export class TopicService {
 
 
   saveTopic(topic: Topic): Observable<EditableTopic> {
+    const {
+      title, body, acl, category, id
+    } = topic;
     this.webSocketService.next({
       type: FrameType.TopicUpdate,
-      data: topic,
+      data: {
+        title, body, acl, category, id
+      },
     });
-    return Observable.create((observer) => {
+    return new Observable((observer) => {
       this.webSocketService.subscribe(frame => {
         if (frame.type === FrameType.TopicUpdate) {
           observer.next(EditableTopic.fromObject(frame.data));
@@ -61,10 +66,19 @@ export class TopicService {
   }
 
   saveComment(comment: Comment, requestId: string) {
+    const {
+      topicId, body
+    } = comment;
     this.webSocketService.next({
       type: FrameType.CommentSave,
-      data: comment,
+      data: {
+        topicId, body
+      },
       requestId: requestId
     });
+  }
+
+  markAsRead(topicId) {
+
   }
 }

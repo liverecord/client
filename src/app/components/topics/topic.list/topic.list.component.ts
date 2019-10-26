@@ -3,9 +3,7 @@ import {TopicService} from '../../../services/topic.service';
 import {Observable} from 'rxjs';
 import {Topic} from '../../../models/topic';
 import {ActivatedRoute, ParamMap, Router} from '@angular/router';
-import {map} from 'rxjs/operators';
 import {FormControl} from '@angular/forms';
-import {copyObj} from '@angular/animations/browser/src/util';
 import { switchMap } from 'rxjs/internal/operators';
 import { FrameType, WebSocketService } from '../../../services/ws.service';
 import { Comment } from '../../../models/comment';
@@ -38,7 +36,7 @@ export class TopicListComponent implements OnInit {
     private router: Router) {
     this.topics = [];
     this.activeTopicSlug = '';
-    this.activeCategorySlug = '';
+    this.activeCategorySlug = '-';
     this.activeFilter = '';
   }
 
@@ -71,10 +69,10 @@ export class TopicListComponent implements OnInit {
     return filters;
   }
 
-  filterTopics() {
-    this.topics = this.topics.filter((topic) => {
+  filterTopics(topics: Topic[]) {
+    this.topics = topics.filter((topic) => {
       if (this.activeCategorySlug.length > 0) {
-        return topic.category.slug === this.activeCategorySlug;
+        return topic.category.slug === this.activeCategorySlug || this.activeCategorySlug === '-';
       }
       return true;
     });
@@ -105,8 +103,7 @@ export class TopicListComponent implements OnInit {
       );
 
     this.topicsObservable.subscribe((topics) => {
-      this.topics = topics;
-      this.filterTopics();
+      this.filterTopics(topics);
     });
 
     this.route.queryParamMap.subscribe(next => {
@@ -131,9 +128,9 @@ export class TopicListComponent implements OnInit {
           if (comment.topicId === topic.id) {
             console.log('topic.user.id', topic.user.id, 'comment.user.id', comment.user.id);
             if (this.activeTopicSlug === topic.slug) {
-              topic.unread_comments = 0;
+              topic.unreadComments = 0;
             } else {
-              topic.unread_comments += 1;
+              topic.unreadComments += 1;
             }
           }
           return topic;

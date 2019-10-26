@@ -1,15 +1,18 @@
-<h1 i18n>Settings</h1>
+<h1 data-i18n>Settings</h1>
 
 <div class="global">
-  <h2 i18n>Global</h2>
+  <h2 data-i18n>Global</h2>
   <div class="flex-center">
-    <h3 i18n>Profile</h3>
+    <h3 data-i18n>Profile</h3>
+
     <div class="message" [hidden]="!message">{{message}}</div>
-    <form name="userForm"
+    <form
+      *ngIf="profile"
+      name="userForm"
           #globalSettingsForm="ngForm"
-          (submit)="saveGlobalSettings()">
+          (submit)="saveSettings()">
       <div>
-        <label for="profileName" i18n>Name</label>
+        <label for="profileName" data-i18n>Name</label>
         <input type="text" placeholder="Name" name="profileName"
                id="profileName"
                [(ngModel)]="profile.name"
@@ -18,6 +21,8 @@
                maxlength="32"
                #profileNameInput
                [disabled]="sending">
+        <span></span>
+
         <i class="fa fa-fw fa-times" [hidden]="! profileNameInput.invalid"></i>
         <i class="fa fa-fw fa-check" [hidden]="! profileNameInput.valid"></i>
 
@@ -31,11 +36,12 @@
 
       </div>
       <div>
-        <label for="nickName"i18n>Alias</label>
+        <label for="nickName"data-i18n>Alias</label>
         <input name="slug" type="text" id="nickName" [(ngModel)]="profile.slug" required
                pattern="[a-zA-Z0-9-]+" #slug
                minlength="3" maxlength="64"
-               placeholder="Alias" [disabled]="sending">
+               placeholder="Alias" [disabled]="sending">      <span></span>
+
         <i class="fa fa-fw fa-times" [hidden]="!slug.invalid"></i>
         <i class="fa fa-fw fa-check" [hidden]="!slug.valid"></i>
 
@@ -44,7 +50,7 @@
         </p>
       </div>
       <div>
-        <label for="email"i18n>Email</label>
+        <label for="email"data-i18n>Email</label>
         <input name="email" type="email" id="email" [(ngModel)]="profile.email" required
                minlength="3" maxlength="64" #email
                placeholder="email" [disabled]="sending">
@@ -56,43 +62,51 @@
         </p>
 
       </div>
-      <div><label for="profileAbout" i18n>About</label><textarea
+      <div><label for="profileAbout" data-i18n>About</label><textarea
         placeholder="About" name="profileAbout" id="profileAbout"
         [(ngModel)]="profile.about" [disabled]="sending"></textarea>
       </div>
       <div class="flex-row">
-        <label for="gender" title="Gender required for correct localization"i18n>Gender</label>
+        <label for="gender" title="Gender required for correct localization" data-i18n>Gender</label>
 
-        <div>
+        <div id="gender">
           <div>
             <input type="radio" name="gender" id="gendermale" [(ngModel)]="profile.gender" value="male" [disabled]="sending">
-            <label for="gendermale" i18n>Male</label>
+            <label for="gendermale" >Male</label>
           </div>
           <div>
             <input type="radio" name="gender" id="genderfemale" [(ngModel)]="profile.gender" value="female" [disabled]="sending">
-            <label for="genderfemale" i18n>Female</label>
+            <label for="genderfemale" data-i18n>Female</label>
           </div>
           <div>
             <input type="radio" name="gender" id="genderOther" [(ngModel)]="profile.gender" value="" [disabled]="sending">
-            <label for="genderOther" i18n>Other<span title="Interface maybe weird">*</span></label>
+            <label for="genderOther" data-i18n>Other<span title="Interface maybe weird">*</span></label>
           </div>
         </div>
 
 
       </div>
       <div>
-        <label for="sendEmailNotifications" i18n>Email notification</label>
-        <input name="sendEmailNofications" type="checkbox" id="sendEmailNotifications"
-               [(ngModel)]="profile.settings.notifications.email" [disabled]="sending">
+        <label for="sendEmailNotifications" data-i18n>Email notification</label>
+        <select id="sendEmailNotifications"
+                name="sendEmailNotifications"
+                [(ngModel)]="profile.settings.notifications"
+                [disabled]="sending">
+          <option value="0">Disabled</option>
+          <option value="1">Push Notifications</option>
+          <option value="2">Immediate</option>
+          <option value="3">Daily digest</option>
+          <option value="4">Weekly digest</option>
+        </select>
       </div>
       <div>
-        <label for="profileAvatar" i18n>Avatar</label>
+        <label for="profileAvatar" data-i18n>Avatar</label>
         <img [src]="profile?.picture" alt="-" class="responsive" width="100">
         <input type="file" name="profileAvatar" id="profileAvatar" placeholder="Avatar" [disabled]="sending">
       </div>
       <div>
         <label></label>
-        <input type="submit" class="primary" (click)="saveGlobalSettings()" value="Save" [disabled]="sending">
+        <input type="submit" class="primary" (click)="saveSettings()" value="Save" [disabled]="sending">
       </div>
     </form>
   </div>
@@ -100,7 +114,7 @@
 </div>
 
 <div class="local">
-  <h2 i18n>Device specific</h2>
+  <h2 data-i18n>Device specific</h2>
 
 
   <p>If you forget this all your data (including drafts) will be removed from this device and push-notifications disabled.
@@ -109,7 +123,7 @@
   </span></p>
   <hr>
   <p>
-    <a class="button" routerLink="/" i18n>Return to main screen</a>
+    <a class="button" routerLink="/" data-i18n>Return to main screen</a>
     |
     <button  *ngIf="profile?.id" type="button" (click)="signOut()">Sign Out</button></p>
   <p>&nbsp;</p>

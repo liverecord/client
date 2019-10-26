@@ -252,9 +252,12 @@ export class ContenteditableDirective implements ControlValueAccessor, OnDestroy
       case 'kbd':
         ContenteditableDirective.wrapSelection('<' + command + '>', '</' + command + '>');
         break;
-      case 'pre':
       case 'blockquote':
         document.execCommand('formatBlock', false, command);
+        break;
+      case 'pre':
+        document.execCommand('formatBlock', false, command);
+        document.execCommand('insertHTML', false, '<p>&nbsp;</p>');
         break;
       case 'picture':
         const picture = prompt('Picture Url');
@@ -262,7 +265,7 @@ export class ContenteditableDirective implements ControlValueAccessor, OnDestroy
           document.execCommand(
             'insertHTML',
             false,
-            '<img src="' + encodeURI(picture) + '">'
+            '<img src="' + encodeURI(picture) + '"> '
           );
         }
         break;

@@ -3,7 +3,7 @@
     <div itemscope itemtype="http://schema.org/Person" class="user-info flex-center"
     *ngIf="user$ | async as userInfo">
       <h1>
-        <span class="online" *ngIf="userInfo.online" i18n-title="Online">
+        <span class="online" *ngIf="userInfo.online" data-i18n-title="Online">
           <i class="fa fa-circle"></i></span>
         <span itemprop="name">{{userInfo?.name}}</span>
       </h1>
@@ -13,7 +13,7 @@
       <div><small itemprop="alternateName">@{{userInfo?.slug}}</small></div>
       <div>
         <div>
-          <span i18n>Rating</span>:
+          <span data-i18n>Rating</span>:
           <lr-rank user="userInfo"></lr-rank>
         </div>
       </div>
@@ -22,17 +22,17 @@
       <div *ngIf="userInfo?.total_comments > 0"><p><span i18>Total comments</span>: {{userInfo?.total_comments}}</p></div>
       <div *ngIf="user && userInfo._id !== user._id">
         <p>
-          <a class="button" routerLink="/ask?user={{userInfo?.slug}}" i18n>Ask privately</a>
+          <a class="button" routerLink="/ask?user={{userInfo?.slug}}" data-i18n>Ask privately</a>
         </p>
       </div>
       <div *ngIf="user && userInfo._id === user._id">
         <p>
-          <a class="button" routerLink="/settings" i18n>Settings</a></p>
+          <a class="button" routerLink="/settings" data-i18n>Settings</a></p>
       </div>
 
       <div>
         <hr>
-        <p><a class="button" routerLink="/" i18n>Return to main screen</a></p>
+        <p><a class="button" routerLink="/" data-i18n>Return to main screen</a></p>
       </div>
     </div>
 

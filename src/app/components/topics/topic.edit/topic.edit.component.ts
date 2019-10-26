@@ -113,10 +113,12 @@ export class TopicEditComponent implements OnInit {
   }
   saveDraft() {
     this.store.set(this.sid(), this.topic);
+    this.titleService.setTitle('✎ ' + this.topic.title);
   }
 
   discardDraft() {
     this.store.remove(this.sid());
+    this.titleService.setTitle('');
   }
 
   private updateSearchResults() {

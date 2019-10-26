@@ -12,11 +12,9 @@ import {
 import {ContenteditableDirective} from './contenteditable.directive';
 import { UploadFile } from '../../../models/file';
 import { Frame, FrameType, WebSocketService } from '../../../services/ws.service';
-import { Subject } from 'rxjs/Subject';
-import 'rxjs/add/operator/takeUntil';
+import { Subject } from 'rxjs';
 import { fromEvent, merge } from 'rxjs';
-import { debounceTime, last } from 'rxjs/operators';
-import { Host } from '@angular/core/src/di/metadata';
+import { debounceTime, last, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'lr-editor',
@@ -30,7 +28,7 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
   @Output() htmlChange = new EventEmitter<string>();
   @Output() change = new EventEmitter<string>();
 
-  @ViewChild(ContenteditableDirective)
+  @ViewChild(ContenteditableDirective, { static: true })
   private contentEditable: ContenteditableDirective;
   private ngUnsubscribe: Subject<boolean> = new Subject<boolean>();
 
@@ -65,7 +63,7 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
       if (node) {
         return (node.nodeType === 3 ? node.parentNode : node);
       } else {
-        return selection.baseNode;
+        return selection.anchorNode;
       }
     } else {
       return selection;
@@ -153,7 +151,7 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit() {
     this.webSocketService
       .subject
-      .takeUntil(this.ngUnsubscribe)
+      .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(this.frameListener.bind(this));
     // this is fallback to sync whatever event wasn't fired right away
     setInterval(() => this.update(), 1000);
@@ -285,7 +283,6 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
     // actual upload
     const fr = new FileReader();
     fr.addEventListener('load', (e) => {
-      // console.log(e, fr.result, file, JSON.stringify(file));
       this.webSocketService.next({
         type: FrameType.File,
         data: {

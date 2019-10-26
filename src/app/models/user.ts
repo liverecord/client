@@ -1,18 +1,11 @@
 import {Model} from './model';
 
-export class Notificatons {
-  email: boolean;
-
-  public constructor() {
-    this.email = false;
-  }
-}
 
 export class Settings {
-  notifications: Notificatons;
+  notifications: number;
 
   public constructor() {
-    this.notifications = new Notificatons();
+    this.notifications = 2;
   }
 }
 

@@ -309,7 +309,10 @@ export class TopicDetailComponent implements OnInit, OnDestroy, AfterViewInit {
         this.sending = true;
         this.topicService.saveComment(this.comment, this.requestId);
       }
-    } else if (confirm('Commenting is for project members only. Would you like to join?')) {
+    } else if (confirm('Commenting is for project members only.\n' +
+      'You have to sign up.\n' +
+      'Don\'t worry your message won\'t be lost.\n' +
+      'Would you like to do it now?\n')) {
       this.userService.redirectUrl = this.route.snapshot.url.join('/');
       this.router.navigate(['users', 'login']);
     }

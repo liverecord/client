@@ -1,9 +1,9 @@
 <div class="search-box">
   <a (click)="search()"><i class="fa fa-search"></i></a>
   <input type="search" name="q" class="search"
-         i18n
+         data-i18n
          placeholder="Search"
-         i18n-placeholder="Search"
+         data-i18n-placeholder="Search"
          [formControl]="topicsSearchTermField"
 
 
@@ -21,7 +21,7 @@
 
     >
       <span class="topic-status">
-        <span class="counter" [hidden]="!topic.unread_comments">{{topic.unread_comments}}</span>
+        <span class="counter" [hidden]="!topic.unreadComments">{{topic.unreadComments}}</span>
       </span>
       <span [hidden]="!isTopicPrivate(topic)"><i class="fa fa-lock"></i></span>
       <span class="title">{{topic.title}}<span [hidden]="topic.title.length < 100">&hellip;</span></span>
@@ -32,29 +32,29 @@
 </div>
 <div class="switch">
   <a
-    [routerLink]="['/', filters.category, activeTopicSlug]"
+    [routerLink]="['/', filters.category || '-', activeTopicSlug]"
     [queryParams]="prepareFilters('newTopics')"
     [class.active]="isSection('newTopics')"
-  ><i class="fa fa-newspaper-o" aria-hidden="true" i18n i18n-title="New questions"></i></a>
+  ><i class="fa fa-newspaper-o" aria-hidden="true" data-i18n data-i18n-title="New questions"></i></a>
   <a
-    [routerLink]="['/', filters.category, activeTopicSlug]"
+    [routerLink]="['/', filters.category || '-', activeTopicSlug]"
     [queryParams]="prepareFilters('recentlyViewed')"
     [class.active]="isSection('recentlyViewed')"
-    i18n
-    i18n-title="Recently viewed"
-  ><i class="fa fa-history" aria-hidden="true" i18n i18n-title="Recently viewed"></i></a>
+    data-i18n
+    data-i18n-title="Recently viewed"
+  ><i class="fa fa-history" aria-hidden="true" data-i18n data-i18n-title="Recently viewed"></i></a>
   <a href=""
-     [routerLink]="['/', filters.category, activeTopicSlug]"
+     [routerLink]="['/', filters.category || '-', activeTopicSlug]"
      [queryParams]="prepareFilters('participated')"
      [class.active]="isSection('participated')"
-     i18n
-     i18n-title="Participated topics"
-  ><i class="fa fa-comments" aria-hidden="true" i18n i18n-title="Participated topics"></i></a>
+     data-i18n
+     data-i18n-title="Participated topics"
+  ><i class="fa fa-comments" aria-hidden="true" data-i18n data-i18n-title="Participated topics"></i></a>
   <a
-    [routerLink]="['/', filters.category, activeTopicSlug]"
+    [routerLink]="['/', filters.category || '-', activeTopicSlug]"
     [queryParams]="prepareFilters('bookmarks')"
     [class.active]="isSection('bookmarks')"
-    i18n
-    i18n-title="Bookmarks"
-  ><i class="fa fa-bookmark" aria-hidden="true" i18n i18n-title="Bookmarks"></i></a>
+    data-i18n
+    data-i18n-title="Bookmarks"
+  ><i class="fa fa-bookmark" aria-hidden="true" data-i18n data-i18n-title="Bookmarks"></i></a>
 </div>

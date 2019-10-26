@@ -3,7 +3,7 @@
     <div class="new-topic">
       <a routerLink="/topics/new" class="button primary">
         <i class="fa fa-pencil-square-o"></i>
-        <span i18n>New topic</span>
+        <span data-i18n>New topic</span>
       </a>
     </div>
     <lr-category class="categories"></lr-category>
@@ -28,7 +28,7 @@
           </div>
       </div>
       <div *ngIf="!connected" class="flex-row flex-center">
-        <div class=""><span i18n>Connecting...</span></div>
+        <div class=""><span data-i18n>Connecting...</span></div>
       </div>
     </div>
   </div>
